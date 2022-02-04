@@ -1,0 +1,100 @@
+.loginContainer{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.bodybg-color {
+    background: #142737;
+}
+
+.form-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .form-wrapper .msi-card  {
+    min-width: 450px;
+    max-width: 350px;
+  }
+  
+  .form-wrapper form  {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+  }
+  
+  .form-wrapper  .msi-card-title  {
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+  }
+  
+  .form-wrapper  .msi-card-title  span  {
+    margin-left: 6px;
+  }
+  
+  .form-wrapper  .checkbox-button-wrapper  {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-left: -12px;
+  }
+  
+  .form-wrapper  .link-wrapper  {
+    display: flex;
+    flex-direction: column;
+    margin: 6px 0;
+  }
+  
+  .form-wrapper  a  {
+    margin-bottom: 5px;
+    text-decoration: none;
+  }
+  
+  .form-wrapper  .notice  {
+    position: relative;
+    padding-top: 12px;
+  }
+  
+  .form-wrapper  .notice  span  {
+    font-weight: bold;
+  }
+  
+  .form-wrapper  .notice  p  {
+    margin: 0;
+  }
+  
+  .form-wrapper    .notice ::before {
+    position: absolute;
+    top: 0;
+    right: -12px;
+    left: -12px;
+    height: 1px;
+    content: '';
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .form-wrapper    .btn-wrapper  {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .form-wrapper    .btn-wrapper    button :first-of-type {
+    margin-right: 5px;
+  }
+
+  .msi-input {
+      width: 100%;
+  }
+  .help-block{
+      color: red;
+  }
+  .has-error input[type="text"],
+  .has-error input[type="password"] {
+        border-color: rgb(216, 12, 12);
+        color: rgb(230, 14, 14);
+    }

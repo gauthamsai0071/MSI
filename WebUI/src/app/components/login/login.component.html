@@ -1,0 +1,58 @@
+<div class="form-wrapper loginContainer">
+    <msi-card>
+      <msi-card-title class="msi-border-primary-10">
+        <msi-icon name="ic_emsignia" [size]="24"></msi-icon>
+        <span>Sign In</span>
+      </msi-card-title>
+      <msi-card-content>
+        <form [formGroup]="loginForm" (ngSubmit)="login()">
+          <span *ngIf="isAuthFailure" class="msi-text-alert login-error-text">We didn't recognize the username or password you entered. Please try again.</span>
+          <label class="msi-label" for="username" style="padding-top: 0px">
+            User Name/ID
+          </label>
+          <app-input-control [controlName]="'userName'" [formResetting]="formResetting"
+                        [LabelText]="'User Name'">
+            <input class="msi-input" type="text" id="username" autocomplete="username" formControlName="userName"
+                [class.error]="!formResetting && formControls.userName.invalid">
+          </app-input-control>
+         <!--  <p [ngClass]="{ 'has-error': isSubmitted && formControls.userName.errors }">
+            <input class="msi-input" type="text" id="username" autocomplete="username" formControlName="userName">
+          </p> -->
+         <!--  <div *ngIf="isSubmitted && formControls.userName.errors" class="help-block">
+            <div *ngIf="formControls.userName.errors.required">Username is required</div>
+          </div> -->
+         
+          <label class="msi-label" for="password">
+            Password
+          </label>
+          <app-input-control [controlName]="'password'" [formResetting]="formResetting"
+          [LabelText]="'Password'">
+              <input class="msi-input" type="password" id="password" autocomplete="current-password" formControlName="password"
+                  [class.error]="!formResetting && formControls.password.invalid">
+          </app-input-control>
+         <!--  <p [ngClass]="{ 'has-error': isSubmitted && formControls.password.errors }">
+            <input class="msi-input" type="password" id="password" autocomplete="current-password" formControlName="password">
+          </p> -->
+      
+          <!-- <div *ngIf="isSubmitted && formControls.password.errors" class="help-block">
+            <div *ngIf="formControls.password.errors.required">Password is required</div>
+          </div> -->
+         
+          <div class="checkbox-button-wrapper">
+            <msi-checkbox>Remember my username</msi-checkbox>
+            <button class="msi-btn" style="margin-top: 8px;">Sign in</button>
+          </div>
+        </form>
+        <!-- <div class="link-wrapper">
+          <a href="#" class="msi-link">FORGOT PASSWORD?</a>
+          <a href="#" class="msi-link">CHANGE MY PASSWORD</a>
+        </div>
+        <div class="notice">
+          <span>Notice</span>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat molestias odit asperiores laborum,
+            quaerat at neque animi nesciunt ipsam in voluptatum, libero, modi consequatur accusamus officiis quisquam
+            hic vitae quam?</p>
+        </div> -->
+      </msi-card-content>
+    </msi-card>
+  </div>

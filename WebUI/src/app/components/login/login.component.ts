@@ -1,0 +1,66 @@
+import { Component,OnInit,OnDestroy, ViewEncapsulation, Inject } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from  '@angular/forms';
+import { Router } from  '@angular/router';
+import { AuthService } from  '../../services/auth/auth.service';
+import { DOCUMENT } from "@angular/common";
+import { analyzeAndValidateNgModules } from '@angular/compiler';
+
+@Component({
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss'],
+  encapsulation: ViewEncapsulation.None
+})
+export class LoginComponent implements OnInit,OnDestroy {
+  loginForm: FormGroup;
+  isSubmitted  =  false;
+  csrfToken = '';
+  isAuthFailure:boolean = false;
+  formResetting: boolean = true;
+  constructor(@Inject(DOCUMENT) private _document:any,private authService: AuthService, private router: Router, private formBuilder: FormBuilder) { }
+
+  ngOnInit(): void {
+    this._document.body.classList.add('bodybg-color');
+     this.loginForm  =  this.formBuilder.group({
+      userName: ['', Validators.required],
+      password: ['', [Validators.required, Validators.minLength(5)]]
+  }); 
+  }
+
+  get formControls() { return this.loginForm.controls; }
+
+  login(){
+    this.formResetting = false;
+    console.log(this.loginForm.value);
+    sessionStorage.setItem('token','');
+    this.isSubmitted = true;
+    if(this.loginForm.invalid){
+      return;
+    }
+    this.authService.getInitPublicSession().subscribe(res =>{
+      let resut:any = res;
+      this.csrfToken = resut.csrfToken;
+      sessionStorage.setItem('token',this.csrfToken);
+      this.authService.login(this.loginForm.value).subscribe(res =>{
+        let response:any = res;
+        if(response.success===true){
+          this.formResetting = true;
+          this.loginForm.reset({});
+          this.router.navigateByUrl('/home');
+        }
+        else{
+          this.isAuthFailure = true;
+        }
+      });
+    });
+   
+   
+  }
+
+
+  ngOnDestroy() {
+    // remove the class form body tag
+    this._document.body.classList.remove('bodybg-color');
+  }
+
+}
