@@ -1,0 +1,17 @@
+<div class="search-component-wrapper">
+    <msi-input-group class="search-wrapper">
+        <msi-icon msiInputSuffix *ngIf="value1" (click)="value1=''" name="ic_remove"></msi-icon>
+        <input msiInput class="search-input" [(ngModel)]="value1" id="first">
+    </msi-input-group>
+    <msi-tab-group>
+        <msi-tab
+            label="Filters">
+            <div class="filters-wrapper">
+                <app-filter-tab></app-filter-tab>
+            </div>
+        </msi-tab>
+        <msi-tab
+            label="Saved Searches">
+        </msi-tab>
+    </msi-tab-group>
+</div>

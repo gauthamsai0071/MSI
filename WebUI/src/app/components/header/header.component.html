@@ -1,0 +1,64 @@
+
+<!-- searchValue emits search input value after enter/search btn click -->
+<!-- Use emitValueAfterEachChar & searchValueChange if you want to emit value after each char in search input  -->
+<!-- Use overflow-hide css class to hide particular plugin in mobile version, i.e <div class="msi-common-header-plugin overflow-hide"> -->
+
+    <msi-common-header
+    [fullWidth]="true"
+    [search]="search_enable"
+    [responsive]="responsive_enable"
+    [overflowNotificationBadge]="badge_enable"
+    [emitValueAfterEachChar]="true"
+    (searchToggle)="searchToggleChatch($event)"
+    (searchValueChange)="searchValueChange($event)"
+    (searchValue)="searchValue($event)"
+    (searchInputFocus)="searchInputFocus()"
+    (searchInputBlur)="searchInputBlur()"
+    #header>
+  <msi-header-left-plugin-area
+      class="msi-common-header-left-plugin-area"
+      [applicationName]="header_name"
+      [emsignia]="emsignia_enable"
+      applicationHomeUrl="#"
+    >
+  </msi-header-left-plugin-area>
+  <msi-header-right-plugin-area class="msi-common-header-right-plugin-area">
+
+    <div class="msi-common-header-plugin">
+      <msi-application-switcher *ngIf="applications_enable">
+        <msi-application-switcher-row class="switcher-row" *ngFor="let service of mockServices" [serviceDescription]="service">
+        </msi-application-switcher-row>
+      </msi-application-switcher>
+    </div>
+
+    <div class="msi-common-header-plugin">
+      <msi-support-information *ngIf="support_enable">
+        <p style="font-weight: bold">HELP</p>
+        <p>For help, please contact Motorola Solutions support.</p>
+        <p><msi-icon class="help-text-call-icon" name="ic_call"></msi-icon> 800-323-9949</p>
+        <p><span class="sub-label">option 2, option 5, option 1</span></p>
+        <p>
+          <msi-icon class="help-text-call-icon" name="ic_email"></msi-icon>
+          support-commandcentral<br><span class="sub-label">@motorolasolutions.com</span>
+        </p>
+      </msi-support-information>
+    </div>
+
+    <div class="msi-common-header-plugin">
+      <msi-session-manager userNameSurname="Marner Matthews" class="msi-session-manager" *ngIf="sessionManager_enable">
+        <a class="msi-common-header-dropdown-item sub-link user-action"
+        href="https://www.motorolasolutions.com/en_us/about/terms-use.html" target="_blank">Terms &amp; Conditions</a>
+        <a class="msi-common-header-dropdown-item sub-link user-action"
+        href="https://www.motorolasolutions.com/en_us/about/privacy-policy.html#highlights" target="_blank">Privacy Policy</a>
+        <a class="msi-common-header-dropdown-item sub-link user-action" href="javascript:void(0)">Logout</a>
+      </msi-session-manager>
+    </div>
+
+
+
+    <!-- your other plugin here, like:
+    <div class="msi-common-header-plugin">
+      <msi-notifications-ui></msi-notifications-ui>
+    </div> -->
+  </msi-header-right-plugin-area>
+</msi-common-header>

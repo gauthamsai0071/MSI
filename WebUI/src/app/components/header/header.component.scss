@@ -1,0 +1,31 @@
+.header-controls {
+    padding: 5px;
+    user-select: none;
+  }
+
+  .header-controls label {
+    vertical-align: middle;
+  }
+
+  .header-controls input[type='text'] {
+    margin-right: 5px;
+  }
+
+  .msi-common-header-extra-search {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .demo-search-dropdown {
+    padding: 20px;
+    color: var(--text-primary);
+    background: var(--background-level-3);
+    border: 1px var(--stroke-level-1) solid;
+    border-radius: 2px;
+    box-shadow: var(--shadow-level-2);
+    transition: background-color 100ms,
+    background 100ms,
+    color 100ms,
+    opacity 100ms;
+  }
