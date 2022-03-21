@@ -1,4 +1,4 @@
-<form [formGroup]="filterCriteria" (ngSubmit)="onSubmit()">
+<form [formGroup]="filterCriteria" (ngSubmit)="onSubmit()" *ngIf="filterCriteria != null">
     <div *ngFor="let field of searchFields" class="field-wrapper">
         <div *ngIf="field.isTimestamp">
             <div class="label-wrap">

@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from  '@angular/forms';
 import { Router } from  '@angular/router';
 import { AuthService } from  '../../services/auth/auth.service';
 import { DOCUMENT } from "@angular/common";
-import { analyzeAndValidateNgModules } from '@angular/compiler';
 
 @Component({
   selector: 'app-login',
@@ -11,16 +10,16 @@ import { analyzeAndValidateNgModules } from '@angular/compiler';
   styleUrls: ['./login.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class LoginComponent implements OnInit,OnDestroy {
+export class LoginComponent implements OnInit, OnDestroy {
   loginForm: FormGroup;
   isSubmitted  =  false;
   csrfToken = '';
   isAuthFailure:boolean = false;
   formResetting: boolean = true;
-  constructor(@Inject(DOCUMENT) private _document:any,private authService: AuthService, private router: Router, private formBuilder: FormBuilder) { }
+  constructor(@Inject(DOCUMENT) private document: any, private authService: AuthService, private router: Router, private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
-    this._document.body.classList.add('bodybg-color');
+    this.document.body.classList.add('bodybg-color');
      this.loginForm  =  this.formBuilder.group({
       userName: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(5)]]
@@ -31,7 +30,6 @@ export class LoginComponent implements OnInit,OnDestroy {
 
   login(){
     this.formResetting = false;
-    console.log(this.loginForm.value);
     sessionStorage.setItem('token','');
     this.isSubmitted = true;
     if(this.loginForm.invalid){
@@ -53,14 +51,9 @@ export class LoginComponent implements OnInit,OnDestroy {
         }
       });
     });
-   
-   
   }
-
 
   ngOnDestroy() {
-    // remove the class form body tag
-    this._document.body.classList.remove('bodybg-color');
+    this.document.body.classList.remove('bodybg-color');
   }
-
 }

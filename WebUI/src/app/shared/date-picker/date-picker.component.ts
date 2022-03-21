@@ -2,9 +2,9 @@ import { Component,ElementRef,EventEmitter,HostBinding,Input,OnDestroy,OnInit,Ou
 import type { TemplateRef } from '@angular/core'; // eslint-disable-line no-duplicate-imports
 import type { DropdownComponent } from '@msi/cobalt/dropdown';
 import { NgbDate,} from '@ng-bootstrap/ng-bootstrap';
-import { DateTimeRange } from 'node_modules/@msi/cobalt';
-import { QuickSelectionDateRange } from 'node_modules/@msi/cobalt/calendar'
-import { CalendarDatepickerComponent } from 'node_modules/@msi/cobalt';
+import { DateTimeRange } from '@msi/cobalt';
+import { QuickSelectionDateRange } from '@msi/cobalt/calendar'
+import { CalendarDatepickerComponent } from '@msi/cobalt';
 import _moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
 

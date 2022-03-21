@@ -15,13 +15,7 @@
             <input class="msi-input" type="text" id="username" autocomplete="username" formControlName="userName"
                 [class.error]="!formResetting && formControls.userName.invalid">
           </app-input-control>
-         <!--  <p [ngClass]="{ 'has-error': isSubmitted && formControls.userName.errors }">
-            <input class="msi-input" type="text" id="username" autocomplete="username" formControlName="userName">
-          </p> -->
-         <!--  <div *ngIf="isSubmitted && formControls.userName.errors" class="help-block">
-            <div *ngIf="formControls.userName.errors.required">Username is required</div>
-          </div> -->
-         
+       
           <label class="msi-label" for="password">
             Password
           </label>
@@ -30,29 +24,12 @@
               <input class="msi-input" type="password" id="password" autocomplete="current-password" formControlName="password"
                   [class.error]="!formResetting && formControls.password.invalid">
           </app-input-control>
-         <!--  <p [ngClass]="{ 'has-error': isSubmitted && formControls.password.errors }">
-            <input class="msi-input" type="password" id="password" autocomplete="current-password" formControlName="password">
-          </p> -->
-      
-          <!-- <div *ngIf="isSubmitted && formControls.password.errors" class="help-block">
-            <div *ngIf="formControls.password.errors.required">Password is required</div>
-          </div> -->
-         
+  
           <div class="checkbox-button-wrapper">
             <msi-checkbox>Remember my username</msi-checkbox>
             <button class="msi-btn" style="margin-top: 8px;">Sign in</button>
           </div>
         </form>
-        <!-- <div class="link-wrapper">
-          <a href="#" class="msi-link">FORGOT PASSWORD?</a>
-          <a href="#" class="msi-link">CHANGE MY PASSWORD</a>
-        </div>
-        <div class="notice">
-          <span>Notice</span>
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat molestias odit asperiores laborum,
-            quaerat at neque animi nesciunt ipsam in voluptatum, libero, modi consequatur accusamus officiis quisquam
-            hic vitae quam?</p>
-        </div> -->
       </msi-card-content>
     </msi-card>
   </div>

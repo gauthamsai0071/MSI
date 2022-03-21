@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class MessageService {
     unExpectedErrorMessage = 'Unexpected Error encountered while processing the Request';
 
