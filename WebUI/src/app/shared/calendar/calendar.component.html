@@ -1,0 +1,38 @@
+<div class="date-control">
+    <div class="input-wrapper" [class.date-input--with-dropdown]="dropdown">
+      <input
+          type="text"
+          class="msi-input date-input"
+          placeholder="All Dates"
+          autocomplete="off"
+          [(ngModel)]="dateString"
+      >
+      <msi-icon name="ic_calendar" [size]="18"></msi-icon>
+      <ng-template [ngIf]="dropdown">
+        <button type="button" class="drop-btn" [msiDropdownTriggerFor]="calendarDropDown">
+          <div class="drop-btn-input-fixer" [class.drop-btn-input-fixer--open]="calendarDropDown.panelOpen">
+            <span class="drop-btn-icon"></span>
+          </div>
+        </button>
+        <msi-dropdown class="msi-datepicker-control-dropdown" xPosition="after" yPosition="center" #calendarDropDown>
+             <msi-calendar
+            [displayMonths] = "2"
+            [rangeSelection] = "true"
+            [showDateTimePicker] = "true"
+            dateFormat = "MM/DD/YYYY"
+            [dateTime] = "dateTimeRange"
+            [quickSelectionRanges]="oneRmsDateRanges"
+            resetButtonText="Cancel"
+            (calendarReset)="onCalendarReset()"
+            confirmButtonText="Ok"
+            (calendarConfirm)="onCalendarSearch($event)"
+            outsideDays="hidden"
+            [allowFutureTime]="allowFutureDates"
+            >
+          </msi-calendar>
+          <ng-container [ngTemplateOutlet]="belowDatepickerDropdown"></ng-container>
+        </msi-dropdown>
+      </ng-template>
+    </div>
+  </div>
+  

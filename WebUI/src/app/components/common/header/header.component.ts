@@ -87,6 +87,7 @@ export class HeaderComponent implements OnInit {
   applications_enable = true;
   support_enable = true;
   responsive_enable = true;
+  user_name = (sessionStorage.getItem("username")) ? sessionStorage.getItem("username") : "Hi, User";
 
   checkOverflow(header: { checkOverflow: () => void; }) {
     setTimeout(() => header.checkOverflow(), 0);

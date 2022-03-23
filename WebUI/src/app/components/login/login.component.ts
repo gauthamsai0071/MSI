@@ -1,7 +1,7 @@
-import { Component,OnInit,OnDestroy, ViewEncapsulation, Inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from  '@angular/forms';
-import { Router } from  '@angular/router';
-import { AuthService } from  '../../services/auth/auth.service';
+import { Component, OnInit, OnDestroy, ViewEncapsulation, Inject } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth/auth.service';
 import { DOCUMENT } from "@angular/common";
 
 @Component({
@@ -12,41 +12,51 @@ import { DOCUMENT } from "@angular/common";
 })
 export class LoginComponent implements OnInit, OnDestroy {
   loginForm: FormGroup;
-  isSubmitted  =  false;
+  isSubmitted = false;
   csrfToken = '';
-  isAuthFailure:boolean = false;
+  isAuthFailure: boolean = false;
   formResetting: boolean = true;
   constructor(@Inject(DOCUMENT) private document: any, private authService: AuthService, private router: Router, private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
     this.document.body.classList.add('bodybg-color');
-     this.loginForm  =  this.formBuilder.group({
+    this.loginForm = this.formBuilder.group({
       userName: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(5)]]
-  }); 
+    });
   }
 
   get formControls() { return this.loginForm.controls; }
 
-  login(){
+  login() {
     this.formResetting = false;
-    sessionStorage.setItem('token','');
+    sessionStorage.setItem('token', '');
     this.isSubmitted = true;
-    if(this.loginForm.invalid){
+    if (this.loginForm.invalid) {
       return;
     }
-    this.authService.getInitPublicSession().subscribe(res =>{
-      let resut:any = res;
+    this.authService.getInitPublicSession().subscribe(res => {
+      let resut: any = res;
       this.csrfToken = resut.csrfToken;
-      sessionStorage.setItem('token',this.csrfToken);
-      this.authService.login(this.loginForm.value).subscribe(res =>{
-        let response:any = res;
-        if(response.success===true){
+      const formValue = this.loginForm.value;
+      sessionStorage.setItem('token', this.csrfToken);
+      sessionStorage.setItem('username', formValue.userName);
+      this.authService.login(formValue).subscribe(res => {
+        let response: any = res;
+        if (response.success === true) {
+          sessionStorage.setItem('token', '');
           this.formResetting = true;
           this.loginForm.reset({});
+
+          // Set the new token.
+          this.authService.getCurrentState().subscribe(res => {
+            let result: any = res;
+            sessionStorage.setItem('token', result.csrfToken);
+          });
+
           this.router.navigateByUrl('/home');
         }
-        else{
+        else {
           this.isAuthFailure = true;
         }
       });

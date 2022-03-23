@@ -8,29 +8,34 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class AuthService {
-  constructor(private http:HttpClient,private router: Router) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
-  public getInitPublicSession():Observable<any>{
+  public getInitPublicSession(): Observable<any> {
     let url = 'api/account/init-public-session';
     return this.http.get(url);
   }
 
+  public getCurrentState(): Observable<any> {
+    let url = 'api/state/current?public=false';
+    return this.http.get(url);
+  }
 
-  public login(userInfo: User):Observable<any>{
+  public login(userInfo: User): Observable<any> {
     let url = 'api/account/login';
-    return this.http.post(url,userInfo);    
+    return this.http.post(url, userInfo);
   }
 
   public isLoggedIn() {
-    if(sessionStorage.getItem('token') !== null){
+    if (sessionStorage.getItem('token') !== null) {
       return sessionStorage.getItem('token') !== null;
     }
-    else{
+    else {
       return this.router.navigateByUrl('/login');
-    }    
+    }
   }
 
   public logout() {
     sessionStorage.removeItem('token');
+    sessionStorage.removeItem('username');
   }
 }

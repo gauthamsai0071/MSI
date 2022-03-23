@@ -12,12 +12,14 @@ import { SearchComponent } from './components/media/search/search.component';
 import { FilterComponent } from './components/media/search/filter/filter.component';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { CustomFiltersService } from './services/customFilters/custom-filters.service';
+import { IncidentsComponent } from './components/incidents/incidents.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     HomeComponent,
+    IncidentsComponent,
     HeaderComponent,
     SearchComponent,
     FilterComponent

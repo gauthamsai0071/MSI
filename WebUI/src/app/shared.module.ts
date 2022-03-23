@@ -6,6 +6,7 @@ import { HttpClientModule, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angu
 import { environment } from '../environments/environment';
 import { AuthInterceptor } from './_interceptor/auth-interceptor';
 import { DatePickerComponent } from './shared/date-picker/date-picker.component';
+import { CalendarComponent } from './shared/calendar/calendar.component';
 import { CommonModule } from '@angular/common';
 
 
@@ -22,6 +23,7 @@ import { CommonModule } from '@angular/common';
     HttpClientXsrfModule
   ],
   declarations: [ 
+    CalendarComponent,
     DatePickerComponent,
     InputControlComponent 
   ],
@@ -35,6 +37,7 @@ import { CommonModule } from '@angular/common';
     ReactiveFormsModule,
     HttpClientModule,
     HttpClientXsrfModule,
+    CalendarComponent,
     DatePickerComponent,
     InputControlComponent
   ],
