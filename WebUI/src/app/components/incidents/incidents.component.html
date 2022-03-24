@@ -33,6 +33,14 @@
                     <label class="msi-label" for="incident-time">
                         Incident time
                     </label>
+                    <msi-date-time-picker-control id="msiIncidentDateTime" [dropdown]="true"
+                        [defaultValue]="incidentTimeDefaultValue" [dateFormat]='"DD/MM/YYYY"' [timeFormat]="'HH:mm'"
+                        [dateTimeMask]='"00/00/0000 00:00"' (dateChanged)="onCalendarDateChanged($event)"
+                        #customDatepicker [style.display]="isVisibleMsiCalendar ? 'block' : 'none'">
+                    </msi-date-time-picker-control>
+                    <input class="msi-input" type="text" id="incident-time" autocomplete="incident-time"
+                        formControlName="incident-time" #incidentTimeView
+                        [style.display]="isVisibleCalendar ? 'block' : 'none'">
                 </div>
                 <div class="form-group">
                     <label class="msi-label" for="reference-code">

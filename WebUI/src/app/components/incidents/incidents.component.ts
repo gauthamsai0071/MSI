@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import moment from 'moment';
@@ -8,6 +8,7 @@ import * as _ from 'lodash';
 import { IncidentsService } from 'src/app/services/incidents.service';
 import { DatePickerControlComponent, DateTimeRange } from '@msi/cobalt';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { Subject } from 'rxjs';
 
 
 @Component({
@@ -16,11 +17,6 @@ import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./incidents.component.scss']
 })
 export class IncidentsComponent implements OnInit {
-
-  date = new Date(moment().format('MM-DD-YYYY'));
-  dateTimeRangeToday = new DateTimeRange({
-    startDate: new NgbDate(this.date.getUTCFullYear(), this.date.getUTCMonth() + 1, this.date.getUTCDate() + 1)
-  });
 
   incidentForm: FormGroup;
   isSubmitted = false;
@@ -35,6 +31,7 @@ export class IncidentsComponent implements OnInit {
   creationTime: number;
   updateTime: number;
   incidentTime: number;
+  incidentTimeStamp: number;
   clipCount: string;
   owner: string;
   signature: string;
@@ -44,8 +41,17 @@ export class IncidentsComponent implements OnInit {
   version: number;
   getVersion: number;
   getSignature: string;
+  incidentTimeDatePickerValue: any;
+  isVisibleMsiCalendar: boolean = true;
+  isVisibleCalendar: boolean = false;
+  date: any;
+  incidentTimeDefaultValue: any;
+  subject = new Subject();
 
-  constructor(@Inject(DOCUMENT) private _document: any, private incidentService: IncidentsService, private router: Router, private aRouter: ActivatedRoute, private formBuilder: FormBuilder, private commonSrv: CommonService) {
+  @ViewChild('customDatepicker', { static: true }) customDatepicker: DatePickerControlComponent;
+  @ViewChild('incidentTimeView') incidentTimeView: ElementRef;
+
+  constructor(@Inject(DOCUMENT) private _document: any, private incidentService: IncidentsService, private router: Router, private aRouter: ActivatedRoute, private formBuilder: FormBuilder, private commonSrv: CommonService, private changeDetectorRef: ChangeDetectorRef) {
     const urlLength = this.aRouter.snapshot.url.length;
     const url: string = this.aRouter.snapshot.url.join('/');
 
@@ -62,12 +68,20 @@ export class IncidentsComponent implements OnInit {
       this.pageMode = "View";
       this.isEdit = false;
       this.isAdd = false;
+      this.isVisibleCalendar = true;
+      this.isVisibleMsiCalendar = false;
     }
 
     if (!this.isAdd) {
       const routeParams = this.aRouter.snapshot.paramMap;
       const id = Number(routeParams.get('id'));
       this.incidentId = id;
+    }
+  }
+
+  onCalendarDateChanged($event) {
+    if (this.customDatepicker) {
+      this.incidentTimeDatePickerValue = this.customDatepicker.dateTextModel;
     }
   }
 
@@ -125,6 +139,8 @@ export class IncidentsComponent implements OnInit {
                 case 'incident-time':
                   if (data.value) {
                     this.incidentTime = data.value;
+                    this.incidentTimeStamp = data.value.timestamp;
+                    this.subject.next(moment(data.value.timestamp).format("DD/MM/YYYY HH:mm"));
                     formValue = moment(data.value.timestamp).format("DD/MM/YYYY HH:mm");
                   }
                   else {
@@ -168,6 +184,27 @@ export class IncidentsComponent implements OnInit {
         }
       });
     }
+
+    if (this.isAdd) {
+      this.date = new Date(moment().format('MM-DD-YYYY'));
+      this.incidentTimeDefaultValue = new DateTimeRange({
+        startDate: new NgbDate(this.date.getUTCFullYear(), this.date.getUTCMonth() + 1, this.date.getUTCDate() + 1)
+      });
+    }
+
+    if (this.isEdit) {
+      this.subject.subscribe((val: string) => {
+        this.customDatepicker.dateTextModel = val;
+      });
+      //subject.complete();
+    }
+  }
+
+  ngAfterViewChecked() {
+    this.changeDetectorRef.detectChanges();
+  }
+
+  ngAfterViewInit() {
   }
 
   get formControls() { return this.incidentForm.controls; }
@@ -186,6 +223,9 @@ export class IncidentsComponent implements OnInit {
     }
 
     const formValue = this.incidentForm.value;
+    if (this.incidentTimeDatePickerValue !== '') {
+      this.incidentTimeDatePickerValue = this.commonSrv.convertStringToTimesamp(this.incidentTimeDatePickerValue);
+    }
 
     // API call : To get custom template infos
     let mGroupId = this.commonSrv.createGroupId();
@@ -215,7 +255,7 @@ export class IncidentsComponent implements OnInit {
             this.customFields.push({
               "id": customFieldMap.get(key),
               "name": key,
-              "value": { "timestamp": moment().unix() } // @TODO - Get field value
+              "value": { "timestamp": this.incidentTimeDatePickerValue }
             });
           }
         }
@@ -259,6 +299,9 @@ export class IncidentsComponent implements OnInit {
     }
 
     const formValue = this.incidentForm.value;
+    if (this.incidentTimeDatePickerValue !== '') {
+      this.incidentTimeDatePickerValue = this.commonSrv.convertStringToTimesamp(this.incidentTimeDatePickerValue);
+    }
 
     // API call : To get custom template infos
     let mGroupId = this.commonSrv.createGroupId();
@@ -281,7 +324,7 @@ export class IncidentsComponent implements OnInit {
             this.customFields.push({
               "id": customFieldMap.get(key),
               "name": key,
-              "value": { "timestamp": moment().valueOf() }
+              "value": { "timestamp": this.incidentTimeDatePickerValue }
             });
           }
           else {
