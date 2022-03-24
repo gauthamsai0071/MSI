@@ -10,7 +10,6 @@ import { DatePickerControlComponent, DateTimeRange } from '@msi/cobalt';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
 
-
 @Component({
   selector: 'app-incidents',
   templateUrl: './incidents.component.html',
@@ -186,9 +185,10 @@ export class IncidentsComponent implements OnInit {
     }
 
     if (this.isAdd) {
-      this.date = new Date(moment().format('MM-DD-YYYY'));
+      this.date = new Date(moment().format('MM-DD-YYYY HH:mm'));
       this.incidentTimeDefaultValue = new DateTimeRange({
-        startDate: new NgbDate(this.date.getUTCFullYear(), this.date.getUTCMonth() + 1, this.date.getUTCDate() + 1)
+        startDate: new NgbDate(this.date.getUTCFullYear(), this.date.getUTCMonth() + 1, this.date.getUTCDate() + 1),
+        startTime : { hour: this.date.getHours(), minute: this.date.getMinutes(), second: 0 }
       });
     }
 
