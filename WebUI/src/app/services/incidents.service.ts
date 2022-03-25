@@ -26,6 +26,11 @@ export class IncidentsService {
     return this.http.put(url, data);
   }
 
+  public deleteIncident(id: number, data: any): Observable<any> {
+    let url = 'api/incidents/' + id + '/delete';
+    return this.http.post(url, data);
+  }
+
   public deleteMediaGroup(id: string) {
     let url = 'api/mediaGroups/' + id;
     return this.http.delete(url);

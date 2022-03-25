@@ -156,17 +156,9 @@ export class IncidentsComponent implements OnInit {
                   }
                   break;
                 case 'owner':
-                  if (data.value) {
-                    this.owner = data.value;
-                    formValue = data.value.text;
-                  }
-                  else {
-                    formValue = '';
-                  }
-                  break;
                 case 'signature':
                   if (data.value) {
-                    this.signature = data.value;
+                    this["data.name"] = data.value;
                     formValue = data.value.text;
                   }
                   else {
@@ -188,7 +180,7 @@ export class IncidentsComponent implements OnInit {
       this.date = new Date(moment().format('MM-DD-YYYY HH:mm'));
       this.incidentTimeDefaultValue = new DateTimeRange({
         startDate: new NgbDate(this.date.getUTCFullYear(), this.date.getUTCMonth() + 1, this.date.getUTCDate() + 1),
-        startTime : { hour: this.date.getHours(), minute: this.date.getMinutes(), second: 0 }
+        startTime: { hour: this.date.getHours(), minute: this.date.getMinutes(), second: 0 }
       });
     }
 
