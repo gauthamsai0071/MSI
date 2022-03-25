@@ -5,10 +5,8 @@ import { IconModule, ItemModule, MsiCommonModule, MsiSharedModule, ToastService 
 import { HttpClientModule, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { environment } from '../environments/environment';
 import { AuthInterceptor } from './_interceptor/auth-interceptor';
-import { DatePickerComponent } from './shared/date-picker/date-picker.component';
 import { CalendarComponent } from './shared/calendar/calendar.component';
 import { CommonModule } from '@angular/common';
-
 
 @NgModule({
   imports: [
@@ -24,7 +22,6 @@ import { CommonModule } from '@angular/common';
   ],
   declarations: [ 
     CalendarComponent,
-    DatePickerComponent,
     InputControlComponent 
   ],
   exports : [
@@ -38,7 +35,6 @@ import { CommonModule } from '@angular/common';
     HttpClientModule,
     HttpClientXsrfModule,
     CalendarComponent,
-    DatePickerComponent,
     InputControlComponent
   ],
   providers: [
