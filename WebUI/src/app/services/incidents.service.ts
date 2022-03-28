@@ -36,6 +36,11 @@ export class IncidentsService {
     return this.http.delete(url);
   }
 
+  public getAllIncidents(search: string): Observable<any> {
+    let url = 'api/incidents';
+    return this.http.get(url);
+  }
+
   public getIncident(id: number): Observable<any> {
     let mGroupId = this.commonSrv.createGroupId();
     let url = 'api/incidents/' + id + '?mgroupid=' + mGroupId;
