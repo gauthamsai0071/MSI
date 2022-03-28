@@ -51,19 +51,17 @@ export class IncidentsComponent implements OnInit {
   @ViewChild('incidentTimeView') incidentTimeView: ElementRef;
 
   constructor(@Inject(DOCUMENT) private _document: any, private incidentService: IncidentsService, private router: Router, private aRouter: ActivatedRoute, private formBuilder: FormBuilder, private commonSrv: CommonService, private changeDetectorRef: ChangeDetectorRef) {
-    const urlLength = this.aRouter.snapshot.url.length;
-    const url: string = this.aRouter.snapshot.url.join('/');
+    const url: string = this.aRouter.routeConfig.path;
 
-    if (url.indexOf("incidents/create") != -1) {
+    if (url === "incidents/create") {
       this.pageMode = "Add";
       this.isAdd = true;
       this.isEdit = false;
-    } else if (url.indexOf("incidents/edit") != -1) {
+    } else if (url === "incidents/edit/:id") {
       this.pageMode = "Edit";
       this.isEdit = true;
       this.isAdd = false;
-    }
-    else {
+    } else {
       this.pageMode = "View";
       this.isEdit = false;
       this.isAdd = false;
