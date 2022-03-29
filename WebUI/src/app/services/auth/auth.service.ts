@@ -33,6 +33,9 @@ export class AuthService {
       return this.router.navigateByUrl('/login');
     }
   }
+  getSubscribeId(url,body):Observable<any>{
+    return this.http.post(url,body); 
+  }
 
   public logout() {
     sessionStorage.removeItem('token');

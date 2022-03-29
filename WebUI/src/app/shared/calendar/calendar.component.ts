@@ -70,18 +70,18 @@ export class CalendarComponent implements OnInit,OnDestroy {
   setDateString(dateTimeRange : DateTimeRange){
     if(dateTimeRange.endDate!= undefined){
 
-      // this.dateString = dateTimeRange.startDate.month+'/'
-      //                 +dateTimeRange.startDate.day+'/'
-      //                 +dateTimeRange.startDate.year+' '
-      //                 +dateTimeRange.startTime.hour+':'
-      //                 +dateTimeRange.startTime.minute+':'
-      //                 +dateTimeRange.startTime.second+' - '
-      //                 +dateTimeRange.endDate.month+'/'
-      //                 +dateTimeRange.endDate.day+'/'
-      //                 +dateTimeRange.endDate.year+' '
-      //                 +dateTimeRange.endTime.hour+':'
-      //                 +dateTimeRange.endTime.minute+':'
-      //                 +dateTimeRange.endTime.second; 
+      this.dateString = dateTimeRange.startDate.month+'/'
+                      +dateTimeRange.startDate.day+'/'
+                      +dateTimeRange.startDate.year+' '
+                      +dateTimeRange.startTime.hour+':'
+                      +dateTimeRange.startTime.minute+':'
+                      +dateTimeRange.startTime.second+' - '
+                      +dateTimeRange.endDate.month+'/'
+                      +dateTimeRange.endDate.day+'/'
+                      +dateTimeRange.endDate.year+' '
+                      +dateTimeRange.endTime.hour+':'
+                      +dateTimeRange.endTime.minute+':'
+                      +dateTimeRange.endTime.second; 
       }else{
         this.dateString = "All Dates"
       }
@@ -139,6 +139,7 @@ export class CalendarComponent implements OnInit,OnDestroy {
     this.calendarDropDown.close();
   }
   ngOnDestroy(){
-    this.setDateSubscription.unsubscribe();
+    //TODO
+    //this.setDateSubscription.unsubscribe();
   }
 }

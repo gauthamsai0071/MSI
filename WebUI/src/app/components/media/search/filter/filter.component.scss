@@ -1,11 +1,18 @@
-;.field-wrapper{
+.filter-media-wrapper{
+    height:auto;
+}
+.all-filter-wrapper{
+    height:calc(100vh - 255px);
+    overflow: auto;
+}
+.field-wrapper{
     margin: 12px 24px;
     width: 255px;
 }
 .form-input{
     width : -webkit-fill-available;
 }
-.app-calendar{
+.app-date-picker{
     width : -webkit-fill-available; 
 }
 ::ng-deep .multiselect-dropdown .dropdown-btn{

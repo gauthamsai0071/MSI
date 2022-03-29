@@ -13,7 +13,7 @@ import { FilterComponent } from './components/media/search/filter/filter.compone
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { CustomFiltersService } from './services/customFilters/custom-filters.service';
 import { IncidentsComponent } from './components/incidents/incidents.component';
-
+import { MediaSearchResultComponent } from './components/media-search-result/media-search-result.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -22,7 +22,8 @@ import { IncidentsComponent } from './components/incidents/incidents.component';
     IncidentsComponent,
     HeaderComponent,
     SearchComponent,
-    FilterComponent
+    FilterComponent,
+    MediaSearchResultComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,49 @@
+<div class="media-search-result-wrapper">
+    <div class="list-view-label-wrapper">
+        <msi-icon name="ic_data_table" class="ic-data-table"></msi-icon>
+        <p class="list-view-label">List View</p>
+    </div>
+    <table class="msiDatatable" [ngStyle]="{'width': tableWidth+'%'}" msi-data-table #table
+        style="width: 100%; max-width: 1558px; min-width: 365px; flex: 1 1; display: block" [rows]="rows"
+        [condensed]="condensed" [sticky]="sticky" [pinning]="pinning" [selection]="selection" [rowClass]="rowClass"
+        [horizontalScrollbar]="wrappingMode === 'horizontalScrollbar'"
+        [virtualScroll]="false"
+        (scrolledToBottom)="onScroll()">
+        <ng-container class="search-results">
+            <ng-container msiColDef colType="action" colLock="left" [width]="80" [fixedWidth]="fixedWidth" *ngIf="table.selection">
+                <ng-container *msiHeaderCellDef>
+                <msi-checkbox
+                    [checked]="table.selectionState === 'all'"
+                    [indeterminate]="table.selectionState === 'some'"
+                    (click)="table.toggleAllRowsSelected($event)"
+                    [disabled]="false">
+                </msi-checkbox>
+                </ng-container>
+                <ng-container *msiCellDef="let row">
+                <msi-checkbox
+                    [(ngModel)]="table.getRowState(row).selected"
+                    (change)="table.updateSelectionState()">
+                </msi-checkbox>
+                </ng-container>
+            </ng-container>
+            <ng-container [width]="36" [fixedWidth]="fixedWidth" msiColDef="icon"  [filterable]="false" [draggable]="true"
+                [resizable]="true">
+                <ng-container *msiHeaderCellDef></ng-container>
+                <ng-container *msiCellDef="let row">
+                    <msi-icon name="ic_media_play" class="ic-media-play"></msi-icon>
+                </ng-container>
+            </ng-container> 
+            <ng-container [fixedWidth]="fixedWidth" *ngFor="let field of visibleFields" msiColDef="time"
+                [sortable]="sortable" [filterable]="false" [draggable]="true" [resizable]="true">
+                    <ng-container *msiHeaderCellDef>{{findColumnName(field)}}</ng-container>
+                    <ng-container *msiCellDef="let row">
+                        <a class="anchor-fileName" href="javascript:void (0)" (click)="onSelect(row)">
+                            <div msiTooltip="{{findElement(row, field) }}">
+                                {{findElement(row, field) }}
+                            </div>
+                        </a>
+                    </ng-container>
+            </ng-container>
+        </ng-container>
+    </table>
+</div>

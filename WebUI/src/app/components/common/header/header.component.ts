@@ -1,5 +1,6 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
-
+import { Router } from '@angular/router';
+import { AuthService } from '../../../../app/services/auth/auth.service';
 export const mockServices = [
   {
     systemNames: ['analytics'],
@@ -65,7 +66,7 @@ export const mockServices = [
 })
 export class HeaderComponent implements OnInit {
 
-  constructor() { }
+  constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
   }
@@ -94,23 +95,28 @@ export class HeaderComponent implements OnInit {
   }
 
   searchToggleChatch(e: any) {
-    console.log('is search open: ', e);
+    //console.log('is search open: ', e);
   }
 
   searchValueChange(searchText: string) {
-    console.log('each input change: ', searchText);
+    //console.log('each input change: ', searchText);
   }
 
   searchValue(searchText: string) {
-    console.log('after enter/search btn click: ', searchText);
+    //console.log('after enter/search btn click: ', searchText);
   }
 
   searchInputFocus(): void {
-    console.log('search has focused');
+    //console.log('search has focused');
   }
 
   searchInputBlur(): void {
-    console.log('search has lost focus');
+    //console.log('search has lost focus');
+  }
+
+  logout(){
+    this.authService.logout();
+    this.router.navigateByUrl('/login');
   }
 
 }

@@ -9,3 +9,6 @@
 .input-wrapper{
     width:100%
 }
+::ng-deep .msi-dropdown.msi-datepicker-control-dropdown{
+    padding: 0px;
+}
