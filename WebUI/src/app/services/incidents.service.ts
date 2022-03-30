@@ -36,6 +36,10 @@ export class IncidentsService {
     return this.http.delete(url);
   }
 
+  public getCustomFields() {
+    return this.http.get('api/incidents/customFields')
+  }
+
   public getAllIncidents(search: string): Observable<any> {
     let url = 'api/incidents';
     return this.http.get(url);
