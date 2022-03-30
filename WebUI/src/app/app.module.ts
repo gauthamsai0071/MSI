@@ -8,10 +8,9 @@ import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './components/home/home.component';
 import { SharedModule } from './shared.module';
 import { HeaderComponent } from './components/common/header/header.component';
-import { SearchComponent } from './components/media/search/search.component';
-import { FilterComponent } from './components/media/search/filter/filter.component';
-import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
-import { CustomFiltersService } from './services/customFilters/custom-filters.service';
+import { MediaSearchComponent } from './components/media/search/search.component';
+import { MediaFilterComponent } from './components/media/search/filter/filter.component';
+import { MediaCustomFiltersService } from './services/media/custom-filters.service';
 
 @NgModule({
   declarations: [
@@ -19,19 +18,18 @@ import { CustomFiltersService } from './services/customFilters/custom-filters.se
     LoginComponent,
     HomeComponent,
     HeaderComponent,
-    SearchComponent,
-    FilterComponent
+    MediaSearchComponent,
+    MediaFilterComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    SharedModule,    
-    NgMultiSelectDropDownModule.forRoot()
+    SharedModule    
   ],  
   providers: [ 
     ToastService,
-    CustomFiltersService
+    MediaCustomFiltersService
   ],
   bootstrap: [AppComponent]
 })

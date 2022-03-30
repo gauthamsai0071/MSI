@@ -1,6 +1,6 @@
 import { Component,OnInit,OnDestroy, ViewEncapsulation, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from  '@angular/forms';
-import { Router } from  '@angular/router';
+import { ActivatedRoute, Router } from  '@angular/router';
 import { AuthService } from  '../../services/auth/auth.service';
 import { DOCUMENT } from "@angular/common";
 
@@ -13,17 +13,22 @@ import { DOCUMENT } from "@angular/common";
 export class LoginComponent implements OnInit, OnDestroy {
   loginForm: FormGroup;
   isSubmitted  =  false;
+  returnUrl: string;
   csrfToken = '';
   isAuthFailure:boolean = false;
   formResetting: boolean = true;
-  constructor(@Inject(DOCUMENT) private document: any, private authService: AuthService, private router: Router, private formBuilder: FormBuilder) { }
+  constructor(@Inject(DOCUMENT) private document: any, private authService: AuthService, 
+              private router: Router, private route: ActivatedRoute,
+              private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
     this.document.body.classList.add('bodybg-color');
-     this.loginForm  =  this.formBuilder.group({
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/home';
+
+    this.loginForm  =  this.formBuilder.group({
       userName: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(5)]]
-  }); 
+    }); 
   }
 
   get formControls() { return this.loginForm.controls; }
@@ -39,12 +44,12 @@ export class LoginComponent implements OnInit, OnDestroy {
       let resut:any = res;
       this.csrfToken = resut.csrfToken;
       sessionStorage.setItem('token',this.csrfToken);
-      this.authService.login(this.loginForm.value).subscribe(res =>{
+      this.authService.login(this.loginForm.value.userName, this.loginForm.value.password).subscribe(res =>{
         let response:any = res;
-        if(response.success===true){
+        if(response.success===true) {
           this.formResetting = true;
           this.loginForm.reset({});
-          this.router.navigateByUrl('/home');
+          this.router.navigate([this.returnUrl]);
         }
         else{
           this.isAuthFailure = true;

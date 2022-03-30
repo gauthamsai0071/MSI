@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { DateTimeRange } from '@msi/cobalt';
-import { CustomFiltersService } from '../../../../services/customFilters/custom-filters.service';
+import { MediaCustomFiltersService } from '../../../../services/media/custom-filters.service';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import _ from 'lodash';
 
 @Component({
-  selector: 'app-filter',
+  selector: 'app-media-filter',
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss']
 })
-export class FilterComponent implements OnInit {
+export class MediaFilterComponent implements OnInit {
   filterCriteria : FormGroup = null;
   customFields :any = null;
   searchFields :any = [];
@@ -19,7 +19,7 @@ export class FilterComponent implements OnInit {
   dropdownSettings:IDropdownSettings = {};
 
   constructor(
-    private customFilters : CustomFiltersService,
+    private customFilters : MediaCustomFiltersService,
     private formBuilder: FormBuilder
   ) { }
 

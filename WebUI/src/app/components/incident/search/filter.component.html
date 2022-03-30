@@ -1,0 +1,104 @@
+<form [formGroup]="filterCriteria" (ngSubmit)="search()" *ngIf="filterCriteria != null">
+    <div class="field-wrapper">
+        <div *ngFor="let field of searchFields">
+            <div *ngIf="field.isTimestamp">
+                <div class="label-wrap">
+                    <span class="filter-label-first">{{field.displayName}}</span>
+                </div>
+                <app-date-picker
+                    class="app-date-picker"
+                    [dateTimeRange]="dateModel"
+                    [allowFutureDates]="false">
+                </app-date-picker>
+            </div>
+            <div *ngIf="field.isEnumeration">
+                <div class="label-wrap">
+                    <span class="filter-label-first">{{field.displayName}}</span>
+                </div>
+                <msi-select
+                    formControlName="{{field.name}}"
+                    placeholder = "select value"
+                ><msi-select-option
+                    *ngFor="let option of field.validValueLabels"
+                    [value]="option"
+                    >{{option}}</msi-select-option>
+                </msi-select>
+            </div>
+            <div *ngIf="field.isText">
+                <div class="label-wrap">
+                    <span class="filter-label-first">{{field.displayName}}</span>
+                </div>
+                <input 
+                    type = "text"
+                    formControlName="{{field.name}}" 
+                    class="form-input"
+                >
+            </div>
+            <div *ngIf="field.isTagList">
+                <div *ngIf="field.displayName.includes(',radio,')">
+                    <div class="label-wrap">
+                        <span class="filter-label-first">{{field.displayName.split(',radio,').slice(0, -1)}}</span>
+                    </div>
+                    <div>
+                        <msi-radio-group 
+                            [inline]="true"
+                            formControlName="{{field.name}}"
+                            ngDefaultControl>
+                            <msi-radio-button *ngFor="let radio of field.validValueLabels" [value]="radio">{{radio}}</msi-radio-button>
+                        </msi-radio-group>
+                    </div>
+                </div>
+                <div *ngIf="field.displayName.includes(',checkbox,')">
+                    <div class="label-wrap">
+                        <span class="filter-label-first">{{field.displayName.split(',checkbox,').slice(0, -1)}}</span>
+                    </div>
+                    <msi-checkbox-group
+                        formControlName="{{field.name}}"
+                        ngDefaultControl>
+                        <msi-checkbox *ngFor="let checkbox of field.validValueLabels" >{{checkbox}}</msi-checkbox>
+                    </msi-checkbox-group>
+                </div>
+                <div *ngIf="!(field.displayName.includes(',radio,') || field.displayName.includes(',checkbox,'))">
+                    <div class="label-wrap">
+                        <span class="filter-label-first">{{field.displayName}}</span>
+                    </div>
+                    <ng-multiselect-dropdown
+                        [settings]="dropdownSettings"
+                        [placeholder]="'Select'"
+                        [data]="field.validValueLabels"
+                        formControlName="{{field.name}}">
+                </ng-multiselect-dropdown>
+                </div>
+            </div>
+        </div>        
+        <div>
+            <div class="label-wrap">
+                <span class="filter-label-first">Owner</span>
+            </div>
+            <input type = "text" formControlName="owner" class="form-input">
+        </div>
+        <div>
+            <div class="label-wrap">
+                <span class="filter-label-first">Match Text</span>
+            </div>
+            <input type = "text" formControlName="text" class="form-input">
+        </div>
+        <div>            
+            <msi-checkbox formControlName="showCurrent">Show Current Incidents</msi-checkbox>
+            <msi-checkbox formControlName="showDeleted">Show recently deleted incidents</msi-checkbox>
+            <msi-checkbox formControlName="showShared">Only show shared incidents</msi-checkbox>
+            <msi-checkbox #external formControlName="showExternal">Only show incidents with external links</msi-checkbox>
+            <msi-checkbox *ngIf="external.checked" formControlName="showActiveExternal">Active external links only</msi-checkbox>
+        </div>
+    </div>   
+    <div class="btn-inner-section">
+        <button 
+            type="reset"
+            class="msi-btn msi-btn-action clear-btn">Clear
+        </button>
+        <button 
+            type="submit"
+            class="msi-btn search-btn">Search
+        </button>
+    </div>
+</form>

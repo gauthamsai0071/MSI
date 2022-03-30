@@ -27,8 +27,8 @@ export class AuthInterceptor implements HttpInterceptor {
     if(this.apiBaseUrl !== '' && request.url.indexOf('api/') !== -1 )
     {     
       if (this.authService.isLoggedIn()){
-          const apiurl = `${this.apiBaseUrl}`;        
-          // url = `${apiurl}/${request.url}`;
+          //url = `${this.apiBaseUrl}/${request.url}`;
+          url = `${request.url}`;
           interceptedRequest = request.clone({
             url: url,
             setHeaders :{
@@ -69,7 +69,7 @@ export class AuthInterceptor implements HttpInterceptor {
           return new Observable();
         }
 
-        if (this.router.url.toString().trim() !== '/') {
+        if (this.router.url.toString().trim() !== '/home') {
           this.router.navigate(['login'], { queryParams: { returnUrl: this.router.url.toString().trim() } });
         } else {
           this.authService.logout();

@@ -7,6 +7,7 @@ import { environment } from '../environments/environment';
 import { AuthInterceptor } from './_interceptor/auth-interceptor';
 import { DatePickerComponent } from './shared/date-picker/date-picker.component';
 import { CommonModule } from '@angular/common';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { CommonModule } from '@angular/common';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,    
-    HttpClientXsrfModule
+    HttpClientXsrfModule,
+    NgMultiSelectDropDownModule.forRoot()
   ],
   declarations: [ 
     DatePickerComponent,
@@ -35,6 +37,7 @@ import { CommonModule } from '@angular/common';
     ReactiveFormsModule,
     HttpClientModule,
     HttpClientXsrfModule,
+    NgMultiSelectDropDownModule,
     DatePickerComponent,
     InputControlComponent
   ],
