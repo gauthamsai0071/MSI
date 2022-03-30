@@ -1,6 +1,44 @@
+.home-wrapper{
+    background: transparent;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
 button{
     background: rgb(1, 29, 51);
     border-color: transparent;
     color: #fff;
     cursor: pointer;
+}
+.nav-tab-label-wrapper{
+    height: 55px;
+    
+}
+::ng-deep .msi-tabs-wrapper > .msi-tab-labels{ 
+    box-shadow: inset 0px -1px 0px rgba(0, 0, 0, 0.2);
+    border-radius: 2px 2px 0px 0px;
+}
+.search-result-wrapper{
+    margin-top: -12px;
+    display: flex;
+}
+.msi-tabs-wrapper  .tab-label{
+    padding-left: 8px ;
+    font-family: 'Public Sans';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 22px;
+}
+.media-play-icon{
+    height: 22px;
+    width:22px;
+}
+.incident-icon{
+    height:22px;
+    width: 22px;
+}
+.dashboard-icon{
+    height:20px;
+    width: 20px;
 }

@@ -5,10 +5,9 @@ import { IconModule, ItemModule, MsiCommonModule, MsiSharedModule, ToastService 
 import { HttpClientModule, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { environment } from '../environments/environment';
 import { AuthInterceptor } from './_interceptor/auth-interceptor';
-import { DatePickerComponent } from './shared/date-picker/date-picker.component';
+import { CalendarComponent } from './shared/calendar/calendar.component';
 import { CommonModule } from '@angular/common';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
-
 
 @NgModule({
   imports: [
@@ -24,7 +23,7 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
     NgMultiSelectDropDownModule.forRoot()
   ],
   declarations: [ 
-    DatePickerComponent,
+    CalendarComponent,
     InputControlComponent 
   ],
   exports : [
@@ -39,6 +38,7 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
     HttpClientXsrfModule,
     NgMultiSelectDropDownModule,
     DatePickerComponent,
+    CalendarComponent,
     InputControlComponent
   ],
   providers: [

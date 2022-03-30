@@ -1,4 +1,11 @@
-;.field-wrapper{
+.filter-media-wrapper{
+    height:auto;
+}
+.all-filter-wrapper{
+    height:calc(100vh - 255px);
+    overflow: auto;
+}
+.field-wrapper{
     margin: 12px 24px;
     width: 255px;
 }

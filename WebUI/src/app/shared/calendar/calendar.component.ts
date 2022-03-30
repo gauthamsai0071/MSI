@@ -12,11 +12,11 @@ import { Observable, Subscription } from 'rxjs';
 const moment = _moment;
 
 @Component({
-  selector: 'app-date-picker',
-  templateUrl: './date-picker.component.html',
-  styleUrls: ['./date-picker.component.scss']
+  selector: 'app-calendar',
+  templateUrl: './calendar.component.html',
+  styleUrls: ['./calendar.component.scss']
 })
-export class DatePickerComponent implements OnInit,OnDestroy {
+export class CalendarComponent implements OnInit,OnDestroy {
   displayMonths : number= 2;
   // @HostBinding('style.width') readonly forcedWidth = '100%'; 
   dateString:string;
@@ -70,18 +70,18 @@ export class DatePickerComponent implements OnInit,OnDestroy {
   setDateString(dateTimeRange : DateTimeRange){
     if(dateTimeRange.endDate!= undefined){
 
-      // this.dateString = dateTimeRange.startDate.month+'/'
-      //                 +dateTimeRange.startDate.day+'/'
-      //                 +dateTimeRange.startDate.year+' '
-      //                 +dateTimeRange.startTime.hour+':'
-      //                 +dateTimeRange.startTime.minute+':'
-      //                 +dateTimeRange.startTime.second+' - '
-      //                 +dateTimeRange.endDate.month+'/'
-      //                 +dateTimeRange.endDate.day+'/'
-      //                 +dateTimeRange.endDate.year+' '
-      //                 +dateTimeRange.endTime.hour+':'
-      //                 +dateTimeRange.endTime.minute+':'
-      //                 +dateTimeRange.endTime.second; 
+      this.dateString = dateTimeRange.startDate.month+'/'
+                      +dateTimeRange.startDate.day+'/'
+                      +dateTimeRange.startDate.year+' '
+                      +dateTimeRange.startTime.hour+':'
+                      +dateTimeRange.startTime.minute+':'
+                      +dateTimeRange.startTime.second+' - '
+                      +dateTimeRange.endDate.month+'/'
+                      +dateTimeRange.endDate.day+'/'
+                      +dateTimeRange.endDate.year+' '
+                      +dateTimeRange.endTime.hour+':'
+                      +dateTimeRange.endTime.minute+':'
+                      +dateTimeRange.endTime.second; 
       }else{
         this.dateString = "All Dates"
       }
@@ -139,6 +139,7 @@ export class DatePickerComponent implements OnInit,OnDestroy {
     this.calendarDropDown.close();
   }
   ngOnDestroy(){
-    this.setDateSubscription.unsubscribe();
+    //TODO
+    //this.setDateSubscription.unsubscribe();
   }
 }

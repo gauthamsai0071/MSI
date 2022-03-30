@@ -1,0 +1,88 @@
+<app-header></app-header>
+<div class="form-wrapper">
+    <msi-card style="width: 100%;">
+        <msi-card-title class="msi-border-primary-10">
+            <span>{{ pageMode }} incident</span>
+        </msi-card-title>
+        <msi-card-content>
+            <form [formGroup]="incidentForm" (ngSubmit)="isAdd ? createIncident() : updateIncident()">
+                <div class="form-group">
+                    <label class="msi-label" for="title">
+                        Title
+                    </label>
+                    <app-input-control [controlName]="'title'" [formResetting]="formResetting" [LabelText]="'Title'">
+                        <input class="msi-input" type="text" id="title" autocomplete="title" formControlName="title"
+                            [class.error]="!formResetting && formControls.title.invalid">
+                    </app-input-control>
+                </div>
+                <div class="form-group">
+                    <label class="msi-label" for="creation-time">
+                        Creation time
+                    </label>
+                    <input class="msi-input" type="text" id="creation-time" autocomplete="creation-time"
+                        formControlName="creation-time">
+                </div>
+                <div class="form-group">
+                    <label class="msi-label" for="update-time">
+                        Update time
+                    </label>
+                    <input class="msi-input" type="text" id="update-time" autocomplete="update-time"
+                        formControlName="update-time">
+                </div>
+                <div class="form-group">
+                    <label class="msi-label" for="incident-time">
+                        Incident time
+                    </label>
+                    <msi-date-time-picker-control id="msiIncidentDateTime" [dropdown]="true"
+                        [defaultValue]="incidentTimeDefaultValue" [dateFormat]='"DD/MM/YYYY"' [timeFormat]="'HH:mm'"
+                        [dateTimeMask]='"00/00/0000 00:00"' (dateChanged)="onCalendarDateChanged($event)"
+                        #customDatepicker [style.display]="isVisibleMsiCalendar ? 'block' : 'none'">
+                    </msi-date-time-picker-control>
+                    <input class="msi-input" type="text" id="incident-time" autocomplete="incident-time"
+                        formControlName="incident-time" #incidentTimeView
+                        [style.display]="isVisibleCalendar ? 'block' : 'none'">
+                </div>
+                <div class="form-group">
+                    <label class="msi-label" for="reference-code">
+                        Reference code
+                    </label>
+                    <input class="msi-input" type="text" id="reference-code" autocomplete="reference-code"
+                        formControlName="reference-code">
+                </div>
+                <div class="form-group">
+                    <label class="msi-label" for="notes">
+                        Notes
+                    </label>
+                    <textarea class="msi-textarea" id="notes" autocomplete="notes" formControlName="notes" cols="22"
+                        rows="10"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="msi-label" for="clip-count">
+                        Clip count
+                    </label>
+                    <input class="msi-input" type="text" id="clip-count" autocomplete="clip-count"
+                        formControlName="clip-count">
+                </div>
+                <div class="form-group">
+                    <label class="msi-label" for="owner">
+                        Owner
+                    </label>
+                    <input class="msi-input" type="text" id="owner" autocomplete="owner" formControlName="owner">
+                </div>
+                <div class="form-group">
+                    <label class="msi-label" for="signature">
+                        Signature
+                    </label>
+                    <input class="msi-input" type="text" id="signature" autocomplete="signature"
+                        formControlName="signature">
+                </div>
+                <div *ngIf="isAdd || isEdit">
+                    <button class="msi-btn" style="margin-top: 8px; display: inline-block;"
+                        type="submit">Submit</button>&nbsp;
+                    <button *ngIf="isEdit" class="msi-btn  msi-btn-secondary"
+                        style="margin-top: 8px; display: inline-block;" type="button" (click)="view()">Cancel</button>
+                </div>
+            </form>
+        </msi-card-content>
+    </msi-card>
+</div>
