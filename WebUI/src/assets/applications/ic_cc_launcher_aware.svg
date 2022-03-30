@@ -1,0 +1,12 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+    <rect id="_Rectangle_" data-name="&lt;Rectangle&gt;" style="fill:none;" width="48" height="48"/>
+    <path d="M24,11a10,10,0,0,0-10,9.75q0,.34,0,.69a9.77,9.77,0,0,0,.9,3.47C17.34,31,24,37,24,37s6.66-6,9.07-12.09a9.77,9.77,0,0,0,.9-3.47q0-.35,0-.69A10,10,0,0,0,24,11Zm0,14.16a4.34,4.34,0,1,1,4.17-4.34A4.26,4.26,0,0,1,24,25.16Z"/>
+    <g style="opacity:0.65;">
+        <path id="_Compound_Path_" data-name="&lt;Compound Path&gt;" d="M24,47a3,3,0,1,0-3-3A3,3,0,0,0,24,47Z"/>
+        <path id="_Compound_Path_2" data-name="&lt;Compound Path&gt;" d="M24,7a3,3,0,1,0-3-3A3,3,0,0,0,24,7Z"/>
+        <path id="_Compound_Path_3" data-name="&lt;Compound Path&gt;" d="M4.08,35.5a3,3,0,1,0,1.1-4.1A3,3,0,0,0,4.08,35.5Z"/>
+        <path id="_Compound_Path_4" data-name="&lt;Compound Path&gt;" d="M38.72,15.5a3,3,0,1,0,1.1-4.1A3,3,0,0,0,38.72,15.5Z"/>
+        <path id="_Compound_Path_5" data-name="&lt;Compound Path&gt;" d="M43.92,35.5a3,3,0,1,0-4.1,1.1A3,3,0,0,0,43.92,35.5Z"/>
+        <path id="_Compound_Path_6" data-name="&lt;Compound Path&gt;" d="M9.28,15.5a3,3,0,1,0-4.1,1.1A3,3,0,0,0,9.28,15.5Z"/>
+    </g>
+</svg>
