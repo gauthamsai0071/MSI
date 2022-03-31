@@ -7,7 +7,6 @@ import { CommonService } from 'src/app/services/common/common.service';
 import * as _ from 'lodash';
 import { IncidentsService } from 'src/app/services/incidents.service';
 import { DatePickerControlComponent, DateTimeRange } from '@msi/cobalt';
-import { NgbDate, NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
 
 @Component({
@@ -21,7 +20,6 @@ export class IncidentsComponent implements OnInit {
   isSubmitted = false;
   csrfToken = '';
   formResetting: boolean = true;
-  templateData: any[] = [];
   customFields: any[] = [];
   requestArray: any[] = [];
   output: JSON;
@@ -50,7 +48,7 @@ export class IncidentsComponent implements OnInit {
   @ViewChild('customDatepicker', { static: true }) customDatepicker: DatePickerControlComponent;
   @ViewChild('incidentTimeView') incidentTimeView: ElementRef;
 
-  constructor(@Inject(DOCUMENT) private _document: any, private incidentService: IncidentsService, private router: Router, private aRouter: ActivatedRoute, private formBuilder: FormBuilder, private commonSrv: CommonService, private changeDetectorRef: ChangeDetectorRef) {
+  constructor(@Inject(DOCUMENT) private _document: any, private incidentService: IncidentsService, private router: Router, private aRouter: ActivatedRoute, private formBuilder: FormBuilder, private commonService: CommonService, private changeDetectorRef: ChangeDetectorRef) {
     const url: string = this.aRouter.routeConfig.path;
 
     if (url === "incidents/create") {
@@ -174,10 +172,7 @@ export class IncidentsComponent implements OnInit {
 
     if (this.isAdd) {
       this.date = new Date(moment().format('MM-DD-YYYY HH:mm'));
-      this.incidentTimeDefaultValue = new DateTimeRange({
-        startDate: new NgbDate(this.date.getUTCFullYear(), this.date.getUTCMonth() + 1, this.date.getUTCDate() + 1),
-        startTime: { hour: this.date.getHours(), minute: this.date.getMinutes(), second: 0 }
-      });
+      this.customDatepicker.dateTextModel = this.date;
     }
 
     if (this.isEdit) {
@@ -212,11 +207,11 @@ export class IncidentsComponent implements OnInit {
 
     const formValue = this.incidentForm.value;
     if (this.incidentTimeDatePickerValue !== '') {
-      this.incidentTimeDatePickerValue = this.commonSrv.convertStringToTimesamp(this.incidentTimeDatePickerValue);
+      this.incidentTimeDatePickerValue = this.commonService.convertStringToTimesamp(this.incidentTimeDatePickerValue);
     }
 
     // API call : To get custom template infos
-    let mGroupId = this.commonSrv.createGroupId();
+    let mGroupId = this.commonService.createGroupId();
     this.incidentService.getTemplate(mGroupId).subscribe(res => {
       let customFieldMap = new Map();
       let responseTemplate: any = res;
@@ -285,11 +280,11 @@ export class IncidentsComponent implements OnInit {
 
     const formValue = this.incidentForm.value;
     if (this.incidentTimeDatePickerValue !== '') {
-      this.incidentTimeDatePickerValue = this.commonSrv.convertStringToTimesamp(this.incidentTimeDatePickerValue);
+      this.incidentTimeDatePickerValue = this.commonService.convertStringToTimesamp(this.incidentTimeDatePickerValue);
     }
 
     // API call : To get custom template infos
-    let mGroupId = this.commonSrv.createGroupId();
+    let mGroupId = this.commonService.createGroupId();
     this.incidentService.getTemplate(mGroupId).subscribe(res => {
       let customFieldMap = new Map();
       let responseTemplate: any = res;

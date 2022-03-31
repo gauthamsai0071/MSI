@@ -1,6 +1,6 @@
 <app-header></app-header>
-<div class="form-wrapper">
-    <msi-card style="width: 100%;">
+<div class="form-wrapper incidents">
+    <msi-card>
         <msi-card-title class="msi-border-primary-10">
             <span>{{ pageMode }} incident</span>
         </msi-card-title>
@@ -77,10 +77,9 @@
                         formControlName="signature">
                 </div>
                 <div *ngIf="isAdd || isEdit">
-                    <button class="msi-btn" style="margin-top: 8px; display: inline-block;"
-                        type="submit">Submit</button>&nbsp;
-                    <button *ngIf="isEdit" class="msi-btn  msi-btn-secondary"
-                        style="margin-top: 8px; display: inline-block;" type="button" (click)="view()">Cancel</button>
+                    <button class="msi-btn form-button" type="submit">Submit</button>&nbsp;
+                    <button *ngIf="isEdit" class="msi-btn  msi-btn-secondary form-button" type="button"
+                        (click)="view()">Cancel</button>
                 </div>
             </form>
         </msi-card-content>
