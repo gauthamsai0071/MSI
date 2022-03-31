@@ -7,7 +7,7 @@ import { CommonService } from 'src/app/services/common/common.service';
 import * as _ from 'lodash';
 import { IncidentsService } from 'src/app/services/incidents.service';
 import { DatePickerControlComponent, DateTimeRange } from '@msi/cobalt';
-import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDate, NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
 
 @Component({
@@ -109,67 +109,65 @@ export class IncidentsComponent implements OnInit {
         let responeIncident: any = incident;
         this.getVersion = responeIncident.version
         this.getSignature = responeIncident.signature;
-        this.templateData = _.entries(responeIncident);
-        if (this.templateData.length > 0) {
-          if (this.templateData[4][0] === 'customFields') {
-            this.templateData[4][1].forEach((data: any, mainIndex: any) => {
-              let formValue = '';
-              switch (data.name) {
-                case 'creation-time':
-                  if (data.value) {
-                    this.creationTime = data.value;
-                    formValue = moment(data.value.timestamp).format("DD/MM/YYYY HH:mm");
-                  }
-                  else {
-                    formValue = '';
-                  }
-                  break;
-                case 'update-time':
-                  if (data.value) {
-                    this.updateTime = data.value;
-                    formValue = moment(data.value.timestamp).format("DD/MM/YYYY HH:mm");
-                  }
-                  else {
-                    formValue = '';
-                  }
-                  break;
-                case 'incident-time':
-                  if (data.value) {
-                    this.incidentTime = data.value;
-                    this.incidentTimeStamp = data.value.timestamp;
-                    this.subject.next(moment(data.value.timestamp).format("DD/MM/YYYY HH:mm"));
-                    formValue = moment(data.value.timestamp).format("DD/MM/YYYY HH:mm");
-                  }
-                  else {
-                    formValue = '';
-                  }
-                  break;
-                case 'clip-count':
-                  if (data.value) {
-                    this.clipCount = data.value;
-                    formValue = data.value.text;
-                  }
-                  else {
-                    formValue = '';
-                  }
-                  break;
-                case 'owner':
-                case 'signature':
-                  if (data.value) {
-                    this["data.name"] = data.value;
-                    formValue = data.value.text;
-                  }
-                  else {
-                    formValue = '';
-                  }
-                  break;
-                default:
-                  formValue = (data.value) ? data.value.text : '';
-                  break;
-              }
-              this.incidentForm.get(data.name)?.patchValue(formValue);
-            });
-          }
+
+        if (responeIncident['customFields'].length > 0) {
+          responeIncident['customFields'].forEach((data: any, mainIndex: any) => {
+            let formValue = '';
+            switch (data.name) {
+              case 'creation-time':
+                if (data.value) {
+                  this.creationTime = data.value;
+                  formValue = moment(data.value.timestamp).format("DD/MM/YYYY HH:mm");
+                }
+                else {
+                  formValue = '';
+                }
+                break;
+              case 'update-time':
+                if (data.value) {
+                  this.updateTime = data.value;
+                  formValue = moment(data.value.timestamp).format("DD/MM/YYYY HH:mm");
+                }
+                else {
+                  formValue = '';
+                }
+                break;
+              case 'incident-time':
+                if (data.value) {
+                  this.incidentTime = data.value;
+                  this.incidentTimeStamp = data.value.timestamp;
+                  this.subject.next(moment(data.value.timestamp).format("DD/MM/YYYY HH:mm"));
+                  formValue = moment(data.value.timestamp).format("DD/MM/YYYY HH:mm");
+                }
+                else {
+                  formValue = '';
+                }
+                break;
+              case 'clip-count':
+                if (data.value) {
+                  this.clipCount = data.value;
+                  formValue = data.value.text;
+                }
+                else {
+                  formValue = '';
+                }
+                break;
+              case 'owner':
+              case 'signature':
+                if (data.value) {
+                  this["data.name"] = data.value;
+                  formValue = data.value.text;
+                }
+                else {
+                  formValue = '';
+                }
+                break;
+              default:
+                formValue = (data.value) ? data.value.text : '';
+                break;
+            }
+            this.incidentForm.get(data.name)?.patchValue(formValue);
+          });
         }
       });
     }
@@ -222,14 +220,11 @@ export class IncidentsComponent implements OnInit {
     this.incidentService.getTemplate(mGroupId).subscribe(res => {
       let customFieldMap = new Map();
       let responseTemplate: any = res;
-      this.templateData = _.entries(responseTemplate);
 
-      if (this.templateData.length > 0) {
-        if (this.templateData[2][0] === 'customFields') {
-          this.templateData[2][1].forEach((data: any, mainIndex: any) => {
-            customFieldMap.set(data.name, data.id);
-          });
-        }
+      if (responseTemplate['customFields'].length > 0) {
+        responseTemplate['customFields'].forEach((data: any, mainIndex: any) => {
+          customFieldMap.set(data.name, data.id);
+        });
       }
 
       if (customFieldMap.size > 0) {
@@ -298,14 +293,11 @@ export class IncidentsComponent implements OnInit {
     this.incidentService.getTemplate(mGroupId).subscribe(res => {
       let customFieldMap = new Map();
       let responseTemplate: any = res;
-      this.templateData = _.entries(responseTemplate);
 
-      if (this.templateData.length > 0) {
-        if (this.templateData[2][0] === 'customFields') {
-          this.templateData[2][1].forEach((data: any, mainIndex: any) => {
-            customFieldMap.set(data.name, data.id);
-          });
-        }
+      if (responseTemplate['customFields'].length > 0) {
+        responseTemplate['customFields'].forEach((data: any, mainIndex: any) => {
+          customFieldMap.set(data.name, data.id);
+        });
       }
 
       if (customFieldMap.size > 0) {
