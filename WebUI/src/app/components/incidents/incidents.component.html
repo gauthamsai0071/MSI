@@ -39,7 +39,7 @@
                         #customDatepicker [style.display]="isVisibleMsiCalendar ? 'block' : 'none'">
                     </msi-date-time-picker-control>
                     <input class="msi-input" type="text" id="incident-time" autocomplete="incident-time"
-                        formControlName="incident-time" #incidentTimeView
+                        formControlName="incident-time"
                         [style.display]="isVisibleCalendar ? 'block' : 'none'">
                 </div>
                 <div class="form-group">
@@ -77,9 +77,9 @@
                         formControlName="signature">
                 </div>
                 <div *ngIf="isAdd || isEdit">
-                    <button class="msi-btn form-button" type="submit">Submit</button>&nbsp;
-                    <button *ngIf="isEdit" class="msi-btn  msi-btn-secondary form-button" type="button"
-                        (click)="view()">Cancel</button>
+                    <button class="msi-btn form-button"
+                        type="submit">Submit</button>&nbsp;
+                    <button *ngIf="isEdit" class="msi-btn  msi-btn-secondary form-button" type="button" (click)="view()">Cancel</button>
                 </div>
             </form>
         </msi-card-content>
