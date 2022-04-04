@@ -193,9 +193,6 @@ export class IncidentsComponent implements OnInit {
     this.changeDetectorRef.detectChanges();
   }
 
-  ngAfterViewInit() {
-  }
-
   get formControls() { return this.incidentForm.controls; }
 
   /**
