@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../../_gurads/auth.guard';
+// import { ManageIncidentComponent } from './manage/manage-incident';
 import { IncidentSearchComponent } from './search/search.component';
 
 const routes: Routes = [    
@@ -9,8 +10,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule]
+    imports: [RouterModule.forChild(routes)]
 })
 export class IncidentRoutingModule {
 }

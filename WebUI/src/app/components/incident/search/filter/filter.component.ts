@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { DateTimeRange } from '@msi/cobalt';
-import { IncidentSearchService } from '../../../services/incident/search.service';
+import { IncidentSearchService } from '../../../../services/incident/search.service';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
-import { CustomField } from '../../../models/common/custom-field';
+import { CustomField } from '../../../../models/common/custom-field';
 import { forkJoin } from 'rxjs';
-import { AuthService } from '../../../services/auth/auth.service';
-import { User } from '../../../models/common/user';
+import { AuthService } from '../../../../services/auth/auth.service';
+import { User } from '../../../../models/common/user';
 import _ from 'lodash';
-import { Incident } from '../../../models/incident/incident';
+import { Incident } from '../../../../models/incident/incident';
 
 @Component({
   selector: 'app-incident-filter',
@@ -16,6 +16,11 @@ import { Incident } from '../../../models/incident/incident';
   styleUrls: ['./filter.component.scss']
 })
 export class IncidentFilterComponent implements OnInit {
+    @Output()
+    searchIncidents: EventEmitter<{owner: string, text: string, showCurrent: boolean, showDeleted: boolean,
+                            showShared: boolean, showExternal: boolean, showActiveExternal: boolean,
+                            searchFilters: {[key: string]: string}}>;
+
     filterCriteria : FormGroup = null;
     searchFields: CustomField[] = [];
     dropdownSettings:IDropdownSettings = {};
@@ -27,7 +32,7 @@ export class IncidentFilterComponent implements OnInit {
     constructor(private formBuilder: FormBuilder,
                 private authService: AuthService,
                 private incidentSearchService: IncidentSearchService) {
-
+        this.searchIncidents = new EventEmitter();
     }
 
     ngOnInit(): void {
@@ -60,13 +65,14 @@ export class IncidentFilterComponent implements OnInit {
             }            
         });
 
-        this.incidentSearchService.search(this.filterCriteria.get('owner').value, 
-            this.filterCriteria.get('text').value, this.filterCriteria.get('showCurrent').value,
-            this.filterCriteria.get('showDeleted').value, this.filterCriteria.get('showShared').value,
-            this.filterCriteria.get('showExternal').value, this.filterCriteria.get('showActiveExternal').value,
-            searchFilters).subscribe(response => {
-            this.incidents = response;
-        });
+        this.searchIncidents.emit( { owner : this.filterCriteria.get('owner').value, 
+                                     text: this.filterCriteria.get('text').value, 
+                                     showCurrent: this.filterCriteria.get('showCurrent').value,
+                                     showDeleted: this.filterCriteria.get('showDeleted').value, 
+                                     showShared: this.filterCriteria.get('showShared').value,
+                                     showExternal: this.filterCriteria.get('showExternal').value, 
+                                     showActiveExternal: this.filterCriteria.get('showActiveExternal').value,
+                                     searchFilters: searchFilters });
     }
 
     buildSearchForm(): void {

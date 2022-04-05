@@ -5,11 +5,11 @@
                 <div class="label-wrap">
                     <span class="filter-label-first">{{field.displayName}}</span>
                 </div>
-                <app-date-picker
-                    class="app-date-picker"
+                <app-calendar
+                    class="app-date-picker"                    
                     [dateTimeRange]="dateModel"
                     [allowFutureDates]="false">
-                </app-date-picker>
+                </app-calendar>
             </div>
             <div *ngIf="field.isEnumeration">
                 <div class="label-wrap">

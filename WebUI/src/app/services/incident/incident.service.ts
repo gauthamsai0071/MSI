@@ -2,12 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { CommonService } from './common/common.service';
+import { CommonService } from '../common/common.service';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class IncidentsService {
+@Injectable()
+export class IncidentService {
 
   constructor(private http: HttpClient, private commonSrv: CommonService, private router: Router) { }
 

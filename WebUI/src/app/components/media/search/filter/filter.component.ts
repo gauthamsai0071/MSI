@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { DateTimeRange } from '@msi/cobalt';
-import { MediaCustomFiltersService } from '../../../../services/media/custom-filters.service';
-import { CustomFiltersService } from '../../../../../app/services/customFilters/custom-filters.service';
+import { MediaFilterService } from '../../../../services/media/media-filter.service';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import _ from 'lodash';
 import { Feed } from '../../../../../app/models/feed/feed';
@@ -14,7 +13,6 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../../../../app/services/auth/auth.service';
 import { Feedsubscription } from '../../../../../app/models/feed/feedsubscription';
 import { Subscription } from 'rxjs';
-import { MediaFilterService } from '../../../../../app/services/mediaFilter/media-filter.service';
 
 @Component({
   selector: 'app-media-filter',
@@ -22,7 +20,7 @@ import { MediaFilterService } from '../../../../../app/services/mediaFilter/medi
   styleUrls: ['./filter.component.scss']
 })
 
-export class FilterComponent implements OnInit {
+export class MediaFilterComponent implements OnInit {
   filterCriteria : FormGroup = null;
   customFields :any = null;
   advancedFilter : any = '';
@@ -45,7 +43,7 @@ export class FilterComponent implements OnInit {
   url:string;
   private sub : Subscription;
   constructor(
-    private customFilters : CustomFiltersService,
+    private mediaFilters : MediaFilterService,
     private formBuilder: FormBuilder,
     private http : HttpClient,
     private authService: AuthService,
@@ -57,7 +55,7 @@ export class FilterComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.customFilters.getCustomFields().subscribe((result: any) =>{
+    this.mediaFilters.getCustomFields().subscribe((result: any) =>{
       this.customFields = result;
       this.getAllSearchFields();
       this.buildSearchForm();

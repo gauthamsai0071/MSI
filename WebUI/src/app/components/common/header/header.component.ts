@@ -1,6 +1,7 @@
-import { Component, HostBinding, OnInit } from '@angular/core';
+import { Component, HostBinding, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../app/services/auth/auth.service';
+import { AppTabGroupComponent } from '../../../shared/tab-group/tab-group.component';
 export const mockServices = [
   {
     systemNames: ['analytics'],
@@ -64,8 +65,9 @@ export const mockServices = [
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit {
-
+export class HeaderComponent { 
+  @ViewChild(AppTabGroupComponent) tabGroup: AppTabGroupComponent;
+  
   constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
@@ -93,25 +95,18 @@ export class HeaderComponent implements OnInit {
   checkOverflow(header: { checkOverflow: () => void; }) {
     setTimeout(() => header.checkOverflow(), 0);
   }
-
-  searchToggleChatch(e: any) {
-    //console.log('is search open: ', e);
+    
+  navigateTab(index: number): void {
+    this.tabGroup.clickTab(index);  
+    this.tabChanged(index);
   }
 
-  searchValueChange(searchText: string) {
-    //console.log('each input change: ', searchText);
-  }
-
-  searchValue(searchText: string) {
-    //console.log('after enter/search btn click: ', searchText);
-  }
-
-  searchInputFocus(): void {
-    //console.log('search has focused');
-  }
-
-  searchInputBlur(): void {
-    //console.log('search has lost focus');
+  tabChanged(index: number) : void {
+    if (index === 0)
+      this.router.navigateByUrl('/home');
+    else if (index === 1) {
+      this.router.navigateByUrl('/incidents');
+    }
   }
 
   logout(){

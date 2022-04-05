@@ -3,8 +3,7 @@ import { DataTableComponent } from '@msi/cobalt/data-table/data-table.component'
 import _, { result } from 'lodash';
 import moment from 'moment';
 import { Subscription } from 'rxjs';
-import { CustomFiltersService } from '../../../app/services/customFilters/custom-filters.service';
-import { MediaFilterService } from '../../../app/services/mediaFilter/media-filter.service';
+import { MediaFilterService } from '../../../../services/media/media-filter.service';
 
 @Component({
   selector: 'app-media-search-result',
@@ -41,7 +40,7 @@ export class MediaSearchResultComponent implements OnInit, OnChanges {
   private broadbandFields = ['media_name','unitId','talkgroupId', , 'timestamp','agencyName' ];
   public visibleFields = this.defaultFields;
   constructor(private changeDetector: ChangeDetectorRef,
-    private customFilters : CustomFiltersService,
+    private mediaFilters : MediaFilterService,
     private mediaFilterService : MediaFilterService) {}
 
   ngOnInit() {
@@ -50,7 +49,7 @@ export class MediaSearchResultComponent implements OnInit, OnChanges {
       console.log(result);
       this.rows = result;
     });
-    this.customFilters.getCustomFields().subscribe(result => {
+    this.mediaFilters.getCustomFields().subscribe(result => {
       this.customFields = result;
       console.log(result);
     })

@@ -1,15 +1,44 @@
-<div class="search-component-wrapper">
-    <msi-input-group class="search-wrapper">
-        <msi-icon></msi-icon>
-        <input msiInput class="search-input">
-    </msi-input-group>
-    <msi-tab-group>
-        <msi-tab label="Filters">
-            <div class="filters-wrapper">
-                <app-incident-filter></app-incident-filter>
-            </div>
-        </msi-tab>
-        <msi-tab label="Saved Searches">
-        </msi-tab>
+<app-header></app-header>
+<!-- <div class="nav-tab-label-wrapper">
+    <msi-tab-group class="msi-tabs-wrapper" [selectedIndex]="1" 
+        (selectedTabChange)="tabChanged($event)">
+      <msi-tab>
+        <ng-template msiTabLabel>
+          <span class="tab-item" (click)="navigateTab('/home')">
+            <msi-icon name="ic_media_play" class="media-play-icon"></msi-icon>
+            <p class="tab-label">Media</p>
+          </span>
+        </ng-template>      
+      </msi-tab>
+      <msi-tab>
+        <ng-template msiTabLabel>
+            <span class="tab-item" (click)="navigateTab('/incidents')">
+              <msi-icon name="ic_incident"  class="incident-icon"></msi-icon>
+              <p class="tab-label">Incident</p>
+            </span>
+        </ng-template>
+      </msi-tab>
+      <msi-tab>
+        <ng-template msiTabLabel>
+          <msi-icon name="ic_dashboard" class="dashboard-icon"></msi-icon>
+          <p class="tab-label">Status</p>
+        </ng-template>
+      </msi-tab>
     </msi-tab-group>
+  </div> -->
+<div class="search-result-wrapper">
+    <div class="filter-panel">
+        <msi-tab-group>
+            <msi-tab label="Filters">
+                <div class="filters-wrapper">
+                    <app-incident-filter (searchIncidents)="searchIncidents($event)"></app-incident-filter>
+                </div>
+            </msi-tab>
+            <msi-tab label="Saved Searches">
+            </msi-tab>
+        </msi-tab-group>
+    </div>    
+    <div class="results-panel">
+        <app-incident-search-result *ngIf="filterCriteria !== null" [filterCriteria]="filterCriteria"></app-incident-search-result>
+    </div>    
 </div>

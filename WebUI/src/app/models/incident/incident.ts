@@ -12,5 +12,10 @@ export class Incident {
     effectiveTitle: string;
     isCommittable: boolean;
     isNewOrUpdated: boolean;
+
+    referenceCode: string;
+    title: string;
+    incidentTime: Date;
+
     customFields: CustomField[] = [];
 }

@@ -1,29 +1,8 @@
 <div class="home-wrapper">
   <app-header></app-header>
-  <div class="nav-tab-label-wrapper">
-    <msi-tab-group class="msi-tabs-wrapper">
-      <msi-tab>
-        <ng-template msiTabLabel>
-          <msi-icon name="ic_media_play" class="media-play-icon"></msi-icon>
-          <p class="tab-label">Media</p>
-        </ng-template>
-        <div class="search-result-wrapper">
-          <app-search></app-search>
-          <app-media-search-result></app-media-search-result>
-        </div> 
-      </msi-tab>
-      <msi-tab>
-        <ng-template msiTabLabel>
-          <msi-icon name="ic_incident" class="incident-icon"></msi-icon>
-          <p class="tab-label">Incident</p>
-        </ng-template>
-      </msi-tab>
-      <msi-tab>
-        <ng-template msiTabLabel>
-          <msi-icon name="ic_dashboard" class="dashboard-icon"></msi-icon>
-          <p class="tab-label">Status</p>
-        </ng-template>
-      </msi-tab>
-    </msi-tab-group>
-  </div>
+ 
+  <div class="search-result-wrapper">
+    <app-search></app-search>
+    <app-media-search-result></app-media-search-result>
+  </div> 
 </div>

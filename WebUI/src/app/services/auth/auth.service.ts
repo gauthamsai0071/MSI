@@ -21,7 +21,7 @@ export class AuthService {
   public login(userName: string, password: string):Observable<any>{
     let url = 'api/account/login';
     return this.http.post(url, { userName: userName, password: password });    
-
+  }
 
   public getCurrentState(): Observable<any> {
     let url = 'api/state/current?public=false';

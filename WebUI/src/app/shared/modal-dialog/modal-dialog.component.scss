@@ -1,0 +1,29 @@
+$panel-background: rgb(235, 246, 255);
+$panel-border: #acaeb0;
+$title-border: rgb(219, 223, 219);
+$title-text: rgb(80, 78, 78);
+
+::ng-deep .modal-content {
+    background-color: $panel-background !important;
+}
+
+.modal-header {
+    font-size: 13px;
+    font-weight: bold;
+    padding: 0.1rem 0.4rem 0.1rem 0.4rem;    
+    border-bottom: solid 0.04em $title-border; 
+    color: $title-text;
+    font-family: Poppins-Regular;
+}
+
+.modal-header:active:hover {
+    cursor: all-scroll;
+}
+
+.modal-body {
+    padding: 0.2rem;
+}
+
+.close {
+    font-size: 20px;
+}

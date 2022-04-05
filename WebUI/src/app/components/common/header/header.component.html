@@ -3,12 +3,7 @@
     [search]="search_enable"
     [responsive]="responsive_enable"
     [overflowNotificationBadge]="badge_enable"
-    [emitValueAfterEachChar]="true"
-    (searchToggle)="searchToggleChatch($event)"
-    (searchValueChange)="searchValueChange($event)"
-    (searchValue)="searchValue($event)"
-    (searchInputFocus)="searchInputFocus()"
-    (searchInputBlur)="searchInputBlur()"
+    [emitValueAfterEachChar]="true"   
     #header>
   <msi-header-left-plugin-area
       class="msi-common-header-left-plugin-area"
@@ -49,4 +44,30 @@
       </msi-session-manager>
     </div>
   </msi-header-right-plugin-area>
-</msi-common-header>
+</msi-common-header> 
+<div class="nav-tab-label-wrapper">
+  <app-tab-group class="msi-tabs-wrapper" (selectedIndexChange)="tabChanged($event)">
+    <msi-tab class="active">
+      <ng-template msiTabLabel>
+        <span class="tab-item" (mousedown)="navigateTab(0)">
+          <msi-icon name="ic_media_play" class="media-play-icon"></msi-icon>
+          <p class="tab-label">Media</p>
+        </span>
+      </ng-template>      
+    </msi-tab>
+    <msi-tab>
+      <ng-template msiTabLabel>
+          <span class="tab-item" (mousedown)="navigateTab(1)">
+            <msi-icon name="ic_incident"  class="incident-icon"></msi-icon>
+            <p class="tab-label">Incident</p>
+          </span>
+      </ng-template>
+    </msi-tab>
+    <msi-tab>
+      <ng-template msiTabLabel>
+        <msi-icon name="ic_dashboard" class="dashboard-icon"></msi-icon>
+        <p class="tab-label">Status</p>
+      </ng-template>
+    </msi-tab>
+  </app-tab-group>
+</div>

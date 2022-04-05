@@ -1,0 +1,27 @@
+<div class="search-result-wrapper">
+    <button (click)="addIncident()">Add Incident</button>
+    <div class="list-view-label-wrapper">
+        <msi-icon name="ic_data_table" class="ic-data-table"></msi-icon>
+        <p class="list-view-label">List View</p>
+    </div>
+    <table class="msiDatatable" msi-data-table [rows]="results"
+        [condensed]="false" [pinning]="false" [selection]="true">
+        <ng-container msiColDef="text" [width]="10">
+            <ng-container *msiHeaderCellDef><div msiTooltip="Left" position="left">Reference Code</div></ng-container>
+            <ng-container *msiCellDef="let row">{{row.referenceCode}}</ng-container>
+        </ng-container>
+        <ng-container msiColDef="text" [width]="50">
+            <ng-container *msiHeaderCellDef><div msiTooltip="Left" position="left">Title</div></ng-container>
+            <ng-container *msiCellDef="let row">{{row.title}}</ng-container>
+        </ng-container>
+        <ng-container msiColDef="text" [width]="22">
+            <ng-container *msiHeaderCellDef><div msiTooltip="Left" position="left">Incident Time</div></ng-container>
+            <ng-container *msiCellDef="let row">{{row.incidentTime}}</ng-container>
+        </ng-container>
+        <ng-container msiColDef="text" [width]="18">
+            <ng-container *msiCellDef="let row">
+                <msi-icon name="ic_add" class="icon-demo"></msi-icon>
+            </ng-container>
+        </ng-container>
+    </table>
+</div>

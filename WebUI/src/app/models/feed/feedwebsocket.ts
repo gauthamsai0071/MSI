@@ -1,6 +1,5 @@
 import { BehaviorSubject } from "rxjs";
-import { MediaFilterService } from "src/app/services/mediaFilter/media-filter.service";
-import { CustomFiltersService } from "../../../app/services/customFilters/custom-filters.service";
+import { MediaFilterService } from "../../services/media/media-filter.service";
 import { Feed } from "./feed";
 
 export class Feedwebsocket {
@@ -12,7 +11,7 @@ export class Feedwebsocket {
     private keepAliveResponseTimeout: any;
     public messageResponse : any;
     
-    constructor(private feed : Feed, private url: string, public customFilterService: CustomFiltersService) {}
+    constructor(private feed : Feed, private url: string, public mediaFilterService: MediaFilterService) {}
 
       start() : any {
         this.ws = new WebSocket(this.url);

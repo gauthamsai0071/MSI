@@ -49,6 +49,13 @@ export class LoginComponent implements OnInit, OnDestroy {
         if(response.success===true) {
           this.formResetting = true;
           this.loginForm.reset({});
+
+           // Set the new token.
+           this.authService.getCurrentState().subscribe(res => {
+            let result: any = res;
+            sessionStorage.setItem('token', result.csrfToken);
+          });
+          
           this.router.navigate([this.returnUrl]);
         }
         else{

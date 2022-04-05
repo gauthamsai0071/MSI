@@ -1,22 +1,27 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class MediaFilterService {
-
-  constructor() { }
   private  systemSelected = new Subject<any>();
   systemSelected$ = this.systemSelected.asObservable();
+  
+  private static filteredRespone = new Subject<any>();
+  filteredRespone$ = MediaFilterService.filteredRespone.asObservable();
+  
+  constructor(private http: HttpClient) { }
+  
+  getCustomFields() {
+    return this.http.get('api/videos/customFields');
+  }
+
   public  notifysystemSelected(data: any) {
     if (data) {
       this.systemSelected.next(data);
     }
   }
-
-  private static filteredRespone = new Subject<any>();
-  filteredRespone$ = MediaFilterService.filteredRespone.asObservable();
+  
   public static notifyfilteredRespone(data: any) {
     if (data) {
       this.filteredRespone.next(data);

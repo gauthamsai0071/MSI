@@ -3,20 +3,18 @@ import { ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } f
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import moment from 'moment';
-import { CommonService } from 'src/app/services/common/common.service';
+import { CommonService } from '../../../services/common/common.service';
 import * as _ from 'lodash';
-import { IncidentsService } from 'src/app/services/incidents.service';
+import { IncidentService } from '../../../services/incident/incident.service';
 import { DatePickerControlComponent, DateTimeRange } from '@msi/cobalt';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
 
-@Component({
-  selector: 'app-incidents',
-  templateUrl: './incidents.component.html',
-  styleUrls: ['./incidents.component.scss']
+@Component({  
+  templateUrl: './manage-incident.html',
+  styleUrls: ['./manage-incident.scss']
 })
-export class IncidentsComponent implements OnInit {
-
+export class ManageIncidentComponent implements OnInit {
   incidentForm: FormGroup;
   isSubmitted = false;
   csrfToken = '';
@@ -50,7 +48,10 @@ export class IncidentsComponent implements OnInit {
   @ViewChild('customDatepicker', { static: true }) customDatepicker: DatePickerControlComponent;
   @ViewChild('incidentTimeView') incidentTimeView: ElementRef;
 
-  constructor(@Inject(DOCUMENT) private _document: any, private incidentService: IncidentsService, private router: Router, private aRouter: ActivatedRoute, private formBuilder: FormBuilder, private commonSrv: CommonService, private changeDetectorRef: ChangeDetectorRef) {
+  constructor(@Inject(DOCUMENT) private _document: any, 
+              private incidentService: IncidentService, private router: Router, 
+              private aRouter: ActivatedRoute, private formBuilder: FormBuilder, 
+              private commonSrv: CommonService, private changeDetectorRef: ChangeDetectorRef) {
     const url: string = this.aRouter.routeConfig.path;
 
     if (url === "incidents/create") {
@@ -182,12 +183,11 @@ export class IncidentsComponent implements OnInit {
       });
     }
 
-    if (this.isEdit) {
-      this.subject.subscribe((val: string) => {
-        this.customDatepicker.dateTextModel = val;
-      });
-      //subject.complete();
-    }
+    // if (this.isEdit) {
+    //   this.subject.subscribe((val: string): void => {
+    //     this.customDatepicker.dateTextModel = val;
+    //   });    
+    // }
   }
 
   ngAfterViewChecked() {
@@ -199,11 +199,6 @@ export class IncidentsComponent implements OnInit {
 
   get formControls() { return this.incidentForm.controls; }
 
-  /**
-   * To create the incident.
-   * 
-   * @returns 
-   */
   createIncident() {
     this.formResetting = false;
 
