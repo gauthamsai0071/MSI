@@ -3,30 +3,26 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { CommonService } from '../common/common.service';
+import { Incidents } from '../models/incidents.model';
 
 @Injectable()
 export class IncidentService {
 
   constructor(private http: HttpClient, private commonSrv: CommonService, private router: Router) { }
 
-  public getTemplate(id: string): Observable<any> {
+  public getTemplate(id: string): Observable<Incidents> {
     let url = 'api/incidents/template?mgroupid=' + id;
-    return this.http.get(url);
+    return this.http.get<Incidents>(url);
   }
 
-  public createIncident(id: string, data: any): Observable<any> {
+  public createIncident(id: string, incidents: Incidents): Observable<Incidents> {
     let url = 'api/incidents?mgroupid=' + id;
-    return this.http.post(url, data);
+    return this.http.post<Incidents>(url, incidents);
   }
 
-  public updateIncident(id: number, mGroupId: string, data: any): Observable<any> {
+  public updateIncident(id: number, mGroupId: string, incidents: Incidents): Observable<Incidents> {
     let url = 'api/incidents/' + id + '?mgroupid=' + mGroupId;
-    return this.http.put(url, data);
-  }
-
-  public deleteIncident(id: number, data: any): Observable<any> {
-    let url = 'api/incidents/' + id + '/delete';
-    return this.http.post(url, data);
+    return this.http.put<Incidents>(url, incidents);
   }
 
   public deleteMediaGroup(id: string) {
@@ -38,14 +34,14 @@ export class IncidentService {
     return this.http.get('api/incidents/customFields')
   }
 
-  public getAllIncidents(search: string): Observable<any> {
+  public getAllIncidents(search: string): Observable<Incidents[]> {
     let url = 'api/incidents';
-    return this.http.get(url);
+    return this.http.get<Incidents[]>(url);
   }
 
-  public getIncident(id: number): Observable<any> {
+  public getIncident(id: number) {
     let mGroupId = this.commonSrv.createGroupId();
     let url = 'api/incidents/' + id + '?mgroupid=' + mGroupId;
-    return this.http.get(url);
+    return this.http.get<Incidents>(url);
   }
 }

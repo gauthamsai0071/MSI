@@ -1,25 +1,26 @@
-import { DOCUMENT } from '@angular/common';
-import { ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import moment from 'moment';
-import { CommonService } from '../../../services/common/common.service';
-import * as _ from 'lodash';
-import { IncidentService } from '../../../services/incident/incident.service';
 import { DatePickerControlComponent, DateTimeRange } from '@msi/cobalt';
-import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { CommonService } from '../../../app/services/common/common.service';
+import { IncidentsService } from '../../../app/services/incidents.service';
+import moment from 'moment';
+import * as _ from 'lodash';
 import { Subject } from 'rxjs';
+import { Incidents } from '../../../app/models/incidents.model';
+import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 
-@Component({  
-  templateUrl: './manage-incident.html',
-  styleUrls: ['./manage-incident.scss']
+@Component({
+  selector: 'app-incidents',
+  templateUrl: './incidents.component.html',
+  styleUrls: ['./incidents.component.scss']
 })
-export class ManageIncidentComponent implements OnInit {
+export class IncidentsComponent implements OnInit {
+
   incidentForm: FormGroup;
   isSubmitted = false;
   csrfToken = '';
   formResetting: boolean = true;
-  templateData: any[] = [];
   customFields: any[] = [];
   requestArray: any[] = [];
   output: JSON;
@@ -46,12 +47,8 @@ export class ManageIncidentComponent implements OnInit {
   subject = new Subject();
 
   @ViewChild('customDatepicker', { static: true }) customDatepicker: DatePickerControlComponent;
-  @ViewChild('incidentTimeView') incidentTimeView: ElementRef;
 
-  constructor(@Inject(DOCUMENT) private _document: any, 
-              private incidentService: IncidentService, private router: Router, 
-              private aRouter: ActivatedRoute, private formBuilder: FormBuilder, 
-              private commonSrv: CommonService, private changeDetectorRef: ChangeDetectorRef) {
+  constructor(private incidentService: IncidentsService, private router: Router, private aRouter: ActivatedRoute, private formBuilder: FormBuilder, private commonService: CommonService, private changeDetectorRef: ChangeDetectorRef) {
     const url: string = this.aRouter.routeConfig.path;
 
     if (url === "incidents/create") {
@@ -106,71 +103,69 @@ export class ManageIncidentComponent implements OnInit {
 
     // Called at View & Edit time to View Data
     if (!this.isAdd) {
-      this.incidentService.getIncident(this.incidentId).subscribe(incident => {
-        let responeIncident: any = incident;
-        this.getVersion = responeIncident.version
-        this.getSignature = responeIncident.signature;
-        this.templateData = _.entries(responeIncident);
-        if (this.templateData.length > 0) {
-          if (this.templateData[4][0] === 'customFields') {
-            this.templateData[4][1].forEach((data: any, mainIndex: any) => {
-              let formValue = '';
-              switch (data.name) {
-                case 'creation-time':
-                  if (data.value) {
-                    this.creationTime = data.value;
-                    formValue = moment(data.value.timestamp).format("DD/MM/YYYY HH:mm");
-                  }
-                  else {
-                    formValue = '';
-                  }
-                  break;
-                case 'update-time':
-                  if (data.value) {
-                    this.updateTime = data.value;
-                    formValue = moment(data.value.timestamp).format("DD/MM/YYYY HH:mm");
-                  }
-                  else {
-                    formValue = '';
-                  }
-                  break;
-                case 'incident-time':
-                  if (data.value) {
-                    this.incidentTime = data.value;
-                    this.incidentTimeStamp = data.value.timestamp;
-                    this.subject.next(moment(data.value.timestamp).format("DD/MM/YYYY HH:mm"));
-                    formValue = moment(data.value.timestamp).format("DD/MM/YYYY HH:mm");
-                  }
-                  else {
-                    formValue = '';
-                  }
-                  break;
-                case 'clip-count':
-                  if (data.value) {
-                    this.clipCount = data.value;
-                    formValue = data.value.text;
-                  }
-                  else {
-                    formValue = '';
-                  }
-                  break;
-                case 'owner':
-                case 'signature':
-                  if (data.value) {
-                    this["data.name"] = data.value;
-                    formValue = data.value.text;
-                  }
-                  else {
-                    formValue = '';
-                  }
-                  break;
-                default:
-                  formValue = (data.value) ? data.value.text : '';
-                  break;
-              }
-              this.incidentForm.get(data.name)?.patchValue(formValue);
-            });
-          }
+      this.incidentService.getIncident(this.incidentId).subscribe((incidents: Incidents) => {
+        this.getVersion = incidents.version
+        this.getSignature = incidents.signature;
+
+        if (incidents.customFields.length > 0) {
+
+          incidents.customFields.forEach((data: any) => {
+            let formValue = '';
+            switch (data.name) {
+              case 'creation-time':
+                if (data.value) {
+                  this.creationTime = data.value;
+                  formValue = moment(data.value.timestamp).format("DD/MM/YYYY HH:mm");
+                }
+                else {
+                  formValue = '';
+                }
+                break;
+              case 'update-time':
+                if (data.value) {
+                  this.updateTime = data.value;
+                  formValue = moment(data.value.timestamp).format("DD/MM/YYYY HH:mm");
+                }
+                else {
+                  formValue = '';
+                }
+                break;
+              case 'incident-time':
+                if (data.value) {
+                  this.incidentTime = data.value;
+                  this.incidentTimeStamp = data.value.timestamp;
+                  this.subject.next(moment(data.value.timestamp).format("DD/MM/YYYY HH:mm"));
+                  formValue = moment(data.value.timestamp).format("DD/MM/YYYY HH:mm");
+                }
+                else {
+                  formValue = '';
+                }
+                break;
+              case 'clip-count':
+                if (data.value) {
+                  this.clipCount = data.value;
+                  formValue = data.value.text;
+                }
+                else {
+                  formValue = '';
+                }
+                break;
+              case 'owner':
+              case 'signature':
+                if (data.value) {
+                  this["data.name"] = data.value;
+                  formValue = data.value.text;
+                }
+                else {
+                  formValue = '';
+                }
+                break;
+              default:
+                formValue = (data.value) ? data.value.text : '';
+                break;
+            }
+            this.incidentForm.get(data.name)?.patchValue(formValue);
+          });
         }
       });
     }
@@ -178,27 +173,33 @@ export class ManageIncidentComponent implements OnInit {
     if (this.isAdd) {
       this.date = new Date(moment().format('MM-DD-YYYY HH:mm'));
       this.incidentTimeDefaultValue = new DateTimeRange({
-        startDate: new NgbDate(this.date.getUTCFullYear(), this.date.getUTCMonth() + 1, this.date.getUTCDate() + 1),
+        startDate: new NgbDate(this.date.getUTCFullYear(), this.date.getUTCMonth() + 1, this.date.getUTCDate()),
         startTime: { hour: this.date.getHours(), minute: this.date.getMinutes(), second: 0 }
       });
     }
 
-    // if (this.isEdit) {
-    //   this.subject.subscribe((val: string): void => {
-    //     this.customDatepicker.dateTextModel = val;
-    //   });    
-    // }
+    if (this.isEdit) {
+      this.subject.subscribe((val: string) => {
+        this.customDatepicker.dateTextModel = val;
+      });
+    }
+  }
+
+  ngOnDestroy() {
+    this.subject.unsubscribe();
   }
 
   ngAfterViewChecked() {
     this.changeDetectorRef.detectChanges();
   }
 
-  ngAfterViewInit() {
-  }
-
   get formControls() { return this.incidentForm.controls; }
 
+  /**
+   * To create the incident.
+   * 
+   * @returns 
+   */
   createIncident() {
     this.formResetting = false;
 
@@ -209,22 +210,18 @@ export class ManageIncidentComponent implements OnInit {
 
     const formValue = this.incidentForm.value;
     if (this.incidentTimeDatePickerValue !== '') {
-      this.incidentTimeDatePickerValue = this.commonSrv.convertStringToTimesamp(this.incidentTimeDatePickerValue);
+      this.incidentTimeDatePickerValue = this.commonService.convertStringToTimesamp(this.incidentTimeDatePickerValue);
     }
 
     // API call : To get custom template infos
-    let mGroupId = this.commonSrv.createGroupId();
-    this.incidentService.getTemplate(mGroupId).subscribe(res => {
+    let mGroupId = this.commonService.createGroupId();
+    this.incidentService.getTemplate(mGroupId).subscribe((incidents: Incidents) => {
       let customFieldMap = new Map();
-      let responseTemplate: any = res;
-      this.templateData = _.entries(responseTemplate);
 
-      if (this.templateData.length > 0) {
-        if (this.templateData[2][0] === 'customFields') {
-          this.templateData[2][1].forEach((data: any, mainIndex: any) => {
-            customFieldMap.set(data.name, data.id);
-          });
-        }
+      if (incidents.customFields.length > 0) {
+        incidents.customFields.forEach((data: any, mainIndex: any) => {
+          customFieldMap.set(data.name, data.id);
+        });
       }
 
       if (customFieldMap.size > 0) {
@@ -259,12 +256,10 @@ export class ManageIncidentComponent implements OnInit {
         })
 
         // API call : To create incident
-        this.incidentService.createIncident(mGroupId, this.requestArray[0]).subscribe(results => {
-          let responseIncident: any = results;
+        this.incidentService.createIncident(mGroupId, this.requestArray[0]).subscribe((incidents: Incidents) => {
           // Delete Media Group
-          this.incidentService.deleteMediaGroup(mGroupId).subscribe(results => {
-          });
-          return this.router.navigateByUrl('/incidents/' + responseIncident.id);
+          this.incidentService.deleteMediaGroup(mGroupId).subscribe();
+          return this.router.navigateByUrl('/incidents/' + incidents.id);
         });
       }
     });
@@ -285,22 +280,18 @@ export class ManageIncidentComponent implements OnInit {
 
     const formValue = this.incidentForm.value;
     if (this.incidentTimeDatePickerValue !== '') {
-      this.incidentTimeDatePickerValue = this.commonSrv.convertStringToTimesamp(this.incidentTimeDatePickerValue);
+      this.incidentTimeDatePickerValue = this.commonService.convertStringToTimesamp(this.incidentTimeDatePickerValue);
     }
 
     // API call : To get custom template infos
-    let mGroupId = this.commonSrv.createGroupId();
-    this.incidentService.getTemplate(mGroupId).subscribe(res => {
+    let mGroupId = this.commonService.createGroupId();
+    this.incidentService.getTemplate(mGroupId).subscribe((incidents: Incidents) => {
       let customFieldMap = new Map();
-      let responseTemplate: any = res;
-      this.templateData = _.entries(responseTemplate);
 
-      if (this.templateData.length > 0) {
-        if (this.templateData[2][0] === 'customFields') {
-          this.templateData[2][1].forEach((data: any, mainIndex: any) => {
-            customFieldMap.set(data.name, data.id);
-          });
-        }
+      if (incidents.customFields.length > 0) {
+        incidents.customFields.forEach((data: any, mainIndex: any) => {
+          customFieldMap.set(data.name, data.id);
+        });
       }
 
       if (customFieldMap.size > 0) {
@@ -348,14 +339,13 @@ export class ManageIncidentComponent implements OnInit {
           "id": this.incidentId,
           "version": this.getVersion,
           "signature": this.getSignature,
-          "owner": responseTemplate.owner,
+          "owner": incidents.owner,
           "customFields": this.customFields
         })
 
         // API call : To update incident
-        this.incidentService.updateIncident(this.incidentId, mGroupId, this.requestArray[0]).subscribe(results => {
-          let responseIncident: any = results;
-          return this.router.navigateByUrl('/incidents/' + responseIncident.id);
+        this.incidentService.updateIncident(this.incidentId, mGroupId, this.requestArray[0]).subscribe((incidents: Incidents) => {
+          return this.router.navigateByUrl('/incidents/' + incidents.id);
         });
       }
     });
