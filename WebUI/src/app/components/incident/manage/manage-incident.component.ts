@@ -47,11 +47,12 @@ export class ManageIncidentComponent implements OnInit {
         this.buildIncidentForm();
 
         if (this.incidentId === undefined) {
-            let date = new Date(moment().format('MM-DD-YYYY HH:mm'));
+            let date = new Date();
             this.incidentTimeDefaultValue = new DateTimeRange({
-                startDate: new NgbDate(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate())
+                startDate: new NgbDate(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()),
+                 startTime: { hour: date.getHours(), minute: date.getMinutes(), second: 0 }
             });
-            //,  startTime: { hour: date.getHours(), minute: date.getMinutes(), second: 0 }
+            
 
         }
         else {
