@@ -2,27 +2,27 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { Incident } from '../../../app/models/incident/incident';
 import { CommonService } from '../common/common.service';
-import { Incidents } from '../models/incidents.model';
 
 @Injectable()
 export class IncidentService {
 
   constructor(private http: HttpClient, private commonSrv: CommonService, private router: Router) { }
 
-  public getTemplate(id: string): Observable<Incidents> {
+  public getTemplate(id: string): Observable<Incident> {
     let url = 'api/incidents/template?mgroupid=' + id;
-    return this.http.get<Incidents>(url);
+    return this.http.get<Incident>(url);
   }
 
-  public createIncident(id: string, incidents: Incidents): Observable<Incidents> {
+  public createIncident(id: string, incidents: Incident): Observable<Incident> {
     let url = 'api/incidents?mgroupid=' + id;
-    return this.http.post<Incidents>(url, incidents);
+    return this.http.post<Incident>(url, incidents);
   }
 
-  public updateIncident(id: number, mGroupId: string, incidents: Incidents): Observable<Incidents> {
+  public updateIncident(id: number, mGroupId: string, incidents: Incident): Observable<Incident> {
     let url = 'api/incidents/' + id + '?mgroupid=' + mGroupId;
-    return this.http.put<Incidents>(url, incidents);
+    return this.http.put<Incident>(url, incidents);
   }
 
   public deleteMediaGroup(id: string) {
@@ -30,18 +30,18 @@ export class IncidentService {
     return this.http.delete(url);
   }
 
+  public getIncident(id: number): Observable<Incident> {
+    let mGroupId = this.commonSrv.createGroupId();
+    let url = 'api/incidents/' + id + '?mgroupid=' + mGroupId;
+    return this.http.get<Incident>(url);
+  }
+
   public getCustomFields() {
     return this.http.get('api/incidents/customFields')
   }
 
-  public getAllIncidents(search: string): Observable<Incidents[]> {
+  public getAllIncidents(search: string): Observable<Incident[]> {
     let url = 'api/incidents';
-    return this.http.get<Incidents[]>(url);
-  }
-
-  public getIncident(id: number) {
-    let mGroupId = this.commonSrv.createGroupId();
-    let url = 'api/incidents/' + id + '?mgroupid=' + mGroupId;
-    return this.http.get<Incidents>(url);
+    return this.http.get<Incident[]>(url);
   }
 }

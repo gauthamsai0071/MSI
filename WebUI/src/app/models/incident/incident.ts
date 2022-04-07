@@ -2,6 +2,7 @@ import { CustomField } from "../common/custom-field";
 
 export class Incident {
     id: number;
+    version: number;
     createdTimeStamp: Date;
     signature: string;    
     nClips: number;

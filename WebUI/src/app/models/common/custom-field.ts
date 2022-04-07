@@ -31,6 +31,6 @@ export class CustomField {
     showInSummary: boolean;
     showInIncidentEditor: boolean;
     canRead: boolean;
-    value: { text: string, timestamp?: number };
+    value: { text?: string, timestamp?: number };
     validValueLabels: string[] = [];
 }

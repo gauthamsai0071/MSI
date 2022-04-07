@@ -44,7 +44,8 @@ export class LoginComponent implements OnInit, OnDestroy {
       let resut:any = res;
       this.csrfToken = resut.csrfToken;
       sessionStorage.setItem('token',this.csrfToken);
-      this.authService.login(this.loginForm.value.userName, this.loginForm.value.password).subscribe(res =>{
+      let formValue = this.loginForm.value;
+      this.authService.login(formValue.userName, formValue.password).subscribe(res =>{
         let response:any = res;
         if(response.success===true) {
           this.formResetting = true;
@@ -54,6 +55,7 @@ export class LoginComponent implements OnInit, OnDestroy {
            this.authService.getCurrentState().subscribe(res => {
             let result: any = res;
             sessionStorage.setItem('token', result.csrfToken);
+            sessionStorage.setItem('username', formValue.userName);
           });
           
           this.router.navigate([this.returnUrl]);
