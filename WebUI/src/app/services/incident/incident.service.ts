@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Incident } from '../../../app/models/incident/incident';
+import { Export } from '../../../app/models/incident/export';
 import { CommonService } from '../common/common.service';
 
 @Injectable()
@@ -43,5 +44,25 @@ export class IncidentService {
   public getAllIncidents(search: string): Observable<Incident[]> {
     let url = 'api/incidents';
     return this.http.get<Incident[]>(url);
+  }
+
+  public createExport(id: string, exports: Export): Observable<Export> {
+    let url = 'api/exports/create/' + id;
+    return this.http.post<Export>(url, exports);
+  }
+
+  public getAllExports(): Observable<Export[]> {
+    let url = 'api/exports';
+    return this.http.get<Export[]>(url);
+  }
+
+  public getExportById(id: string): Observable<Export> {
+    let url = 'api/exports/' + id;
+    return this.http.get<Export>(url);
+  }
+
+  public deleteExportById(id: string) {
+    let url = 'api/exports/' + id + '/delete';
+    return this.http.post(url, '');
   }
 }
