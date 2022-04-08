@@ -33,4 +33,5 @@ export class CustomField {
     canRead: boolean;
     value: { text?: string, timestamp?: number };
     validValueLabels: string[] = [];
+    validValues: string[] = [];
 }

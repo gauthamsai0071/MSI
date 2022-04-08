@@ -80,7 +80,7 @@ export class MediaFilterComponent implements OnInit {
     let advanceQuery = '';
     _.each(this.searchFields, cf =>{
       let value = this.filterCriteria.get(cf.name)?.value;
-      if(cf.name == 'Systemm'){
+      if(cf.name == 'System'){
         if(value == 'astro'){
           this.mediaFilterService.notifysystemSelected('astro');
         }else if(value == 'broadband'){
