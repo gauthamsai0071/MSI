@@ -25,7 +25,7 @@ export class ManageIncidentComponent implements OnInit {
     getVersion: number;
     getSignature: string;
     title: string = "Create";
-    private textFields = ["title", "reference-code", "notes", "signature"];
+    private textFields = ["title", "reference-code", "notes", "signature", "clip-count"];
     private dateTimeFields = ["creation-time", "update-time", "incident-time"];
 
     @ViewChild('customDatepicker', { static: true }) customDatepicker: DatePickerControlComponent;
@@ -50,10 +50,8 @@ export class ManageIncidentComponent implements OnInit {
             let date = new Date();
             this.incidentTimeDefaultValue = new DateTimeRange({
                 startDate: new NgbDate(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()),
-                 startTime: { hour: date.getHours(), minute: date.getMinutes(), second: 0 }
+                startTime: { hour: date.getHours(), minute: date.getMinutes(), second: 0 }
             });
-            
-
         }
         else {
             this.getIncidentById(this.incidentId);
@@ -81,9 +79,7 @@ export class ManageIncidentComponent implements OnInit {
                 field = incident.customFields.find(item => toLower(item.name) == toLower(dateTimeData));
                 let dateTimeValue = moment(field.value.timestamp).format("DD/MM/YYYY HH:mm");
                 if (dateTimeData === 'incident-time') {
-                    //this.customDatepicker.dateChange.subscribe((value) => {
                     this.customDatepicker.dateTextModel = dateTimeValue;
-                    //});
                 } else {
                     this.incidentForm.get(dateTimeData).patchValue(dateTimeValue);
                 }
@@ -147,7 +143,7 @@ export class ManageIncidentComponent implements OnInit {
             "incident-time": [''],
             "reference-code": [''],
             notes: [''],
-            nClips: ['None'],
+            "clip-count": ['None'],
             owner: [sessionStorage.getItem('username')],
             signature: [''],
         });
