@@ -1,0 +1,36 @@
+::ng-deep .filter-row td{
+    padding-left: 12px;
+    padding-right:12px;
+    padding-bottom:3px;
+    padding-top:3px;
+}
+.saved-search-table{
+    width: 100%;
+}
+.saved-search-name-td{
+    width: 95%;
+    cursor: pointer;
+}
+.saved-search-trash-td{
+    width: 5%;
+}
+.trash-anchor{
+    cursor: pointer; 
+    padding-bottom: 0px;
+}
+.trash_ic-size{
+    width:20px; 
+    height:20px
+}
+::ng-deep .saved-search-table tr:hover{
+    background: rgba(0,122,170,0.2);
+}
+.saved-search-table a{
+    color:var(--text-primary);
+    text-decoration:none;
+} 
+.active-saved-search{
+    background-color:rgba(0,122,170,0.2) !important;
+   // font-size: larger;
+}
+

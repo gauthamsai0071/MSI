@@ -6,6 +6,7 @@ import { Incident } from '../../../app/models/incident/incident';
 import { Export } from '../../models/incident/export/export';
 import { ExportShare } from '../../models/incident/export/share';
 import { CommonService } from '../common/common.service';
+import { SavedFilter } from '../../models/incident/savedFilter';
 
 @Injectable()
 export class IncidentService {
@@ -81,5 +82,13 @@ export class IncidentService {
   public deleteExportById(id: string) {
     let url = 'api/exports/' + id + '/delete';
     return this.http.post(url, '');
+  }
+  public saveIncident(data: any): Observable<any> {
+    let url = 'api/incidents/savedSearch';
+    return this.http.post(url, data);
+  }
+  public getSavedIncidents(): Observable<SavedFilter[]> {
+    let url = 'api/incidents/savedSearch/categorised';
+    return this.http.get<SavedFilter[]>(url);
   }
 }

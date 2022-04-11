@@ -1,11 +1,13 @@
-<div class="search-result-wrapper">
+<div class="incident-search-result-wrapper">
     <button (click)="addIncident()">Add Incident</button>
     <div class="list-view-label-wrapper">
         <msi-icon name="ic_data_table" class="ic-data-table"></msi-icon>
         <p class="list-view-label">List View</p>
     </div>
     <table class="msiDatatable" msi-data-table [rows]="results"
-        [condensed]="false" [pinning]="false" [selection]="true">
+    style="width: 100%; min-width: 365px; flex: 1 1; display: block;height:calc(100vh - 180px);"
+        [condensed]="false" [pinning]="false" [selection]="true"
+        [virtualScroll]="true">
         <ng-container msiColDef="text" [width]="10">
             <ng-container *msiHeaderCellDef><div msiTooltip="Left" position="left">Reference Code</div></ng-container>
             <ng-container *msiCellDef="let row">{{row.referenceCode}}</ng-container>

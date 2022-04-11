@@ -37,7 +37,7 @@ export class IncidentSearchResultComponent {
     });
   }
 
-  results: Incident[];
+  results: Incident[] = [];
 
   constructor(private incidentSearchService : IncidentSearchService,
               private dialogService: DialogService) 

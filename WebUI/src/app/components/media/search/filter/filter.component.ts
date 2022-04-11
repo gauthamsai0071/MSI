@@ -206,7 +206,6 @@ export class MediaFilterComponent implements OnInit {
     _.each(this.searchFields, cf =>{
       if(cf.name == customFieldName){
         value = this.captureDateModel.startMoment().format("X")+"000" + "-" + this.captureDateModel.endMoment().format("X")+"000"; 
-        console.log(value);
         this.calendarFields.set(cf.id, value);
         //this.queryParams.push({id : cf.id,value :  value})
       }

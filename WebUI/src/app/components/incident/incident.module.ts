@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { ModalHeaderDirective, ModalModule, MsiCommonModule, MsiContentModalRef, MsiModalRef, ToastService } from '@msi/cobalt';
+import { ModalModule, ToastService } from '@msi/cobalt';
 import { IncidentSearchComponent } from './search/search.component';
 import { IncidentFilterComponent } from './search/filter/filter.component';
 import { SharedModule } from '../../shared.module';
@@ -8,6 +8,7 @@ import { IncidentRoutingModule } from './incident-routing.module';
 import { IncidentSearchResultComponent } from './search/result/result.component';
 import { ManageIncidentComponent } from './manage/manage-incident.component';
 import { IncidentService } from '../../services/incident/incident.service';
+import { IncidentSavedFiltersComponent } from './search/filter/saved-filters/saved-filters.component';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { IncidentService } from '../../services/incident/incident.service';
     ManageIncidentComponent,
     IncidentSearchComponent,
     IncidentFilterComponent,
-    IncidentSearchResultComponent,    
+    IncidentSearchResultComponent,
+    IncidentSavedFiltersComponent,    
  ],
   imports: [
     ModalModule,

@@ -68,12 +68,10 @@ export class MediaSearchResultComponent implements OnInit, OnChanges {
   ngOnInit() {
     
     this.dataSub = this.mediaFilterService.filteredRespone$.subscribe(result =>{
-      console.log(result);
       this.rows = result;
     });
     this.mediaFilters.getCustomFields().subscribe(result => {
       this.customFields = result;
-      console.log(result);
     })
     this.systemSub = this.mediaFilterService.systemSelected$.subscribe(result => {
       if(result == 'astro'){

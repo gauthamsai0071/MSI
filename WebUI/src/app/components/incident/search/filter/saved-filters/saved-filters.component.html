@@ -1,0 +1,20 @@
+<table class="saved-search-table">
+    <tbody>
+        <div *ngFor="let category of savedIncidentFilters">
+            <tr *ngFor="let savedFilter of category.searches" class="filter-row">
+                <td 
+                class="saved-search-name-td"
+                (click)="onSavedSearchClick(savedFilter)">
+                    <a> 
+                     {{savedFilter.name}}
+                    </a>
+                </td>
+                <td class="saved-search-trash-td">
+                    <a class="trash-anchor" (click)="onDeleteButtonClick(savedFilter)"> 
+                     <msi-icon name="ic_trash" class="trash_ic-size"></msi-icon>
+                    </a>
+                </td>
+            </tr>
+        </div>
+    </tbody>
+</table>
