@@ -13,6 +13,7 @@ import { RouterModule } from '@angular/router';
 import { AppTabGroupComponent } from './shared/tab-group/tab-group.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { PortalModule } from '@angular/cdk/portal';
+import { ModalDialogComponent } from './shared/modal-dialog/modal-dialog.component';
 
 @NgModule({
   imports: [
@@ -35,7 +36,8 @@ import { PortalModule } from '@angular/cdk/portal';
     HeaderComponent,
     CalendarComponent,
     AppTabGroupComponent,
-    InputControlComponent
+    InputControlComponent,
+    ModalDialogComponent,
   ],
   exports : [
     RouterModule,
@@ -55,7 +57,8 @@ import { PortalModule } from '@angular/cdk/portal';
     AppTabGroupComponent,
     HeaderComponent,
     CalendarComponent,
-    InputControlComponent
+    InputControlComponent,
+    ModalDialogComponent
   ],
   providers: [
     { provide: 'Api_BaseURL', useValue: environment.Api_BaseURL },

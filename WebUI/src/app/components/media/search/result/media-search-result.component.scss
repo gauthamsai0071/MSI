@@ -1,11 +1,16 @@
 .media-search-result-wrapper{
-    height:calc(100vh - 102px);
+    height:calc(100vh - 114px);
     background: #FFFFFF;
     border: 1px solid rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
     border-radius: 4px;
     margin-top: 12px;
-    overflow: auto;
+}
+.search-result-data-table{
+    width: 100%; 
+    min-width: 365px; 
+    flex: 1 1; 
+    display: block;
 }
 .list-view-label-wrapper{
     height:42px;
@@ -32,7 +37,7 @@
     flex: 1 1 0%;
     display: block;
     position: relative;
-    height:calc(100vh - 154px);
+    height:calc(100vh - 156px);
 }
 
 .cdk-virtual-scroll-viewport {

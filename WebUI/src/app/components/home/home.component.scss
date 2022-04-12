@@ -1,6 +1,6 @@
 .home-wrapper{
     background: transparent;
-    height: 100vh;
+    height: 100%;
     margin: 0;
     padding: 0;
 }
@@ -10,6 +10,9 @@ button{
     color: #fff;
     cursor: pointer;
 }
+.app-media-search-result-wrapper{
+    width: 76%;
+}
 .nav-tab-label-wrapper{
     height: 55px;
     
@@ -18,8 +21,8 @@ button{
     box-shadow: inset 0px -1px 0px rgba(0, 0, 0, 0.2);
     border-radius: 2px 2px 0px 0px;
 }
-.search-result-wrapper{
-    margin-top: -12px;
+.media-search-result-wrapper{
+    margin-top: 0px;
     display: flex;
 }
 .msi-tabs-wrapper  .tab-label{

@@ -43,10 +43,11 @@
                         </div>
                         <div>
                             <msi-radio-group 
+                                class="radio-group"
                                 [inline]="true"
                                 formControlName="{{field.name}}"
                                 ngDefaultControl>
-                                <msi-radio-button *ngFor="let option of field.validValues; let i = index" [value]="option">{{field.validValueLabels[i]}}</msi-radio-button>
+                                <msi-radio-button class="msi-radio-button" *ngFor="let option of field.validValues; let i = index" [value]="option">{{field.validValueLabels[i]}}</msi-radio-button>
                             </msi-radio-group>
                         </div>
                     </div>
@@ -54,7 +55,8 @@
                         <div class="label-wrap">
                             <span class="filter-label-first">{{field.displayName.split(',checkbox,').slice(0, -1)}}</span>
                         </div>
-                        <msi-checkbox-group>
+                        <msi-checkbox-group
+                            class="checkbox-group">
                             <msi-checkbox
                             class="{{field.name}}"   
                             formControlName="{{field.name}}"
@@ -64,7 +66,7 @@
                     </div>
                     <div *ngIf="field.displayName.includes(',multiselect,')">
                         <div class="label-wrap">
-                            <span class="filter-label-first">{{field.displayName}}</span>
+                            <span class="filter-label-first">{{field.displayName.split(',multiselect,').slice(0, -1)}}</span>
                         </div>
                         <ng-multiselect-dropdown
                             [settings]="dropdownSettings"
@@ -86,7 +88,6 @@
                             >{{field.validValueLabels[i]}}</msi-select-option>
                         </msi-select>
                     </div>
-    
                 </div>
             </div>
             <div class="field-wrapper">

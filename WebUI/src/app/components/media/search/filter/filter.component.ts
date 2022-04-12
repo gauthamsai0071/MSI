@@ -80,7 +80,7 @@ export class MediaFilterComponent implements OnInit {
     let advanceQuery = '';
     _.each(this.searchFields, cf =>{
       let value = this.filterCriteria.get(cf.name)?.value;
-      if(cf.name == 'Systemm'){
+      if(cf.name == 'System'){
         if(value == 'astro'){
           this.mediaFilterService.notifysystemSelected('astro');
         }else if(value == 'broadband'){
@@ -206,7 +206,6 @@ export class MediaFilterComponent implements OnInit {
     _.each(this.searchFields, cf =>{
       if(cf.name == customFieldName){
         value = this.captureDateModel.startMoment().format("X")+"000" + "-" + this.captureDateModel.endMoment().format("X")+"000"; 
-        console.log(value);
         this.calendarFields.set(cf.id, value);
         //this.queryParams.push({id : cf.id,value :  value})
       }

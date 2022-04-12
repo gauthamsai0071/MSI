@@ -1,26 +1,40 @@
-<div class="search-result-wrapper">
+<div class="incident-search-result-wrapper">
     <button (click)="addIncident()">Add Incident</button>
     <div class="list-view-label-wrapper">
         <msi-icon name="ic_data_table" class="ic-data-table"></msi-icon>
         <p class="list-view-label">List View</p>
     </div>
     <table class="msiDatatable" msi-data-table [rows]="results"
-        [condensed]="false" [pinning]="false" [selection]="true">
-        <ng-container msiColDef="text" [width]="10">
-            <ng-container *msiHeaderCellDef><div msiTooltip="Left" position="left">Reference Code</div></ng-container>
+        style="width: 100%; min-width: 365px; flex: 1 1; display: block;height:calc(100vh - 180px);" [condensed]="false"
+        [pinning]="false" [selection]="true" [virtualScroll]="true">
+        <ng-container msiColDef="text" [width]="150" [fixedWidth]="true">
+            <ng-container *msiHeaderCellDef>
+                <div msiTooltip="Left" position="left">Reference Code</div>
+            </ng-container>
             <ng-container *msiCellDef="let row">{{row.referenceCode}}</ng-container>
         </ng-container>
-        <ng-container msiColDef="text" [width]="50">
-            <ng-container *msiHeaderCellDef><div msiTooltip="Left" position="left">Title</div></ng-container>
+        <ng-container msiColDef="text" [width]="250" [fixedWidth]="true">
+            <ng-container *msiHeaderCellDef>
+                <div msiTooltip="Left" position="left">Title</div>
+            </ng-container>
             <ng-container *msiCellDef="let row">{{row.title}}</ng-container>
         </ng-container>
-        <ng-container msiColDef="text" [width]="22">
-            <ng-container *msiHeaderCellDef><div msiTooltip="Left" position="left">Incident Time</div></ng-container>
-            <ng-container *msiCellDef="let row">{{row.incidentTime}}</ng-container>
+        <ng-container msiColDef="text" [width]="150" [fixedWidth]="true">
+            <ng-container *msiHeaderCellDef>
+                <div msiTooltip="Left" position="left">Incident Time</div>
+            </ng-container>
+            <ng-container *msiCellDef="let row">{{row.incidentTime | date:'dd/MM/YYYY HH:mm'}}</ng-container>
         </ng-container>
-        <ng-container msiColDef="text" [width]="18">
+        <ng-container msiColDef="text" [width]="50" [fixedWidth]="true">
             <ng-container *msiCellDef="let row">
                 <msi-icon name="ic_add" class="icon-demo"></msi-icon>
+            </ng-container>
+        </ng-container>
+        <ng-container msiColDef="text" [width]="20" [fixedWidth]="true">
+            <ng-container *msiCellDef="let row">
+                <a [routerLink]="['/incidents/export', row.id]" title="Export" class="msi-link">
+                    <msi-icon name="ic_export" class="icon-demo"></msi-icon>
+                </a>
             </ng-container>
         </ng-container>
     </table>

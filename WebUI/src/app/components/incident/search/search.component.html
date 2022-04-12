@@ -1,13 +1,22 @@
 <app-header></app-header>
-<div class="search-result-wrapper">
+<div class="incident-search-result-wrapper">
     <div class="filter-panel">
-        <msi-tab-group>
+        <div class="seach-div-wrapper">
+            <msi-icon class="search-icon" name="ic_search"></msi-icon>
+            <span class="search-label">Search</span>
+        </div>
+        <msi-tab-group class="incident-tab-group">
             <msi-tab label="Filters">
                 <div class="filters-wrapper">
-                    <app-incident-filter (searchIncidents)="searchIncidents($event)"></app-incident-filter>
+                    <app-incident-filter 
+                        (searchIncidents)="searchIncidents($event)"
+                        [clickedSavedFilterCriteria]="clickedSavedFilterCriteria"></app-incident-filter>
                 </div>
             </msi-tab>
             <msi-tab label="Saved Searches">
+                <div class="incident-savedFilters-wrapper">
+                    <app-incident-saved-filters (clickedSavedFilter)="clickedSavedFilter($event)"></app-incident-saved-filters>
+                </div>
             </msi-tab>
         </msi-tab-group>
     </div>    

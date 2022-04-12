@@ -1,5 +1,20 @@
+.incident-filters-wrapper{
+    height:auto;
+}
+.all-incident-filter-wrapper{
+    height:calc(100vh - 255px);
+    overflow: auto;
+}
 .field-wrapper{
-    margin: 12px 24px;
+    margin: 12px 12px;
+    width: auto;
+}
+.filter-label-first{
+    font-family: 'Public Sans';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 18px;
 }
 .form-input{
     width : -webkit-fill-available;
@@ -9,6 +24,12 @@
 }
 ::ng-deep .multiselect-dropdown .dropdown-btn{
     width: -webkit-fill-available !important;
+}
+.checkbox-group{
+    position: relative;
+}
+.checkbox-position{
+    position: relative;
 }
 .btn-inner-section{
     display: flex;
