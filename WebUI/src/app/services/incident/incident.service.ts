@@ -89,12 +89,20 @@ export class IncidentService {
     let url = 'api/exports/' + id + '/delete';
     return this.http.post(url, null);
   }
+
+  public downloadExportById(id: number) {
+    let url = 'api/exports/' + id + '/download';
+    return this.http.get(url);
+  }
+
   public saveIncident(data: any): Observable<any> {
     let url = 'api/incidents/savedSearch';
     return this.http.post(url, data);
   }
+
   public getSavedIncidents(): Observable<SavedFilter[]> {
     let url = 'api/incidents/savedSearch/categorised';
     return this.http.get<SavedFilter[]>(url);
   }
+
 }

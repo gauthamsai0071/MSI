@@ -1,10 +1,10 @@
 export class ExportProfile {
     id: number;
     description: string;
-    includeTitlePages: boolean;
-    includeConvertedFootage: boolean;
-    includeFootage: boolean;
-    includeMetadata: boolean;
+    includeTitlePages: boolean = false;
+    includeConvertedFootage: boolean = false;
+    includeFootage: boolean = false;
+    includeMetadata: boolean = false;
     profile: Profile
 }
 

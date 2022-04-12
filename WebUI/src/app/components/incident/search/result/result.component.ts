@@ -11,43 +11,46 @@ import { ManageIncidentComponent } from '../../manage/manage-incident.component'
   templateUrl: './result.component.html',
   styleUrls: ['./result.component.scss']
 })
-export class IncidentSearchResultComponent {  
-  private _filterCriteria: { owner: string, text: string, showCurrent: boolean, showDeleted: boolean,
-                              showShared: boolean, showExternal: boolean, showActiveExternal: boolean,
-                              searchFilters: {[key: string]: string}};
+export class IncidentSearchResultComponent {
+  private _filterCriteria: {
+    owner: string, text: string, showCurrent: boolean, showDeleted: boolean,
+    showShared: boolean, showExternal: boolean, showActiveExternal: boolean,
+    searchFilters: { [key: string]: string }
+  };
 
   @Input()
-  set filterCriteria(value: { owner: string, text: string, showCurrent: boolean, showDeleted: boolean,
-                    showShared: boolean, showExternal: boolean, showActiveExternal: boolean,
-                    searchFilters: {[key: string]: string}}) {    
+  set filterCriteria(value: {
+    owner: string, text: string, showCurrent: boolean, showDeleted: boolean,
+    showShared: boolean, showExternal: boolean, showActiveExternal: boolean,
+    searchFilters: { [key: string]: string }
+  }) {
     this.incidentSearchService.search(value.owner, value.text, value.showCurrent, value.showDeleted, value.showShared,
-                      value.showExternal, value.showActiveExternal, value.searchFilters).subscribe(response => {
-      _.each(response, incident => {
+      value.showExternal, value.showActiveExternal, value.searchFilters).subscribe(response => {
+        _.each(response, incident => {
           let field = incident.customFields.find(item => toLower(item.name) == toLower("title"));
-          incident.title = field !== undefined ? field.value.text : '';
+          incident.title = (field && field.value) !== undefined ? field.value.text : '';
 
-          field = incident.customFields.find(item => toLower(item.name) == toLower(""));
-          incident.referenceCode = field !== undefined ? field.value.text : '';
+          field = incident.customFields.find(item => toLower(item.name) == toLower("reference-code"));
+          incident.referenceCode = (field && field.value) !== undefined ? field.value.text : '';
 
-          field = incident.customFields.find(item => toLower(item.name) == toLower("title"));
-          incident.incidentTime = field !== undefined ? moment(field.value.timestamp).toDate() : null;
+          field = incident.customFields.find(item => toLower(item.name) == toLower("incident-time"));
+          incident.incidentTime = (field && field.value) !== undefined ? moment(field.value.timestamp).toDate() : null;
+        });
+
+        this.results = response;
       });
-
-      this.results = response;
-    });
   }
 
   results: Incident[] = [];
 
-  constructor(private incidentSearchService : IncidentSearchService,
-              private dialogService: DialogService) 
-  {
+  constructor(private incidentSearchService: IncidentSearchService,
+    private dialogService: DialogService) {
   }
 
   addIncident(): void {
     this.dialogService.showDialog('Create Incident', ManageIncidentComponent, 1, {})
-        .subscribe(result => {
-          const x = result;
-        });
+      .subscribe(result => {
+        const x = result;
+      });
   }
 }

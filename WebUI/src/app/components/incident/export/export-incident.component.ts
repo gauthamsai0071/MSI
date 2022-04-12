@@ -20,7 +20,7 @@ export class ExportIncidentComponent implements OnInit {
     incidentId: number = 0;
     submitted = false;
     formResetting: boolean = true;
-    profileSelectedValue: number;
+    profileSelectedValue: string;
     incident: Incident = null;
     export: Export;
     exportProfile: ExportProfile;
@@ -48,10 +48,16 @@ export class ExportIncidentComponent implements OnInit {
             this.export = responseExport;
             this.exportForm.patchValue({
                 exportProfile: {
-                    id: this.export.profiles[0].id
+                    id: this.export.profiles[0].type
                 }
             })
         });
+
+        this.exportForm.patchValue({
+            exportProfile: {
+                profileDvdFormat: false
+            }
+        })
     }
 
     outputSelectChanges() {
@@ -65,8 +71,13 @@ export class ExportIncidentComponent implements OnInit {
             return;
         }
 
-        const formValue = this.exportForm.value;
-        this.incidentService.createExport(this.incidentId, formValue).subscribe((response: ExportProfile) => {
+        const form = this.exportForm;
+        _.each(this.export.profiles, data => {
+            if (data.type === this.profileSelectedValue)
+                this.exportForm.get("exportProfile.id").setValue(data.id);
+        });
+
+        this.incidentService.createExport(this.incidentId, form.value).subscribe((response: ExportProfile) => {
             this.incidentService.deleteMediaGroup(this.mGroupId).subscribe();
             return this.router.navigateByUrl('/incidents/exports');
         });
@@ -76,7 +87,12 @@ export class ExportIncidentComponent implements OnInit {
         this.exportForm = this.formBuilder.group({
             description: ['', Validators.required],
             exportProfile: this.formBuilder.group({
-                id: ''
+                id: '',
+                profileDvdFormat: true,
+                profileSelectMedia: 4.7,
+                includeFootage: true,
+                includeConvertedFootage: false,
+                includeMetadata: false
             })
         });
     }
