@@ -10,16 +10,10 @@
     </div>
 </div> -->
 <!-- <ng-template #tpl let-data let-ref="modalRef">
-    <msi-modal>
-      <msi-modal-header>Modal from template</msi-modal-header>
-      <msi-modal-content>
-        <input placeholder="Modal result" #input class="msi-input" />
-        <p>Modal was opened with data: </p>
-        <pre>{{ data | json }}</pre>
-      </msi-modal-content>
-      <msi-modal-actions align="end">
-        <button class="msi-btn" (click)="ref.close()">Dismiss</button>
-        <button class="msi-btn" (click)="ref.close({ result: input.value })">Confirm</button>
-      </msi-modal-actions>
-    </msi-modal>
-  </ng-template> -->
+  <msi-modal>
+    <msi-modal-header>{{title}}</msi-modal-header>
+    <msi-modal-content>
+      <ng-template #component></ng-template>
+    </msi-modal-content>
+  </msi-modal>
+</ng-template> -->

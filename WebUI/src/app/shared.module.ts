@@ -23,6 +23,7 @@ import { PortalModule } from '@angular/cdk/portal';
     IconModule,    
     ItemModule,
     MsiSharedModule,
+    ModalModule,
     DragDropModule,
     FormsModule,
     ReactiveFormsModule,

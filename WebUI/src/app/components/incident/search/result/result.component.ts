@@ -11,11 +11,7 @@ import { ManageIncident } from '../../manage/manage-incident.component';
   templateUrl: './result.component.html',
   styleUrls: ['./result.component.scss']
 })
-export class IncidentSearchResultComponent {  
-  private _filterCriteria: { owner: string, text: string, showCurrent: boolean, showDeleted: boolean,
-                              showShared: boolean, showExternal: boolean, showActiveExternal: boolean,
-                              searchFilters: {[key: string]: string}};
-
+export class IncidentSearchResultComponent { 
   @Input()
   set filterCriteria(value: { owner: string, text: string, showCurrent: boolean, showDeleted: boolean,
                     showShared: boolean, showExternal: boolean, showActiveExternal: boolean,
@@ -26,10 +22,10 @@ export class IncidentSearchResultComponent {
           let field = incident.customFields.find(item => toLower(item.name) == toLower("title"));
           incident.title = field !== undefined ? field.value.text : '';
 
-          field = incident.customFields.find(item => toLower(item.name) == toLower(""));
+          field = incident.customFields.find(item => toLower(item.name) == toLower("referencecode"));
           incident.referenceCode = field !== undefined ? field.value.text : '';
 
-          field = incident.customFields.find(item => toLower(item.name) == toLower("title"));
+          field = incident.customFields.find(item => toLower(item.name) == toLower("incidentTime"));
           incident.incidentTime = field !== undefined ? moment(field.value.timestamp).toDate() : null;
       });
 
@@ -43,7 +39,7 @@ export class IncidentSearchResultComponent {
               private dialogService: DialogService) 
   {
   }
-
+  
   addIncident(): void {
     this.dialogService.showDialog('Create Incident', ManageIncident, null, {})
         .subscribe(result => {

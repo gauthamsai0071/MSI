@@ -15,7 +15,7 @@ export class Incident {
 
     referenceCode: string;
     title: string;
-    incidentTime: Date;
+    incidentTime?: Date;
 
     customFields: CustomField[] = [];
 }

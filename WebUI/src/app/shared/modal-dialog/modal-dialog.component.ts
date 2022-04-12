@@ -1,5 +1,5 @@
 import { Component, ViewChild, ViewContainerRef, ComponentRef,
-    OnInit, OnDestroy, ComponentFactoryResolver, EventEmitter, ElementRef } from '@angular/core';
+         OnInit, OnDestroy, ComponentFactoryResolver, EventEmitter, ElementRef } from '@angular/core';
 import { Subject } from 'rxjs';
 
 @Component({
@@ -25,9 +25,8 @@ export class ModalDialogComponent implements OnInit, OnDestroy {
 
     componentRef: ComponentRef<any>;
 
-    constructor(
-                    private resolver: ComponentFactoryResolver,
-                    private elementRef: ElementRef) {
+    constructor(private resolver: ComponentFactoryResolver,
+                private elementRef: ElementRef) {
         this.dialogClosed = new Subject<any>();
         this.modalWindowClosed = new Subject<any>();
     }
