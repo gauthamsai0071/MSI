@@ -19,11 +19,11 @@
             </ng-container>
             <ng-container *msiCellDef="let row">{{row.title}}</ng-container>
         </ng-container>
-        <ng-container msiColDef="text" [width]="450" [fixedWidth]="true">
+        <ng-container msiColDef="text" [width]="150" [fixedWidth]="true">
             <ng-container *msiHeaderCellDef>
                 <div msiTooltip="Left" position="left">Incident Time</div>
             </ng-container>
-            <ng-container *msiCellDef="let row">{{row.incidentTime}}</ng-container>
+            <ng-container *msiCellDef="let row">{{row.incidentTime | date:'dd/MM/YYYY HH:mm'}}</ng-container>
         </ng-container>
         <ng-container msiColDef="text" [width]="50" [fixedWidth]="true">
             <ng-container *msiCellDef="let row">
