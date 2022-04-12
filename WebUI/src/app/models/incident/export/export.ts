@@ -1,5 +1,6 @@
 export class Export {
     id: number;
+    incidentId: number;
     creationTime: number;
     completionTime : number;
     description : string;
@@ -11,11 +12,11 @@ export class Export {
     allowedActions: string;
     encrypted: boolean;
 
-    exportProfile: ExportProfile[] = [];
+    profiles: Profiles[] = [];
     owner: Owner[] = [];
-}
+}  
 
-export class ExportProfile {
+export class Profiles {
     id: number;
     name: string;
     type: string;

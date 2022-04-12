@@ -9,11 +9,15 @@ import { IncidentSearchResultComponent } from './search/result/result.component'
 import { ManageIncidentComponent } from './manage/manage-incident.component';
 import { IncidentService } from '../../services/incident/incident.service';
 import { IncidentSavedFiltersComponent } from './search/filter/saved-filters/saved-filters.component';
+import { ExportIncidentComponent } from './export/export-incident.component';
+import { ExportListComponent } from './export/list/export-list.component';
 
 
 @NgModule({
   declarations: [
     ManageIncidentComponent,
+    ExportIncidentComponent,
+    ExportListComponent,
     IncidentSearchComponent,
     IncidentFilterComponent,
     IncidentSearchResultComponent,

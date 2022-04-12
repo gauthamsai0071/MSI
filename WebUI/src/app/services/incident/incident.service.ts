@@ -7,6 +7,7 @@ import { Export } from '../../models/incident/export/export';
 import { ExportShare } from '../../models/incident/export/share';
 import { CommonService } from '../common/common.service';
 import { SavedFilter } from '../../models/incident/savedFilter';
+import { ExportProfile } from '../../models/incident/export/exportProfile';
 
 @Injectable()
 export class IncidentService {
@@ -48,9 +49,14 @@ export class IncidentService {
     return this.http.get<Incident[]>(url);
   }
 
-  public createExport(id: string, exports: Export): Observable<Export> {
+  public getExportTemplate(id: number, mGroupId: string): Observable<Export> {
+    let url = 'api/exports/template?incidentId=' + id + '&mgroupId=' + mGroupId;
+    return this.http.get<Export>(url);
+  }
+
+  public createExport(id: number, exportProfile: ExportProfile): Observable<ExportProfile> {
     let url = 'api/exports/create/' + id;
-    return this.http.post<Export>(url, exports);
+    return this.http.post<ExportProfile>(url, exportProfile);
   }
 
   public getExportByTemplateId(id: string): Observable<Export> {
@@ -79,9 +85,9 @@ export class IncidentService {
     return this.http.post<ExportShare>(url, exportShare);
   }
 
-  public deleteExportById(id: string) {
+  public deleteExportById(id: number) {
     let url = 'api/exports/' + id + '/delete';
-    return this.http.post(url, '');
+    return this.http.post(url, null);
   }
   public saveIncident(data: any): Observable<any> {
     let url = 'api/incidents/savedSearch';
