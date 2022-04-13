@@ -5,6 +5,8 @@ export class ExportProfile {
     includeConvertedFootage: boolean = false;
     includeFootage: boolean = false;
     includeMetadata: boolean = false;
+    ntscDvd: boolean = false;
+    maxMediaSize: number;
     profile: Profile
 }
 

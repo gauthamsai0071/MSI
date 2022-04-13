@@ -9,6 +9,7 @@ import { } from "../../../models/incident/export/export";
 import { Incident } from "../../../models/incident/incident";
 import { IncidentService } from "../../../services/incident/incident.service";
 import { CommonService } from "../../../services/common/common.service";
+import { ToastService } from "@msi/cobalt";
 
 @Component({
     templateUrl: './export-incident.component.html',
@@ -26,7 +27,7 @@ export class ExportIncidentComponent implements OnInit {
     exportProfile: ExportProfile;
     mGroupId: string | null;
 
-    constructor(private formBuilder: FormBuilder, private route: ActivatedRoute, private router: Router, private incidentService: IncidentService, private commonService: CommonService) {
+    constructor(private formBuilder: FormBuilder, private route: ActivatedRoute, private router: Router, private incidentService: IncidentService, private commonService: CommonService, private toastService: ToastService) {
     }
 
     ngOnInit(): void {
@@ -46,18 +47,9 @@ export class ExportIncidentComponent implements OnInit {
                 this.exportForm.get("description").setValue(field.value.text);
 
             this.export = responseExport;
-            this.exportForm.patchValue({
-                exportProfile: {
-                    id: this.export.profiles[0].type
-                }
-            })
+            this.exportForm.get("exportProfile.id").setValue(this.export.profiles[0].type);
         });
-
-        this.exportForm.patchValue({
-            exportProfile: {
-                profileDvdFormat: false
-            }
-        })
+        this.exportForm.get("exportProfile.profileDvdFormat").setValue(false);
     }
 
     outputSelectChanges() {
@@ -73,13 +65,18 @@ export class ExportIncidentComponent implements OnInit {
 
         const form = this.exportForm;
         _.each(this.export.profiles, data => {
-            if (data.type === this.profileSelectedValue)
+            if (data.type === this.profileSelectedValue) {
                 this.exportForm.get("exportProfile.id").setValue(data.id);
+            }
         });
 
         this.incidentService.createExport(this.incidentId, form.value).subscribe((response: ExportProfile) => {
             this.incidentService.deleteMediaGroup(this.mGroupId).subscribe();
             return this.router.navigateByUrl('/incidents/exports');
+        }, (error) => {
+            if (error.status === 400 && error.error.errorKey === 'errorExportingIncidentNoClipsFound') {
+                this.toastService.error("Error while exporting incident: the export contains no clips.", undefined, { autoDismiss: 5000, closeButton: true });
+            }
         });
     }
 
