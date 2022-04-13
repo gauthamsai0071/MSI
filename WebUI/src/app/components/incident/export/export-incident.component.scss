@@ -17,7 +17,7 @@
         align-items: center;
     }
 
-    .export-toggle label.msi-toggle-label {
+    ::ng-deep .export-toggle label.msi-toggle-label {
         padding: 8px 5px;
     }    
 
