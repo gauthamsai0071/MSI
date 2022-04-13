@@ -1,10 +1,10 @@
 .incident-search-result-wrapper{
-    height:calc(100vh - 112px);
+    height:calc(100vh - 102px);
     background: #FFFFFF;
     border: 1px solid rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
     border-radius: 4px;
-    margin-top: 12px;
+    margin-top: 6px;
 }
 .list-view-label-wrapper{
     height:42px;
@@ -28,6 +28,8 @@
     width: 100%; 
     flex: 1 1;
     display: block;
+    position: relative;
+    height:calc(100vh - 170px);
 }
 
 .cdk-virtual-scroll-viewport {

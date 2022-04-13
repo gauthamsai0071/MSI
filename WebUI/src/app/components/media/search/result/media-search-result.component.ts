@@ -68,7 +68,13 @@ export class MediaSearchResultComponent implements OnInit, OnChanges {
   ngOnInit() {
     
     this.dataSub = this.mediaFilterService.filteredRespone$.subscribe(result =>{
-      this.rows = result;
+      if(result){
+        this.rows = result;
+      }else{
+        this.rows = [];
+      }
+      
+      
     });
     this.mediaFilters.getCustomFields().subscribe(result => {
       this.customFields = result;

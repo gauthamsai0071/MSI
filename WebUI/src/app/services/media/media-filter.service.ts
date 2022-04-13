@@ -25,6 +25,8 @@ export class MediaFilterService {
   public static notifyfilteredRespone(data: any) {
     if (data) {
       this.filteredRespone.next(data);
+    }else{
+      this.filteredRespone.next(null);
     }
   }
 }

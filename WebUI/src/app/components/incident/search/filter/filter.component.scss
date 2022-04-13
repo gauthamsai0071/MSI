@@ -2,11 +2,11 @@
     height:auto;
 }
 .all-incident-filter-wrapper{
-    height:calc(100vh - 255px);
+    height:calc(100vh - 230px);
     overflow: auto;
 }
 .field-wrapper{
-    margin: 12px 12px;
+    margin: 6px 12px;
     width: auto;
 }
 .filter-label-first{
@@ -31,11 +31,15 @@
 .checkbox-position{
     position: relative;
 }
+.owner-wrapper{
+    display: flex;
+    align-items: center;
+}
 .btn-inner-section{
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     font-weight: 500;
-    padding: 12px 24px;
+    padding: 6px 24px;
 }
