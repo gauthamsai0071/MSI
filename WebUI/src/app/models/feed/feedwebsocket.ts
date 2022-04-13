@@ -55,6 +55,8 @@ export class Feedwebsocket {
                                 MediaFilterService.notifyfilteredRespone(this.messageResponse);
                                 console.log(message?.eventData?.data[2].videoFiles)
                                 sessionStorage.setItem('socketResponse',JSON.stringify(message.eventData));
+                            }else if(message.eventData && message.eventData.id && message.eventData.data[message.eventData.id].moreVideoFilesAvailable == false){
+                                MediaFilterService.notifyfilteredRespone(null);
                             }
                             break;
                         case "SESSION_EXPIRED":

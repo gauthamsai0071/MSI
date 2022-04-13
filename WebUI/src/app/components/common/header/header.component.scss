@@ -33,3 +33,27 @@
 .tab-item {
   display: flex;
 }
+::ng-deep .msi-tabs-wrapper > .msi-tab-labels{ 
+  box-shadow: inset 0px -1px 0px rgba(0, 0, 0, 0.1);
+  border-radius: 2px 2px 0px 0px;
+}
+.msi-tabs-wrapper  .tab-label{
+  padding-left: 8px ;
+  font-family: 'Public Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 22px;
+}
+.media-play-icon{
+  height: 22px;
+  width:22px;
+}
+.incident-icon{
+  height:22px;
+  width: 22px;
+}
+.dashboard-icon{
+  height:20px;
+  width: 20px;
+}
