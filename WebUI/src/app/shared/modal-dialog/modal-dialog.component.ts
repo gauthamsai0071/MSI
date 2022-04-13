@@ -1,6 +1,6 @@
 import { Component, ViewChild, ViewContainerRef, ComponentRef,
-         OnInit, OnDestroy, ComponentFactoryResolver, EventEmitter, ElementRef } from '@angular/core';
-import { Subject } from 'rxjs';
+         OnDestroy, ComponentFactoryResolver, EventEmitter, ElementRef, Inject, AfterViewInit } from '@angular/core';
+import { ModalSize, MsiModalRef, MSI_MODAL_DATA } from '@msi/cobalt';
 
 @Component({
     templateUrl: './modal-dialog.component.html',
@@ -8,51 +8,44 @@ import { Subject } from 'rxjs';
         './modal-dialog.component.scss'
     ]
 })
-export class ModalDialogComponent implements OnInit, OnDestroy {
-    @ViewChild('component', { read: ViewContainerRef })
+export class ModalDialogComponent implements AfterViewInit, OnDestroy {
+    @ViewChild('component', { read: ViewContainerRef})
     viewContainer: ViewContainerRef;
 
-    @ViewChild('ref') modalRef: any;
-
     title: string;
-    component: any;
+    public component: any;
     data: any;
-
-    modalWindowClosed: Subject<any>;
-    dialogClosed: Subject<any>;
+    result?: any;
 
     dialogId: any;
 
     componentRef: ComponentRef<any>;
 
     constructor(private resolver: ComponentFactoryResolver,
-                private elementRef: ElementRef) {
-        this.dialogClosed = new Subject<any>();
-        this.modalWindowClosed = new Subject<any>();
+                private modalRef: MsiModalRef,
+                private elementRef: ElementRef,
+                @Inject(MSI_MODAL_DATA) private dialogData: any) {
+        this.title = this.dialogData.title;
+        this.component = this.dialogData.component;
+        this.data = this.dialogData.data;
+        this.result = null;
     }
 
-    ngOnInit() {
+    ngAfterViewInit(): void {
         const factory =  this.resolver.resolveComponentFactory(this.component);
         this.componentRef = this.viewContainer.createComponent(factory);
         this.componentRef.instance.popupParam = this.data;
         this.componentRef.instance.popupResult = new EventEmitter<any>();
 
-        (<EventEmitter<any>>this.componentRef.instance.popupResult).subscribe((result) => {
+        (<EventEmitter<any>>this.componentRef.instance.popupResult).subscribe((result?: any) => {
             (<EventEmitter<any>>this.componentRef.instance.popupResult).unsubscribe();
-            this.modalRef.close();
-
-            if (!this.dialogClosed.isStopped && !this.dialogClosed.closed) {
-                this.dialogClosed.next(result);
-            }
+            this.result = result;  
+            this.modalRef.close(result);            
         });
     }
 
     public ngOnDestroy(): void {
-        if (!this.modalWindowClosed.isStopped && !this.modalWindowClosed.closed) {
-            this.modalWindowClosed.next(`${this.componentRef.componentType.name}_${this.dialogId}`);
-        }
-
-        if (!(<EventEmitter<any>>this.componentRef.instance.popupResult).isStopped) {
+        if (this.componentRef && this.componentRef.instance && !(<EventEmitter<any>>this.componentRef.instance.popupResult).isStopped) {
             (<EventEmitter<any>>this.componentRef.instance.popupResult).unsubscribe();
         }
 
@@ -60,8 +53,10 @@ export class ModalDialogComponent implements OnInit, OnDestroy {
             this.componentRef.destroy();
         }
 
-        const modal = $(this.elementRef.nativeElement).parents('.modal');
-        $($(modal).parent().children('.modal-backdrop')).remove();
-        $(modal).remove();
+        this.modalRef.close(this.result);
+    }
+
+    close(): void {
+        this.modalRef.close();
     }
 }

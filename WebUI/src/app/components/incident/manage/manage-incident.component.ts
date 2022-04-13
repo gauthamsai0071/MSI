@@ -3,7 +3,8 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { DatePickerControlComponent, DateTimeRange } from "@msi/cobalt";
 import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
-import _, { toLower } from "lodash";
+import * as _ from "lodash";
+import { toLower } from "lodash";
 import moment from "moment";
 import { Incident } from "../../../models/incident/incident";
 import { CommonService } from "../../../services/common/common.service";
@@ -13,8 +14,7 @@ import { IncidentService } from "../../../services/incident/incident.service";
     templateUrl: './manage-incident.component.html',
     styleUrls: ['./manage-incident.component.scss']
 })
-export class ManageIncidentComponent implements OnInit {
-
+export class ManageIncidentComponent implements OnInit {    
     incidentForm: FormGroup = null;
     incidentId: number = 0;
     submitted = false;
@@ -25,12 +25,16 @@ export class ManageIncidentComponent implements OnInit {
     getVersion: number;
     getSignature: string;
     title: string = "Create";
+
+    get formControls() { return this.incidentForm.controls; }
+    
     private textFields = ["title", "reference-code", "notes", "signature", "clip-count"];
     private dateTimeFields = ["creation-time", "update-time", "incident-time"];
 
     @ViewChild('customDatepicker', { static: true }) customDatepicker: DatePickerControlComponent;
 
-    constructor(private formBuilder: FormBuilder, private route: ActivatedRoute, private router: Router, private incidentService: IncidentService, private commonService: CommonService) {
+    constructor(private formBuilder: FormBuilder, private route: ActivatedRoute,
+                private router: Router, private incidentService: IncidentService, private commonService: CommonService) {
     }
 
     ngOnInit(): void {
@@ -147,7 +151,5 @@ export class ManageIncidentComponent implements OnInit {
             owner: [sessionStorage.getItem('username')],
             signature: [''],
         });
-    }
-
-    get formControls() { return this.incidentForm.controls; }
+    }    
 }
