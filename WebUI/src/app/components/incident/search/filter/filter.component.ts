@@ -4,13 +4,14 @@ import { DateTimeRange, ModalService, MsiModalRef } from '@msi/cobalt';
 import { IncidentSearchService } from '../../../../services/incident/search.service';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { CustomField } from '../../../../models/common/custom-field';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { User } from '../../../../models/common/user';
 import _ from 'lodash';
 import { Incident } from '../../../../models/incident/incident';
 import { IncidentFilter } from 'src/app/models/incident/savedFilter';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { startWith,map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-incident-filter',
@@ -63,9 +64,11 @@ export class IncidentFilterComponent implements OnInit {
     dateModel: DateTimeRange= new DateTimeRange();
     loginUser: User = null;
     owners: User[] = [];
+    public filteredOwners  = new Observable<User[]>();
     incidents: Incident[] = [];
     calendarFields = new Map();
     checkBoxFields = new Map();
+    saveSearchName : string = '';
     private confirmationModal: MsiModalRef;
     constructor(private formBuilder: FormBuilder,
                 private authService: AuthService,
@@ -76,13 +79,13 @@ export class IncidentFilterComponent implements OnInit {
 
     ngOnInit(): void {
         forkJoin([
-            this.authService.getLoggedInUser(),
+            this.authService.getCurrentState(),
             this.incidentSearchService.getOwners(),
             this.incidentSearchService.getCustomFields()
-        ]).subscribe(([responseLoginUser, responseOwners, responseCustomFields]) => {
-            this.loginUser = responseLoginUser;       
+        ]).subscribe(([responseCurrentState, responseOwners, responseCustomFields]) => {
+            this.loginUser = responseCurrentState.user;       
             this.owners = responseOwners;
-            
+
             _.each(responseCustomFields, field => {
                 if(field.showSearchField) {
                     this.searchFields.push(field);
@@ -90,8 +93,20 @@ export class IncidentFilterComponent implements OnInit {
             });
 
             this.buildSearchForm();
-        });    
+
+            this.filteredOwners = this.filterCriteria.get('owner').valueChanges.pipe(
+                startWith(''),
+                map((value) =>{
+                  return  value ? this._filterOwnerOptions(value) : this.owners.slice();
+                })
+            )
+        });          
     }
+    private _filterOwnerOptions(filterValue: string): User[] {
+        return this.owners.filter((opt) =>
+          opt.name.toLowerCase().includes(filterValue.toLowerCase()),
+        );
+      }
 
     search(): void {
         const searchFilters: {[key: number]: string} = {};
@@ -162,5 +177,9 @@ export class IncidentFilterComponent implements OnInit {
     cancelOnSaveFilter() {
         this.confirmationModal.close();
     }
-    searchName : string = '';  
+
+    setCurrentOwner(){
+        this.filterCriteria.get('owner').setValue(this.loginUser.name);
+    }
+  
 }

@@ -1,10 +1,10 @@
 .media-search-result-wrapper{
-    height:calc(100vh - 114px);
+    height:calc(100vh - 103px);
     background: #FFFFFF;
     border: 1px solid rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
     border-radius: 4px;
-    margin-top: 12px;
+    margin-top: 6px;
 }
 .search-result-data-table{
     width: 100%; 
@@ -37,7 +37,7 @@
     flex: 1 1 0%;
     display: block;
     position: relative;
-    height:calc(100vh - 156px);
+    height:calc(100vh - 148px);
 }
 
 .cdk-virtual-scroll-viewport {
@@ -49,6 +49,7 @@
 
 }
 .ic-media-play{
+    margin-top: 6px;
     width:20px;
     height:20px
 }

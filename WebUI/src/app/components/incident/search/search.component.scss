@@ -33,10 +33,13 @@
     align-items: flex-start;
     width: auto;
     min-width: 272px;
-    height: calc(100vh - 114px);
+    height: calc(100vh - 104px);
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 4px;
-    margin: 12px;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    margin-right: 6px;
+    margin-left: 6px;
 }  
 .incident-tab-group{
     width: 100%;
@@ -47,4 +50,12 @@
 }
 .results-panel {
     min-width: 75%;
+}
+::ng-deep .incident-tab-group > .msi-tab-labels{ 
+    box-shadow: inset 0px -1px 0px rgba(0, 0, 0, 0.1);
+    border-radius: 2px 2px 0px 0px;
+    height : 42px
+}
+::ng-deep .incident-tab-group .msi-tab-content{
+    padding-top: 0px;
 }

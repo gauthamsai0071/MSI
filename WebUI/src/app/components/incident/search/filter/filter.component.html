@@ -81,7 +81,25 @@
                 <div class="label-wrap">
                     <span class="filter-label-first">Owner</span>
                 </div>
-                <input type = "text" formControlName="owner" class="form-input msi-input">
+                <span class="owner-wrapper">
+                    <input 
+                        type = "text" 
+                        formControlName="owner"
+                        [msiAutocomplete]="ownerAutoComplete" 
+                        [activateNumber]="1"
+                        class="form-input msi-input"
+                    >
+                    <button type="button" (click)="setCurrentOwner()">
+                        <msi-icon name="ic_contacts_people"></msi-icon>
+                    </button>
+                </span>
+                <msi-autocomplete #ownerAutoComplete>
+                    <msi-autocomplete-option
+                      *ngFor="let option of filteredOwners | async"
+                      [value]="option.name"
+                      ><span [innerHTML]="option.name | highlightSearchTerm: this.filterCriteria.controls['owner'].value"></span>
+                    </msi-autocomplete-option >
+                  </msi-autocomplete>
             </div>
             <div class="field-wrapper">
                 <div class="label-wrap">
@@ -100,7 +118,8 @@
         <div class="btn-inner-section">
             <button 
                 type="reset"
-                class="msi-btn msi-btn-action clear-btn">Clear
+                class="msi-btn msi-btn-action clear-btn"
+                (click)="clearfilters()">Clear
             </button>
             <button 
                 type="reset"
@@ -119,7 +138,7 @@
       <msi-modal-header>Save Search</msi-modal-header>
       <msi-modal-content>Search name:
         <input
-          [(ngModel)]="searchName"
+          [(ngModel)]="saveSearchName"
           type = "text"
           width="330px"
           placeholder="enter name for saved search"

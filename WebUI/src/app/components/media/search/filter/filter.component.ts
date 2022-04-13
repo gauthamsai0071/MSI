@@ -197,6 +197,7 @@ export class MediaFilterComponent implements OnInit {
     this.queryParams = [];
     this.advancedFilter = '';
     this.calendarFields.clear();
+    this.location = null;
     this.viewSubscription();
   }
 
