@@ -1,12 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ModalDialogComponent } from '../../shared/modal-dialog/modal-dialog.component';
 import * as _ from 'lodash';
 import { AuthService } from '../../services/auth/auth.service';
-import { ModalService, ModalSize, MsiModalConfig, MsiModalRef, MSI_MODAL_DATA } from '@msi/cobalt';
-import { result } from 'lodash';
-import { nextTick } from 'process';
-import { tap } from 'rxjs/operators';
+import { ModalService, ModalSize, MsiModalRef } from '@msi/cobalt';
 
 @Injectable({
     providedIn: 'root'

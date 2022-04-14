@@ -1,4 +1,4 @@
-import { Component, HostBinding, ViewChild } from '@angular/core';
+import { Component, HostBinding, Input, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../app/services/auth/auth.service';
 import { AppTabGroupComponent } from '../../../shared/tab-group/tab-group.component';
@@ -68,6 +68,9 @@ export const mockServices = [
 export class HeaderComponent { 
   @ViewChild(AppTabGroupComponent) tabGroup: AppTabGroupComponent;
   
+  @Input()
+  selectedIndex: number;
+
   constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {

@@ -47,17 +47,13 @@ export class IncidentSearchResultComponent {
   results: Incident[] = [];
 
   constructor(private incidentSearchService: IncidentSearchService,
-    private dialogService: DialogService) {
+              private dialogService: DialogService) {
   }
   
   addIncident(): void {
-    this.dialogService.showDialog('Create Incident', AddIncidentComponent, 1, {})
-      .subscribe((result?: any) => {
-          if (result) {
-            this.newIncidentId = result.incidentId;
-          } else {
-            this.newIncidentId = null;
-          }
+    this.dialogService.showDialog('Create Incident', AddIncidentComponent, 100, { id: 100 })
+      .subscribe((result?: { incidentId?: number }) => {        
+          this.newIncidentId = result ? result.incidentId : null;
       });
   }
 }

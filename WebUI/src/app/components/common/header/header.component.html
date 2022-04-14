@@ -46,8 +46,8 @@
   </msi-header-right-plugin-area>
 </msi-common-header> 
 <div class="nav-tab-label-wrapper">
-  <app-tab-group class="msi-tabs-wrapper" (selectedIndexChange)="tabChanged($event)">
-    <msi-tab class="active">
+  <app-tab-group class="msi-tabs-wrapper" [selectedIndex]="selectedIndex" (selectedIndexChange)="tabChanged($event)">
+    <msi-tab>
       <ng-template msiTabLabel>
         <span class="tab-item" (mousedown)="navigateTab(0)">
           <msi-icon name="ic_media_play" class="media-play-icon"></msi-icon>

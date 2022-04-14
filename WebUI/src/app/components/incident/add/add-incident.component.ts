@@ -1,14 +1,17 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
 @Component({
     templateUrl: './add-incident.component.html'
 })
-export class AddIncidentComponent {
+export class AddIncidentComponent implements OnInit {
     @Input()
     popupParam: { id?: number };
 
     @Output()
-    popupResult: EventEmitter<any>;    
+    popupResult: EventEmitter<any>;
+
+    ngOnInit(): void {        
+    }
 
     close(): void {
         if (!this.popupResult.isStopped && this.popupResult.observers !== null) {

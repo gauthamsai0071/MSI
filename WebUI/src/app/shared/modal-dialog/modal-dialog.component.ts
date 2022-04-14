@@ -57,6 +57,6 @@ export class ModalDialogComponent implements AfterViewInit, OnDestroy {
     }
 
     close(): void {
-        this.modalRef.close();
+        this.modalRef.close(null);
     }
 }
