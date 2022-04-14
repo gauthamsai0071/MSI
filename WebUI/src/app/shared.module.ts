@@ -24,6 +24,7 @@ import { ModalDialogComponent } from './shared/modal-dialog/modal-dialog.compone
     IconModule,    
     ItemModule,
     MsiSharedModule,
+    ModalModule,
     DragDropModule,
     FormsModule,
     ReactiveFormsModule,

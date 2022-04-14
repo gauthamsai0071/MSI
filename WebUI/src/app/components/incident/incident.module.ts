@@ -11,6 +11,7 @@ import { IncidentService } from '../../services/incident/incident.service';
 import { IncidentSavedFiltersComponent } from './search/filter/saved-filters/saved-filters.component';
 import { ExportIncidentComponent } from './export/export-incident.component';
 import { ExportListComponent } from './export/list/export-list.component';
+import { AddIncidentComponent } from './add/add-incident.component';
 
 
 @NgModule({
@@ -22,11 +23,15 @@ import { ExportListComponent } from './export/list/export-list.component';
     IncidentFilterComponent,
     IncidentSearchResultComponent,
     IncidentSavedFiltersComponent,    
+    AddIncidentComponent
  ],
   imports: [
     ModalModule,
     SharedModule,
     IncidentRoutingModule
+  ],
+  entryComponents: [
+    AddIncidentComponent,
   ],
   providers: [
     ToastService,

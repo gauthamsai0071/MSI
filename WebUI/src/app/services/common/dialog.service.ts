@@ -3,7 +3,10 @@ import { Observable, Subject } from 'rxjs';
 import { ModalDialogComponent } from '../../shared/modal-dialog/modal-dialog.component';
 import * as _ from 'lodash';
 import { AuthService } from '../../services/auth/auth.service';
-import { ModalService, MsiModalRef } from '@msi/cobalt';
+import { ModalService, ModalSize, MsiModalConfig, MsiModalRef, MSI_MODAL_DATA } from '@msi/cobalt';
+import { result } from 'lodash';
+import { nextTick } from 'process';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -11,38 +14,33 @@ import { ModalService, MsiModalRef } from '@msi/cobalt';
 export class DialogService {
     private static modalDialogRefs: { [key: string]: MsiModalRef }  = {};
 
-    private static modalDialogWindows: Subject<{ dialogId: string, title?: string, action: 'open'|'close' }> = new Subject();
-    // public static dialogWindows: Observable<{ dialogId: string, title?: string, action: 'open'|'close' }>
-    //                             = DialogService.modalDialogWindows.asObservable();
+    static frontDialog: { dialogId: string, dialog: any } = null;
 
+    constructor(private modalService: ModalService,
+        private authService: AuthService) {
+    }
 
     public static closeAllDialogs(): void {
         if (DialogService.modalDialogRefs !== undefined && DialogService.modalDialogRefs !== null) {
             for (const dialogId of Object.keys(DialogService.modalDialogRefs)) {
                 const dialogRef = DialogService.modalDialogRefs[dialogId];
-                // (<ModalDialogComponent>dialogRef.close();
-                // (<ModalDialogComponent>dialogRef.content).modalWindowClosed.unsubscribe();
-                // (<ModalDialogComponent>dialogRef.content).ngOnDestroy();
+                dialogRef.close();
             }
 
             DialogService.modalDialogRefs = {};
         }
     }
 
-    constructor(private modalService: ModalService,
-                private authService: AuthService) {
-    }
-
     showDialog(title: string, component: any, id: any, data: any,
-                            className: string = 'modal-xl'): Observable<any> {
-        if (!this.authService.isLoggedIn()) {
+                size: ModalSize = 'medium'): Observable<any> {
+
+        if (!this.authService.isLoggedIn()) {            
             return null;
         }
 
         let modalDialog = DialogService.modalDialogRefs[`${component.name}_${id.toString()}`];
         if (modalDialog !== undefined) {
-            // DialogService.switchToDialog(`${component.name}_${id.toString()}`);
-            //return (<ModalDialogComponent>modalDialog.content).dialogClosed;
+            DialogService.switchToDialog(`${component.name}_${id.toString()}`);
             return modalDialog.afterClosed();
         }
 
@@ -53,37 +51,49 @@ export class DialogService {
             dialogId: id
         };
 
-        // if (DialogService.frontDialog !== null) {
-        //     $(DialogService.frontDialog.dialog).removeClass('modal-front');
-        //     DialogService.frontDialog = null;
-        // }
+        if (DialogService.frontDialog !== null) {
+            DialogService.frontDialog = null;
+        }
 
         modalDialog = this.modalService.open(ModalDialogComponent,
-                { hasBackdrop: true  });
-                //keyboard: false, class: className, initialState: dialogData
-
-            modalDialog.afterClosed().subscribe((dialogId: string) => {
-            if (!DialogService.modalDialogWindows.isStopped && !DialogService.modalDialogWindows.closed) {
-                DialogService.modalDialogWindows.next({ dialogId: dialogId, action: 'close' });
+                                { hasBackdrop: true, disableClose: true, size: size, data: dialogData });
+        
+        modalDialog.afterClosed().subscribe(() => {
+            if (DialogService.modalDialogRefs[`${component.name}_${id.toString()}`] !== undefined) {
+                delete DialogService.modalDialogRefs[`${component.name}_${id.toString()}`];
             }
 
-            if (DialogService.modalDialogRefs !== undefined &&
-                    DialogService.modalDialogRefs[`${component.name}_${id.toString()}`] !== undefined) {
-                delete DialogService.modalDialogRefs[dialogId];
-            }
+            if (DialogService.frontDialog !== null && DialogService.frontDialog.dialogId === `${component.name}_${id.toString()}`) {
+                DialogService.frontDialog = null;
+            }                    
         });
-
+        
         if (DialogService.modalDialogRefs[`${component.name}_${id.toString()}`] === undefined) {
             DialogService.modalDialogRefs[`${component.name}_${id.toString()}`] = modalDialog;
+        }
 
-            if (!DialogService.modalDialogWindows.isStopped && !DialogService.modalDialogWindows.closed) {
-                DialogService.modalDialogWindows.next({ title: title,
-                                                dialogId: `${component.name}_${id.toString()}`,
-                                                action: 'open' });
+        DialogService.frontDialog = { dialogId: `${component.name}_${id.toString()}`, dialog: modalDialog };
+
+        return modalDialog.afterClosed();
+    }
+
+    private static switchToDialog (dialogId: string): void {
+        if (dialogId === '') {
+            return;
+        }
+
+        if (DialogService.frontDialog !== null) {
+            if (DialogService.frontDialog.dialogId !== dialogId) {
+                // $(DialogService.frontDialog.dialog).removeClass('modal-front');
+            } else {
+                return;
             }
         }
 
-        //return (<ModalDialogComponent>modalDialog.content).dialogClosed;
-        return modalDialog.afterClosed();
-    }
+        const modalDialog = DialogService.modalDialogRefs[dialogId];
+        // const modalDialog = $(DialogService.modalDialogRefs[dialogId].content.viewContainer.element
+        //                              .nativeElement.parentElement).parents('.modal');
+        // $(modalDialog).addClass('modal-front');
+        DialogService.frontDialog = { dialogId: dialogId, dialog: modalDialog };
+    }        
 }

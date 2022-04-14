@@ -9,7 +9,7 @@ import { AuthService } from '../../../../services/auth/auth.service';
 import { User } from '../../../../models/common/user';
 import _ from 'lodash';
 import { Incident } from '../../../../models/incident/incident';
-import { IncidentFilter } from 'src/app/models/incident/savedFilter';
+import { IncidentFilter } from '../../../../models/incident/savedFilter';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { startWith,map } from 'rxjs/operators';
 
@@ -19,7 +19,8 @@ import { startWith,map } from 'rxjs/operators';
   styleUrls: ['./filter.component.scss']
 })
 export class IncidentFilterComponent implements OnInit {
-    @ViewChild('confirmationModalTemplate', {static: true}) confirmationModalTemplate:TemplateRef<any>;  
+    @ViewChild('confirmationModalTemplate', {static: true}) confirmationModalTemplate:TemplateRef<any>;
+
     @Input()
     set clickedSavedFilterCriteria(value : IncidentFilter){
         if(value){
@@ -180,6 +181,5 @@ export class IncidentFilterComponent implements OnInit {
 
     setCurrentOwner(){
         this.filterCriteria.get('owner').setValue(this.loginUser.name);
-    }
-  
+    } 
 }

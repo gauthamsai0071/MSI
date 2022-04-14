@@ -28,7 +28,6 @@ export class MediaSearchResultComponent implements OnInit, OnChanges {
   @Output() selectedSortVal = new EventEmitter<string>();
   @Input() tableWidth: number;
 
-
   @ViewChild('table') table: DataTableComponent;
   @HostBinding('style.width') hostWidth = '100%';
   isAstroFieldsVisible:boolean = true;
@@ -36,6 +35,8 @@ export class MediaSearchResultComponent implements OnInit, OnChanges {
   private customFields :any = null;
   private dataSub : Subscription;
   private systemSub : Subscription;
+  
+  
   // private defaultFields = ['media_name','timestamp','mimeType', 'media_duration','talkgroupId', 'System' ];
   // private astroFields = ['media_name','unitId','talkgroupId',  'timestamp', 'channel', 'siteId','zoneId','rscAlias','individualAlias','agencyName']; 
   private broadbandFields = ['media_name','unitId','talkgroupId', 'timestamp','agencyName', 'originatingMDN', 'terminatingMDN','participatingMDN', 'talkgroupName' ];
@@ -68,13 +69,7 @@ export class MediaSearchResultComponent implements OnInit, OnChanges {
   ngOnInit() {
     
     this.dataSub = this.mediaFilterService.filteredRespone$.subscribe(result =>{
-      if(result){
-        this.rows = result;
-      }else{
-        this.rows = [];
-      }
-      
-      
+      this.rows = result;
     });
     this.mediaFilters.getCustomFields().subscribe(result => {
       this.customFields = result;

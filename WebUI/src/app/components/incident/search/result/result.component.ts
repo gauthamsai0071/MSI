@@ -4,6 +4,7 @@ import moment from 'moment';
 import { Incident } from '../../../../models/incident/incident';
 import { DialogService } from '../../../../services/common/dialog.service';
 import { IncidentSearchService } from '../../../../services/incident/search.service';
+import { AddIncidentComponent } from '../../add/add-incident.component';
 import { ManageIncidentComponent } from '../../manage/manage-incident.component';
 
 @Component({
@@ -12,6 +13,8 @@ import { ManageIncidentComponent } from '../../manage/manage-incident.component'
   styleUrls: ['./result.component.scss']
 })
 export class IncidentSearchResultComponent {
+  newIncidentId: number;
+
   private _filterCriteria: {
     owner: string, text: string, showCurrent: boolean, showDeleted: boolean,
     showShared: boolean, showExternal: boolean, showActiveExternal: boolean,
@@ -30,12 +33,12 @@ export class IncidentSearchResultComponent {
           let field = incident.customFields.find(item => toLower(item.name) == toLower("title"));
           incident.title = (field && field.value) !== undefined ? field.value.text : '';
 
-          field = incident.customFields.find(item => toLower(item.name) == toLower("reference-code"));
-          incident.referenceCode = (field && field.value) !== undefined ? field.value.text : '';
+          field = incident.customFields.find(item => toLower(item.name) == toLower("referencecode"));
+          incident.referenceCode = field !== undefined ? field.value.text : '';
 
-          field = incident.customFields.find(item => toLower(item.name) == toLower("incident-time"));
-          incident.incidentTime = (field && field.value) !== undefined ? moment(field.value.timestamp).toDate() : null;
-        });
+          field = incident.customFields.find(item => toLower(item.name) == toLower("incidentTime"));
+          incident.incidentTime = field !== undefined ? moment(field.value.timestamp).toDate() : null;
+      });
 
         this.results = response;
       });
@@ -46,11 +49,15 @@ export class IncidentSearchResultComponent {
   constructor(private incidentSearchService: IncidentSearchService,
     private dialogService: DialogService) {
   }
-
+  
   addIncident(): void {
-    this.dialogService.showDialog('Create Incident', ManageIncidentComponent, 1, {})
-      .subscribe(result => {
-        const x = result;
+    this.dialogService.showDialog('Create Incident', AddIncidentComponent, 1, {})
+      .subscribe((result?: any) => {
+          if (result) {
+            this.newIncidentId = result.incidentId;
+          } else {
+            this.newIncidentId = null;
+          }
       });
   }
 }
