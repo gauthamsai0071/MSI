@@ -33,7 +33,7 @@
                                 msiTooltip="An evidence export will produce an MP4 file, the original video files and metadata about the incident, which can be imported into another system."
                                 position="right"></msi-icon>
                         </label>
-                        <msi-select *ngIf="export" formControlName="id" id="id" (change)="outputSelectChanges()"
+                        <msi-select *ngIf="export" formControlName="profileId" id="profileId" (change)="outputSelectChanges()"
                             #msiProfile>
                             <msi-select-option *ngFor="let option of export.profiles;" [value]="option.type">
                                 {{option.name}}
@@ -47,13 +47,13 @@
                                 <msi-select-option [value]="true">NTSC</msi-select-option>
                             </msi-select> &nbsp;
                             <msi-select formControlName="profileSelectMedia" id="profileSelectMedia">
-                                <msi-select-option [value]="4.7" [id]="1">DVD±R</msi-select-option>
-                                <msi-select-option [value]="4.7" [id]="2">DVD±RW</msi-select-option>
-                                <msi-select-option [value]="8.55" [id]="3">DVD±R DL</msi-select-option>
-                                <msi-select-option [value]="4.7" [id]="4">DVD-RAM</msi-select-option>
-                                <msi-select-option [value]="9.4" [id]="5">DVD-RAM DL</msi-select-option>
-                                <msi-select-option [value]="1.46" [id]="6">MiniDVD</msi-select-option>
-                                <msi-select-option [value]="2.66" [id]="7">MiniDVD DL</msi-select-option>
+                                <msi-select-option [value]="4.7">DVD±R</msi-select-option>
+                                <msi-select-option [value]="4.7">DVD±RW</msi-select-option>
+                                <msi-select-option [value]="8.55">DVD±R DL</msi-select-option>
+                                <msi-select-option [value]="4.7">DVD-RAM</msi-select-option>
+                                <msi-select-option [value]="9.4">DVD-RAM DL</msi-select-option>
+                                <msi-select-option [value]="1.46">MiniDVD</msi-select-option>
+                                <msi-select-option [value]="2.66">MiniDVD DL</msi-select-option>
                             </msi-select>
                         </div>
                         <msi-toggle class="export-toggle" *ngIf="profileSelectedValue !== 'EVIDENCE_EXPORT'"
