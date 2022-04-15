@@ -55,14 +55,18 @@ export class AuthInterceptor implements HttpInterceptor {
       }   
     }     
     
-    return next.handle(interceptedRequest).pipe(catchError(this.handleError()));
+    if (interceptedRequest !== undefined) {
+      return next.handle(interceptedRequest).pipe(catchError(this.handleError()));
+    } else {
+      return next.handle(request).pipe(catchError(this.handleError()));
+    }
   }
 
   private handleError () {
     return (error: any): Observable<any> => {
-      if (error.status === 401 || 
-          (error.status === 500 && 
-            error.error.indexOf("<faultstring>TokenTimeoutExpire</faultstring>") !== -1)) {
+      if (error.status === 401)
+          // (error.status === 403 && error.error === null)) 
+      {
 
         this.authService.logout();
         if (this.router.url.indexOf('login') !== -1) {
