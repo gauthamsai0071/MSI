@@ -14,6 +14,7 @@ import { AppTabGroupComponent } from './shared/tab-group/tab-group.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { PortalModule } from '@angular/cdk/portal';
 import { ModalDialogComponent } from './shared/modal-dialog/modal-dialog.component';
+import { PlayerComponent } from './components/common/player/player.component';
 
 @NgModule({
   imports: [
@@ -38,6 +39,7 @@ import { ModalDialogComponent } from './shared/modal-dialog/modal-dialog.compone
     AppTabGroupComponent,
     InputControlComponent,
     ModalDialogComponent,
+    PlayerComponent,
   ],
   exports : [
     RouterModule,
@@ -58,7 +60,8 @@ import { ModalDialogComponent } from './shared/modal-dialog/modal-dialog.compone
     HeaderComponent,
     CalendarComponent,
     InputControlComponent,
-    ModalDialogComponent
+    ModalDialogComponent,
+    PlayerComponent
   ],
   providers: [
     { provide: 'Api_BaseURL', useValue: environment.Api_BaseURL },
