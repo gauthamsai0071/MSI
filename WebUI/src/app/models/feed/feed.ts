@@ -20,7 +20,7 @@ export class Feed {
     private pollRequest : any;
     feedId : string;
     private serverStateSubscriptionId? : number;
-    private subscriptions : Feedsubscription[] = [];
+    subscriptions : Feedsubscription[] = [];
     private subscribingCount : number = 0;
     private lastFeedEvent : FeedEventSetAdto;
     private restartTimerId : number;
@@ -34,7 +34,7 @@ export class Feed {
 
     private useWebSocketFeeds : boolean;
     creatingSocket : boolean = false;
-    private feedSocket : Feedwebsocket;
+    feedSocket : Feedwebsocket;
     
     private fastReconnect: boolean;
     public usingVmProxy : boolean;

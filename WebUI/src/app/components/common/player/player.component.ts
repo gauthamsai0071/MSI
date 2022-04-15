@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { event } from 'jquery';
 import { forkJoin } from 'rxjs';
 import { StateAdto, VideoFilesSubscriptionAdto } from 'src/app/interfaces/adto';
@@ -18,6 +18,13 @@ import { ApiUrls } from '../../../util/api-urls';
   styleUrls: ['./player.component.scss']
 })
 export class PlayerComponent implements OnInit {
+  @Input()
+  set popupParam (value : { id?: number }){
+    if(value){
+      this.id = value.id;
+    }
+  };
+
   @ViewChild("videoPlayer", { static: false }) videoplayer: ElementRef;
 
   id : number;
@@ -100,6 +107,7 @@ export class PlayerComponent implements OnInit {
     this.fullscreen = document.querySelector('.fullscreen');
     this.settings = document.querySelector('#settings');
     this.playback = document.querySelectorAll('.playback li');
+    this.displayPlayer();
   }
 
   updateUrl(){

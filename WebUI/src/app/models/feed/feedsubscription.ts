@@ -23,7 +23,7 @@ export class Feedsubscription {
     refCount: number = 0;
     
 
-    constructor( private url : any, private getData? : () => CreateSubscriptionAdto,public _http?: HttpClient,private authService?: AuthService ) {
+    constructor( public url : any, private getData? : () => CreateSubscriptionAdto,public _http?: HttpClient,private authService?: AuthService ) {
         //super();
         this.feed = new Feed(this.urls,this.mgroup,this.state,this._http,this.authService)
         this.feed.addSubscription( this );

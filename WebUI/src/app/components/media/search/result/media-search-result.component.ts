@@ -1,50 +1,29 @@
-import { Component, HostBinding, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, ViewChild, ChangeDetectorRef } from '@angular/core';
-import { DataTableComponent } from '@msi/cobalt/data-table/data-table.component';
+import { Component, OnInit } from '@angular/core';
 import _ from 'lodash';
 import moment from 'moment';
 import { Subscription } from 'rxjs';
+import { DialogService } from 'src/app/services/common/dialog.service';
 import { MediaFilterService } from '../../../../services/media/media-filter.service';
+import { PlayerComponent } from 'src/app/components/common/player/player.component';
 
 @Component({
   selector: 'app-media-search-result',
   templateUrl: './media-search-result.component.html',
   styleUrls: ['./media-search-result.component.scss']
 })
-export class MediaSearchResultComponent implements OnInit, OnChanges {
-  sticky :boolean = true;
-  sortable :boolean = true;
-  filterable :boolean = false;
-  draggable :boolean = true;
-  resizable :boolean = true;
-  pinning :boolean = false;
-  selection :boolean = true;
-  condensed :boolean = false;
-  fixedWidth :boolean = true;
-  _selected: any;
+export class MediaSearchResultComponent implements OnInit {
   rows: Array<any> = [];
-  @Output() childEvent = new EventEmitter();
-  @Output() onDataSelected = new EventEmitter<any>();
-  @Output() onDataSort = new EventEmitter<any>();
-  @Output() selectedSortVal = new EventEmitter<string>();
-  @Input() tableWidth: number;
-
-  @ViewChild('table') table: DataTableComponent;
-  @HostBinding('style.width') hostWidth = '100%';
   isAstroFieldsVisible:boolean = true;
-  wrappingMode: 'default' | 'horizontalScrollbar' = 'default';
   private customFields :any = null;
   private dataSub : Subscription;
   private systemSub : Subscription;
-  
-  
-  // private defaultFields = ['media_name','timestamp','mimeType', 'media_duration','talkgroupId', 'System' ];
-  // private astroFields = ['media_name','unitId','talkgroupId',  'timestamp', 'channel', 'siteId','zoneId','rscAlias','individualAlias','agencyName']; 
-  private broadbandFields = ['media_name','unitId','talkgroupId', 'timestamp','agencyName', 'originatingMDN', 'terminatingMDN','participatingMDN', 'talkgroupName' ];
+
   showhidecoloumns: { [key: string]: boolean };
-  //public visibleFields = this.defaultFields;
-  constructor(private changeDetector: ChangeDetectorRef,
+
+  constructor(
     private mediaFilters : MediaFilterService,
-    private mediaFilterService : MediaFilterService) {
+    private mediaFilterService : MediaFilterService,
+    private dialogService: DialogService) {
       this.showhidecoloumns = {
         'media_name' : true,
         'timestamp' : true,
@@ -69,7 +48,11 @@ export class MediaSearchResultComponent implements OnInit, OnChanges {
   ngOnInit() {
     
     this.dataSub = this.mediaFilterService.filteredRespone$.subscribe(result =>{
-      this.rows = result;
+      if(result){
+        this.rows = result;
+      }else{
+        this.rows = [];
+      }
     });
     this.mediaFilters.getCustomFields().subscribe(result => {
       this.customFields = result;
@@ -112,57 +95,22 @@ export class MediaSearchResultComponent implements OnInit, OnChanges {
     })
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    this.changeDetector.detectChanges();
-  }
-
-  nameSort(a, b) {
-    return parseInt(a.replace(/[^\d]/g, ''), 10) - parseInt(b.replace(/[^\d]/g, ''), 10);
-  }
-
-  onScroll() {
-    this.childEvent.emit();
-  }
-
-  onSelect(data: any): void {
-    this.onDataSelected.emit(data);
-  }
-
   findElement(row : any, fieldName: string){
-    let ans= null;
-    if(fieldName == "media_name"){
-      ans = row.name;
-      return ans;
-    }else{
-      _.each(row?.customFields, cf => {
-        if(cf.name === fieldName){
-          if(cf.isTimestamp == true){
-            ans = moment(cf.value?.timestamp).format("DD MMM YYYY hh:mm a");
-          }else{
-            ans =  cf.value?.text;
-          }
-          return ans;
-        }
-      })
-    }
-    return ans ? ans : '-';
-  }
-  
-  findColumnName(fieldName: string){
-    let ans= null;
-    _.each(this.customFields, cf => {
+    let ans = null;
+    _.each(row?.customFields, cf => {
       if(cf.name === fieldName){
-        ans = cf.displayName
-        return;
+        if(cf.isTimestamp == true){
+          ans = moment(cf.value?.timestamp).format("DD MMM YYYY hh:mm a");
+        }else{
+          ans =  cf.value?.text;
+        }
+        return ans;
       }
     })
-    return ans;
+    return ans ? ans : '-';
   }
-
-  customSort = (a, b): number => {
-    return a.localeCompare(b);
+  onMediaPlay(row): void {
+    this.dialogService.showDialog('Media Player', PlayerComponent, row.id, { id: row.id })
+    .subscribe();
   }
-
-  public rowClass = (index) => index % 2 === 0 ? 'even' : 'odd';
-
 }
