@@ -16,8 +16,8 @@ button{
 }
 .media-search-component{
     flex:1;
-    min-width: 25%;
+    max-width: 25%;
 }
 .media-result-component{
-    max-width: 75%;
+    min-width: 75%;
 }

@@ -14,19 +14,35 @@ export class Searches {
     filter : IncidentFilter;
 }
 export class IncidentFilter {
-    owned : boolean;
-    shared : boolean;
-    supervised : boolean; 
-    includeLive : boolean;
-    includeDeleted : boolean;
-    recentlyEdited : boolean;
-    onlySharedIncidents : boolean;
-    onlyExternalLinks : boolean;
-    onlyActiveExternalLinks : boolean;
-    text : string;
-    customValues : [{
-            id : number;
-            value : string;
-        }
-    ]
+    owned? : boolean;
+    shared? : boolean;
+    supervised? : boolean; 
+    includeLive? : boolean;
+    includeDeleted? : boolean;
+    recentlyEdited? : boolean;
+    onlySharedIncidents? : boolean;
+    onlyExternalLinks? : boolean;
+    onlyActiveExternalLinks? : boolean;
+    text? : string;
+    customValues? : {
+        id : number;
+        value : string;
+    }[];
+    constructor(){
+        this.customValues = [];
+    }
+}
+
+export class SaveNewFilter {
+    name : string;
+    category : string;
+    permissionGroup : {
+        id : number;
+        name : string;
+    };
+    filter? : IncidentFilter;
+    
+    constructor(){
+        this.filter = new IncidentFilter();
+    }
 }

@@ -51,12 +51,14 @@ export class Feedwebsocket {
                             this.feed.processEventIfReady(message.eventData);
                             if(message.eventData && message.eventData.id && message.eventData.data[message.eventData.id].videoFiles){
                                 this.messageResponse = message?.eventData?.data[2].videoFiles;
-                                //CustomFiltersService.notifySaveSearch(this.messageResponse)
-                                MediaFilterService.notifyfilteredRespone(this.messageResponse);
-                                console.log(message?.eventData?.data[2].videoFiles)
+                                if(this.feed.subscriptions[0].url == "/api/videos/subscribe"){
+                                    MediaFilterService.notifyfilteredRespone(this.messageResponse);
+                                }
                                 sessionStorage.setItem('socketResponse',JSON.stringify(message.eventData));
                             }else if(message.eventData && message.eventData.id && message.eventData.data[message.eventData.id].moreVideoFilesAvailable == false){
-                                MediaFilterService.notifyfilteredRespone(null);
+                                if(this.feed.subscriptions[0].url == "/api/videos/subscribe"){
+                                    MediaFilterService.notifyfilteredRespone(null);
+                                }
                             }
                             break;
                         case "SESSION_EXPIRED":

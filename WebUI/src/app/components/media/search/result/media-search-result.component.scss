@@ -31,9 +31,7 @@
     line-height: 22px;
 }
 .msiDatatable{
-    /* width: 180% !important; */
-    max-width: 1300px !important;
-    min-width: 365px;
+    width : 100%;
     flex: 1 1 0%;
     display: block;
     position: relative;
@@ -51,5 +49,6 @@
 .ic-media-play{
     margin-top: 6px;
     width:20px;
-    height:20px
+    height:20px;
+    cursor: pointer;
 }

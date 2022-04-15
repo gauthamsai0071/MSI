@@ -1,6 +1,6 @@
-import { Component, OnInit, Output, EventEmitter} from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input} from '@angular/core';
 import { IncidentService } from '../../../../../services/incident/incident.service';
-import { SavedFilter, IncidentFilter } from '../../../../../../app/models/incident/savedFilter';
+import { SavedFilter, IncidentFilter, SaveNewFilter } from '../../../../../../app/models/incident/savedFilter';
 
 
 @Component({
@@ -9,11 +9,22 @@ import { SavedFilter, IncidentFilter } from '../../../../../../app/models/incide
   styleUrls: ['./saved-filters.component.scss']
 })
 export class IncidentSavedFiltersComponent implements OnInit {
+  @Input()
+  set newFilter(value ){
+    if(value){
+      console.log(value);
+      this.incidentService.saveIncident(value).subscribe( result =>{
+        console.log(result);
+      });
+    }
+  }
   @Output()
   clickedSavedFilter: EventEmitter<IncidentFilter>;
   savedIncidentFilters : SavedFilter[] = [];
-  constructor(private incidentSearvice : IncidentService) {
+  saveNewfilter : SaveNewFilter;
+  constructor(private incidentService : IncidentService) {
     this.clickedSavedFilter = new EventEmitter();
+    this.saveNewfilter = new SaveNewFilter();
   }
 
   ngOnInit(): void {
@@ -26,7 +37,7 @@ export class IncidentSavedFiltersComponent implements OnInit {
   
   }
   getSavedIncidentFilters(){
-    this.incidentSearvice.getSavedIncidents().subscribe((result : SavedFilter[])  => {
+    this.incidentService.getSavedIncidents().subscribe((result : SavedFilter[])  => {
       this.savedIncidentFilters = result;
     })
   }

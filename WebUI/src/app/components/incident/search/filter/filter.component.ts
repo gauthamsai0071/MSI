@@ -9,7 +9,7 @@ import { AuthService } from '../../../../services/auth/auth.service';
 import { User } from '../../../../models/common/user';
 import _ from 'lodash';
 import { Incident } from '../../../../models/incident/incident';
-import { IncidentFilter } from '../../../../models/incident/savedFilter';
+import { IncidentFilter, SaveNewFilter } from '../../../../models/incident/savedFilter';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { startWith,map } from 'rxjs/operators';
 
@@ -19,8 +19,7 @@ import { startWith,map } from 'rxjs/operators';
   styleUrls: ['./filter.component.scss']
 })
 export class IncidentFilterComponent implements OnInit {
-    @ViewChild('confirmationModalTemplate', {static: true}) confirmationModalTemplate:TemplateRef<any>;
-
+    @ViewChild('confirmationModalTemplate', {static: true}) confirmationModalTemplate:TemplateRef<any>;  
     @Input()
     set clickedSavedFilterCriteria(value : IncidentFilter){
         if(value){
@@ -29,7 +28,6 @@ export class IncidentFilterComponent implements OnInit {
                 _.find(value.customValues, cf=>{
                     if(cf.id == sf.id){
                         if(sf.isTimestamp){
-                            //TODO
                             let date = cf.value.split('-').slice();
                             let startDate = new Date(parseInt(date[0]));
                             let endDate = new Date(parseInt(date[1]));
@@ -38,7 +36,7 @@ export class IncidentFilterComponent implements OnInit {
                                 startTime: { hour: startDate.getHours(), minute: startDate.getMinutes(), second: 0 },
                                 endDate: new NgbDate(endDate.getUTCFullYear(), endDate.getUTCMonth() + 1, endDate.getUTCDate()),
                                 endTime: { hour: endDate.getHours(), minute: endDate.getMinutes(), second: 0 },
-                            });                          
+                            });                      
                         }else{
                             this.filterCriteria.controls[sf.name].setValue(cf.value);
                         }
@@ -58,6 +56,8 @@ export class IncidentFilterComponent implements OnInit {
     searchIncidents: EventEmitter<{owner: string, text: string, showCurrent: boolean, showDeleted: boolean,
                             showShared: boolean, showExternal: boolean, showActiveExternal: boolean,
                             searchFilters: {[key: string]: string}}>;
+    @Output()
+    saveFilter : EventEmitter<SaveNewFilter>;
 
     filterCriteria : FormGroup = null;
     searchFields: CustomField[] = [];
@@ -69,13 +69,17 @@ export class IncidentFilterComponent implements OnInit {
     incidents: Incident[] = [];
     calendarFields = new Map();
     checkBoxFields = new Map();
+    saveNewFilter : SaveNewFilter;
     saveSearchName : string = '';
+    saveSearchCategory : string = '';
     private confirmationModal: MsiModalRef;
     constructor(private formBuilder: FormBuilder,
                 private authService: AuthService,
                 private incidentSearchService: IncidentSearchService,
                 private modalService: ModalService,) {
         this.searchIncidents = new EventEmitter();
+        this.saveFilter = new EventEmitter();
+        this.saveNewFilter = new SaveNewFilter();
     }
 
     ngOnInit(): void {
@@ -111,7 +115,18 @@ export class IncidentFilterComponent implements OnInit {
 
     search(): void {
         const searchFilters: {[key: number]: string} = {};
+        this.getFormValue(searchFilters);
+        this.searchIncidents.emit( { owner : this.filterCriteria.get('owner').value, 
+                                     text: this.filterCriteria.get('text').value, 
+                                     showCurrent: this.filterCriteria.get('showCurrent').value,
+                                     showDeleted: this.filterCriteria.get('showDeleted').value, 
+                                     showShared: this.filterCriteria.get('showShared').value,
+                                     showExternal: this.filterCriteria.get('showExternal').value, 
+                                     showActiveExternal: this.filterCriteria.get('showActiveExternal').value,
+                                     searchFilters: searchFilters });
+    }
 
+    getFormValue(searchFilters: {[key: number]: string}){
         _.each(this.searchFields, field => {
             if (this.filterCriteria.get(field.name).value !== undefined && 
                     this.filterCriteria.get(field.name).value !== null &&
@@ -123,15 +138,6 @@ export class IncidentFilterComponent implements OnInit {
                 }
             }            
         });
-
-        this.searchIncidents.emit( { owner : this.filterCriteria.get('owner').value, 
-                                     text: this.filterCriteria.get('text').value, 
-                                     showCurrent: this.filterCriteria.get('showCurrent').value,
-                                     showDeleted: this.filterCriteria.get('showDeleted').value, 
-                                     showShared: this.filterCriteria.get('showShared').value,
-                                     showExternal: this.filterCriteria.get('showExternal').value, 
-                                     showActiveExternal: this.filterCriteria.get('showActiveExternal').value,
-                                     searchFilters: searchFilters });
     }
 
     buildSearchForm(): void {
@@ -153,6 +159,9 @@ export class IncidentFilterComponent implements OnInit {
         let value = dateTimeRange.startMoment().format("X")+"000" + "-" + dateTimeRange.endMoment().format("X")+"000"; 
         this.calendarFields.set(calendarFieldId, value);
     }
+    clearfilters(){
+       // this.filterCriteria.get('showCurrent').setValue(true);
+    }
     onCheckboxClick(event:any, value, name,  id){
         if(event){
             if(!this.checkBoxFields.has(name)){
@@ -166,14 +175,32 @@ export class IncidentFilterComponent implements OnInit {
             this.checkBoxFields?.get(name)?.splice(index, 1);
         }
     } 
-    confirmBeforeClosing() {
+    openSaveSearchPopUp() {
         this.confirmationModal = this.modalService.open(this.confirmationModalTemplate, {
           disableClose: true,
           hasBackdrop: true,
         });
     }
     confirmOnSaveFilter(){
-        
+        let searchFilters: {[key: number]: string} = {};
+        this.getFormValue(searchFilters);
+        this.saveNewFilter.name = this.saveSearchName;
+        this.saveNewFilter.category = this.saveSearchCategory;
+         //TODO
+        // this.saveNewFilter.filter.supervised =  
+        // this.saveNewFilter.filter.recentlyEdited = 
+        // this.saveNewFilter.filter.onlySharedIncidents = 
+        this.saveNewFilter.filter.shared = this.filterCriteria.get('showShared').value;
+        this.saveNewFilter.filter.includeLive = this.filterCriteria.get('showCurrent').value;
+        this.saveNewFilter.filter.includeDeleted = this.filterCriteria.get('showDeleted').value;
+        this.saveNewFilter.filter.onlyExternalLinks = this.filterCriteria.get('showExternal').value;
+        this.saveNewFilter.filter.onlyActiveExternalLinks = this.filterCriteria.get('showActiveExternal').value
+        this.saveNewFilter.filter.text = this.filterCriteria.get('text').value;
+        for (const key in searchFilters){
+            this.saveNewFilter.filter.customValues.push({id : Number(key), value : searchFilters[key]})
+        }
+        this.saveNewFilter.permissionGroup = {id: 0, name : 'Public'};
+        this.saveFilter.emit(this.saveNewFilter);
     }
     cancelOnSaveFilter() {
         this.confirmationModal.close();

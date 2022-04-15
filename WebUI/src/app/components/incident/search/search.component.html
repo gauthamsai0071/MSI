@@ -10,12 +10,15 @@
                 <div class="filters-wrapper">
                     <app-incident-filter 
                         (searchIncidents)="searchIncidents($event)"
+                        (saveFilter)="saveNewFilter($event)"
                         [clickedSavedFilterCriteria]="clickedSavedFilterCriteria"></app-incident-filter>
                 </div>
             </msi-tab>
             <msi-tab label="Saved Searches">
                 <div class="incident-savedFilters-wrapper">
-                    <app-incident-saved-filters (clickedSavedFilter)="clickedSavedFilter($event)"></app-incident-saved-filters>
+                    <app-incident-saved-filters 
+                        (clickedSavedFilter)="clickedSavedFilter($event)"
+                        [newFilter]="newFilter"></app-incident-saved-filters>
                 </div>
             </msi-tab>
         </msi-tab-group>

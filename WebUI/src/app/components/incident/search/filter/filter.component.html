@@ -121,9 +121,9 @@
                 class="msi-btn msi-btn-action clear-btn">Clear
             </button>
             <button 
-                type="reset"
+                type="button"
                 class="msi-btn msi-btn-action clear-btn"
-                (click) = "confirmBeforeClosing()">Save Search
+                (click) = "openSaveSearchPopUp()">Save Search
             </button>
             <button 
                 type="submit"
@@ -137,15 +137,24 @@
       <msi-modal-header>Save Search</msi-modal-header>
       <msi-modal-content>Search name:
         <input
-          [(ngModel)]="saveSearchName"
-          type = "text"
-          width="330px"
-          placeholder="enter name for saved search"
+            [(ngModel)]="saveSearchName"
+            type = "text"
+            width="330px"
+            placeholder="enter name for saved search"
         >
+        <div>
+            <label>Search Category</label>
+            <input
+                [(ngModel)]="saveSearchCategory"
+                type = "text"
+                width="330px"
+                placeholder="enter name for saved search"
+            >
+        </div>
       </msi-modal-content>
       <msi-modal-actions align="end">
         <button type="button" class="msi-btn msi-btn-action" (click)="cancelOnSaveFilter()">Cancel</button>
         <button type="button" class="msi-btn spinner-parent" (click)="confirmOnSaveFilter()">Save</button>
       </msi-modal-actions>
     </msi-modal>
-  </ng-template>
+</ng-template>
