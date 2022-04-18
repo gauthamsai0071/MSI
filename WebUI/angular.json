@@ -76,14 +76,14 @@
               "namedChunks": true
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "development"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "client:build",
             "port": 4200,
-            "proxyConfig": "./proxy.conf.json"
+			"proxyConfig": "proxy.conf.json"
           },
           "configurations": {
             "production": {

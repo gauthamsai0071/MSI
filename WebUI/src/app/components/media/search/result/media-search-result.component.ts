@@ -110,7 +110,7 @@ export class MediaSearchResultComponent implements OnInit {
     return ans ? ans : '-';
   }
   onMediaPlay(row): void {
-    this.dialogService.showDialog('Media Player', PlayerComponent, row.id, { id: row.id })
+    this.dialogService.showDialog(row.name, PlayerComponent, row.id, { id: row.id })
     .subscribe();
   }
 }

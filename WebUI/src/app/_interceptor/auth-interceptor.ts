@@ -24,11 +24,11 @@ export class AuthInterceptor implements HttpInterceptor {
     let interceptedRequest: HttpRequest<any>;
     let url = request.url;
                                        
-    if(this.apiBaseUrl !== '' && request.url.indexOf('api/') !== -1 )
+    if(this.apiBaseUrl !== '')
     {     
       if (this.authService.isLoggedIn()){
-          url = `${this.apiBaseUrl}/${request.url}`;
-          //url = `${request.url}`;
+          //url = `${this.apiBaseUrl}${request.url}`;
+          url = `${request.url}`;
           interceptedRequest = request.clone({
             url: url,
             setHeaders :{

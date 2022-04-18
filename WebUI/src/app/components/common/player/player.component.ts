@@ -1,15 +1,15 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { event } from 'jquery';
 import { forkJoin } from 'rxjs';
-import { StateAdto, VideoFilesSubscriptionAdto } from 'src/app/interfaces/adto';
-import { Feed } from 'src/app/models/feed/feed';
-import { Feedsubscription } from 'src/app/models/feed/feedsubscription';
-import { Feedwebsocket } from 'src/app/models/feed/feedwebsocket';
-import { MediaGroupManager } from 'src/app/models/feed/media-group-manager';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { PlayerService } from 'src/app/services/player/player.service';
-import { RecordingService } from 'src/app/services/player/recording.service';
+import { StateAdto, VideoFilesSubscriptionAdto } from '../../../interfaces/adto';
+import { Feed } from '../../../models/feed/feed';
+import { Feedsubscription } from '../../../models/feed/feedsubscription';
+import { Feedwebsocket } from '../../../models/feed/feedwebsocket';
+import { MediaGroupManager } from '../../../models/feed/media-group-manager';
+import { AuthService } from '../../../services/auth/auth.service';
+import { PlayerService } from '../../../services/player/player.service';
+import { RecordingService } from '../../../services/player/recording.service';
 import { ApiUrls } from '../../../util/api-urls';
 
 @Component({
@@ -408,7 +408,7 @@ export class PlayerComponent implements OnInit {
     showView(){
       if (this.id) {
         // let url = this.appUrls.videoInfo(this.id, this.offset);
-         let videoRecUrl = '/api/videos/'+this.id+'/recording';
+         let videoRecUrl = 'api/videos/'+this.id+'/recording';
    
          this.recordingService.getRecordings(videoRecUrl).subscribe(result => {
            console.log(result);
@@ -431,7 +431,7 @@ export class PlayerComponent implements OnInit {
         includeDeleted : true,
         mgroupid : this.createGroupId()
     };
-    let videoSubscribeUrl = '/api/videos/'+this.id+'/subscribe';
+    let videoSubscribeUrl = 'api/videos/'+this.id+'/subscribe';
     let subscription = new Feedsubscription(videoSubscribeUrl,(this.apiUrls.videoSubscribe( this.id ),() => queryParams),this.http,this.authService);
    // let subscription = new Feedsubscription(this.apiUrls.videoSubscribe( this.id ),() => queryParams);
      console.log("subscription data" +subscription);
@@ -456,22 +456,23 @@ export class PlayerComponent implements OnInit {
       this.mediaVtt =[];
       let preparationConfig = {url:''};
       preparationConfig.url = this.apiUrls.videoPreparations(Number(this.id));
-      this.http.get(preparationConfig.url).subscribe(res =>{
+      this.http.get(preparationConfig.url).subscribe((res: any) =>{
         console.log(res);
-        this.mediaVtt = [...res[0].annotationConfig.annotations];
+        if (res !== undefined && res !== null && res.length > 0) {
+          this.mediaVtt = [...res[0].annotationConfig.annotations];
+        }
       });
     }
   
     playVideo(){
-      let playUrl = '/api/videos/'+this.id+'/original/play';
+      let playUrl = 'api/videos/'+this.id+'/original/play';
       let data = { mgroupid : this.createGroupId() };
       this.playerService.getPlayableDetails(playUrl,data).subscribe((res) =>{
         console.log(res);
         this.videoPlayModel = res;
         this.loadedDataTotalDuration(this.videoPlayModel.duration)
        // this.playingVideo = true;
-        this.videoSource = this.videoPlayModel.mediaUri+'/fmp4?msessid='+this.createGroupId()+'&quality=1&start='+(this.currentTime ? this.currentTime : 0)+'&duration=full&requestId='+this.updateRequestId()+'&suspend=true&maxDimension=621'
-       
+        this.videoSource = this.videoPlayModel.mediaUri+'/fmp4?msessid='+this.createGroupId()+'&quality=1&start='+(this.currentTime ? this.currentTime : 0)+'&duration=full&requestId='+this.updateRequestId()+'&suspend=true&maxDimension=621'       
      });
     }
   

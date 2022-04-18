@@ -1,5 +1,5 @@
 <msi-modal>
-  <msi-modal-header>
+  <msi-modal-header *ngIf="title !== null && title !== ''">
       <div class="modal-title" [innerHtml]="title"></div>
       <button type="button" class="close-button" aria-label="Close" (click)="close()">
           <span aria-hidden="true">&times;</span>
