@@ -19,6 +19,9 @@ export class CustomField {
     filterByRange: boolean;
     deleted: boolean;
     numTextLines?: number;
+    validatorName?: string;
+    validatorPattern?: string;
+    validatorDescription?: string;
     permissionGroup: string;
     asUrl: boolean;
     orderIndexSmall?: number;
@@ -31,6 +34,7 @@ export class CustomField {
     showInSummary: boolean;
     showInIncidentEditor: boolean;
     canRead: boolean;
+    defaultValue: { bool?: boolean, text?: string, timestamp?: number };
     value: { text?: string, timestamp?: number };
     validValueLabels: string[] = [];
     validValues: string[] = [];
