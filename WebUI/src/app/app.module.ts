@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { ModalModule, ToastService } from '@msi/cobalt';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -25,11 +24,9 @@ import { MediaSearchResultComponent } from './components/media/search/result/med
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    ModalModule,
     SharedModule    
   ],  
   providers: [ 
-    ToastService,
     MediaFilterService
   ],
   bootstrap: [AppComponent]

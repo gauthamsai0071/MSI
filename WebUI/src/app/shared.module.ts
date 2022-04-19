@@ -64,7 +64,6 @@ import { PlayerComponent } from './components/common/player/player.component';
     PlayerComponent
   ],
   providers: [
-    { provide: 'Api_BaseURL', useValue: environment.Api_BaseURL },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     ToastService,
     ModalService

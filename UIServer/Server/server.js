@@ -1,7 +1,10 @@
 const koa = require("koa");
-const proxy = require("koa-proxies");
+const proxy = require("koa-http2-proxy");
 const gracefulShutdown = require('http-graceful-shutdown');
 const fileSystem = require('fs');
+
+const https = require('https');
+const { default: enforceHttps } = require('koa-sslify');
 
 const bodyParser = require('koa-bodyparser');
 const path = require('path');
@@ -81,7 +84,7 @@ app.use(async (ctx, next) => {
 	{
 		ctx.status = 200;
 	} else if (ctx.request.url === '/' || ctx.request.url === '/login' || ctx.request.url === '/home' || 
-		ctx.request.url.indexOf('/incidents') !== -1) {
+		(ctx.request.url.indexOf('/api') === -1 && ctx.request.url.indexOf('/incidents') !== -1)) {
 		setResponseHeaders(ctx.response, 'text/html');
 		ctx.body = fileSystem.createReadStream(ui_path + 'index.html');
 	} else {
@@ -92,14 +95,27 @@ app.use(async (ctx, next) => {
 app.use(
 	  proxy("/", {
 		target: serverConfig.assetManagerUrl,
+		ws: true, 
 		changeOrigin: true,
-		logs: true
+		logLevel: 'debug'
 	  })
 );
-	
+
 app.use(bodyParser());
 
-const server = app.listen(port);
+app.use(enforceHttps({
+ port: port
+}));
+
+var options = {
+  key: fileSystem.readFileSync(path.resolve('./certs/private.key')),
+  cert: fileSystem.readFileSync(path.resolve('./certs/certificate.crt'))
+}
+
+const server = https.createServer(options, app.callback()).listen(port);
+
+//const server = app.listen(port);
+
 console.log(`listening on port ${port}`);
 
 gracefulShutdown(server,

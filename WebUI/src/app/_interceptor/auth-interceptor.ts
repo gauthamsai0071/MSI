@@ -16,31 +16,15 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(private router: Router,
               private route: ActivatedRoute,
               private toastService: ToastService,
-              private authService: AuthService,    
-              @Inject('Api_BaseURL') private apiBaseUrl: string) {
+              private authService: AuthService) {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let interceptedRequest: HttpRequest<any>;
     let url = request.url;
-                                       
-    if(this.apiBaseUrl !== '')
-    {     
-      if (this.authService.isLoggedIn()){
-          //url = `${this.apiBaseUrl}${request.url}`;
-          url = `${request.url}`;
-          interceptedRequest = request.clone({
-            url: url,
-            setHeaders :{
-              'X-Pss-Csrf-Token': `${sessionStorage.getItem('token')}`,
-              'X-Requested-With' : 'XMLHttpRequest'
-            },
-            withCredentials : true
-          });
-      }
-    }      
-    else {
-      if (this.authService.isLoggedIn()) {
+                                           
+    if (this.authService.isLoggedIn()){
+        url = `${request.url}`;
         interceptedRequest = request.clone({
           url: url,
           setHeaders :{
@@ -49,10 +33,9 @@ export class AuthInterceptor implements HttpInterceptor {
           },
           withCredentials : true
         });
-      } 
+    }    
       else {
         return next.handle(request);
-      }   
     }     
     
     if (interceptedRequest !== undefined) {

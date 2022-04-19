@@ -1,6 +1,8 @@
 import { BehaviorSubject } from "rxjs";
 import { MediaFilterService } from "../../services/media/media-filter.service";
 import { Feed } from "./feed";
+import { io } from 'socket.io-client';
+import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 
 export class Feedwebsocket {
 
@@ -13,8 +15,10 @@ export class Feedwebsocket {
     
     constructor(private feed : Feed, private url: string, public mediaFilterService: MediaFilterService) {}
 
-      start() : any {
-        this.ws = new WebSocket(this.url);
+      start() : any {          
+        this.ws = new WebSocket(this.url);        
+        
+        
         this.ws.onopen = () => {
             if (this.ws) {
                 this.ready = true;

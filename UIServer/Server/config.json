@@ -1,4 +1,4 @@
 {
-	"port": 8080,
-	"assetManagerUrl": "http://localhost:9080"
+	"port": 443,
+	"assetManagerUrl": "https://localhost:9080/"
 }
