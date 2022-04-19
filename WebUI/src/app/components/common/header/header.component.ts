@@ -4,60 +4,11 @@ import { AuthService } from '../../../../app/services/auth/auth.service';
 import { AppTabGroupComponent } from '../../../shared/tab-group/tab-group.component';
 export const mockServices = [
   {
-    systemNames: ['analytics'],
-    name: 'Analytics',
-    icon: '/assets/applications/ic_cc_launcher_analytics.svg',
-    envKey: 'analyticsUrl',
-    badge: 'New'
-  },
-  {
-    systemNames: ['predictive'],
-    name: 'Predictive',
-    icon: '/assets/applications/ic_cc_launcher_predictive.svg',
-    envKey: 'predictiveUrl'
-  },
-  {
-    systemNames: ['tipsubmit'],
-    name: 'Tipsoft',
-    icon: '/assets/applications/ic_cc_launcher_social.svg',
-    envKey: 'tipSubmitUrl'
-  },
-  {
     systemNames: ['msi_admin', 'admin'],
     name: 'Admin',
     icon: '/assets/applications/ic_cc_launcher_admin.svg',
     envKey: 'adminAppUrl'
-  },
-  {
-    systemNames: ['inform'],
-    name: 'Inform',
-    icon: '/assets/applications/ic_cc_launcher_inform.svg',
-    envKey: 'informUrl'
-  },
-  {
-    systemNames: ['aware'],
-    name: 'Aware',
-    icon: '/assets/applications/ic_cc_launcher_aware.svg',
-    envKey: 'awareUrl'
-  },
-  {
-    systemNames: ['vault'],
-    name: 'Vault',
-    icon: '/assets/applications/ic_cc_launcher_analytics.svg',
-    envKey: 'vaultUrl'
-  },
-  {
-    systemNames: ['streaming'],
-    name: 'Streaming',
-    icon: '/assets/applications/ic_cc_launcher_streaming.svg',
-    envKey: 'streamingUrl'
-  },
-  {
-    systemNames: ['OneRms Lsm'],
-    name: 'Search',
-    icon: '/assets/applications/ic_cc_launcher_search.svg',
-    envKey: 'oneRmsUrl'
-  },
+  }
 ];
 
 @Component({
@@ -116,5 +67,8 @@ export class HeaderComponent {
     this.authService.logout();
     this.router.navigateByUrl('/login');
   }
-
+  redirectAdmin(){
+    const url = "https://dev.ur-na.videomanager.online/app/admin";
+    window.open(url, '_self');
+  }
 }
