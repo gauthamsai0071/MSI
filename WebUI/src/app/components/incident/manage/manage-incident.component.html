@@ -16,7 +16,7 @@
                                 [defaultValue]="calendarDateTimeDefaultValue" [dateFormat]='"DD/MM/YYYY"'
                                 [timeFormat]="'HH:mm'" [dateTimeMask]='"00/00/0000 00:00"'
                                 [disabled]="(field.fieldType === 'USER_DEFINED' && !view) ? false : true"
-                                (dateChanged)="onCalendarDateChanged($event, field.id)" #customDatepicker>
+                                (dateChanged)="onCalendarDateChanged($event, field.id)">
                             </msi-date-time-picker-control>
                         </div>
                     </div>
@@ -105,25 +105,24 @@
                             <app-input-control *ngIf="field.mandatory; else checkboxGroupOptional"
                                 [controlName]="field.name" [formResetting]="formResetting"
                                 [LabelText]="field.displayName">
-                                <msi-checkbox-group class="checkbox-group">
-                                    <msi-checkbox class="{{field.name}}" formControlName="{{field.name}}"
-                                        ngDefaultControl
+                                <msi-checkbox-group class="checkbox-group" formControlName="{{field.name}}">
+                                    <msi-checkbox class="{{field.name}}"
                                         [disabled]="(field.fieldType === 'USER_DEFINED' && !view) ? false : true"
                                         (change)="onCheckboxChange( $event, option, field.id)"
                                         *ngFor="let option of field.validValues; let i = index"
                                         [value]="field.validValues[i]"
-                                        >{{field.validValueLabels[i]}}</msi-checkbox>
+                                        [checked]="(field.validValues[i] === selectedCheckboxItems[i]) ? true : false">{{field.validValueLabels[i]}}</msi-checkbox>
                                 </msi-checkbox-group>
                             </app-input-control>
                             <ng-template #checkboxGroupOptional>
-                                <msi-checkbox-group class="checkbox-group">
-                                    <msi-checkbox class="{{field.name}}" formControlName="{{field.name}}"
-                                        ngDefaultControl
+                                <msi-checkbox-group class="checkbox-group" formControlName="{{field.name}}">
+                                    <msi-checkbox class="{{field.name}}"
                                         [disabled]="(field.fieldType === 'USER_DEFINED' && !view) ? false : true"
                                         (change)="onCheckboxChange( $event, option, field.id)"
                                         *ngFor="let option of field.validValues; let i = index"
                                         [value]="field.validValues[i]"
-                                        >{{field.validValueLabels[i]}}</msi-checkbox>
+                                        [checked]="(field.validValues[i] === selectedCheckboxItems[i]) ? true : false">
+                                        {{field.validValueLabels[i]}}</msi-checkbox>
                                 </msi-checkbox-group>
                             </ng-template>
                         </div>
@@ -136,6 +135,9 @@
                                 [LabelText]="field.displayName">
                                 <ng-multiselect-dropdown [settings]="dropdownSettings" [placeholder]="'Select'"
                                     formControlName="{{field.name}}" [data]="field.validValues"
+                                    [(ngModel)]="selectedItems" 
+                                    (onFilterChange)="onMultiSelectChanged($event, field.id, 0)"
+                                    (onDropDownClose)="onMultiSelectChanged($event, field.id, 0)"
                                     (onSelect)="onMultiSelectChanged($event, field.id, 1)"
                                     (onSelectAll)="onMultiSelectChanged($event, field.id, 1)"
                                     (onDeSelect)="onMultiSelectChanged($event, field.id, 0)"
@@ -146,7 +148,10 @@
                             </app-input-control>
                             <ng-template #multiSelectOptional>
                                 <ng-multiselect-dropdown [settings]="dropdownSettings" [placeholder]="'Select'"
-                                    [data]="field.validValues" (onSelect)="onMultiSelectChanged($event, field.id, 1)"
+                                    [data]="field.validValues" [(ngModel)]="selectedItems"
+                                    (onFilterChange)="onMultiSelectChanged($event, field.id, 0)"
+                                    (onDropDownClose)="onMultiSelectChanged($event, field.id, 0)"
+                                    (onSelect)="onMultiSelectChanged($event, field.id, 1)"
                                     (onSelectAll)="onMultiSelectChanged($event, field.id, 1)"
                                     (onDeSelect)="onMultiSelectChanged($event, field.id, 0)"
                                     (onDeSelectAll)="onMultiSelectChanged($event, field.id, 0)"

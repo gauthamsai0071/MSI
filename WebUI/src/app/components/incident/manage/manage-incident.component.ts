@@ -1,11 +1,9 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { Component, OnInit } from "@angular/core";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { DatePickerControlComponent, DateTimeRange } from "@msi/cobalt";
+import { DateTimeRange } from "@msi/cobalt";
 import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
-import { toLower, unset } from "lodash";
-import moment from "moment";
 import { IDropdownSettings } from "ng-multiselect-dropdown";
 import { CustomField } from "../../../models/common/custom-field";
 import { Incident } from "../../../models/incident/incident";
@@ -23,7 +21,6 @@ export class ManageIncidentComponent implements OnInit {
     customFields: CustomField[] = [];
     calendarDateTimeDefaultValue: DateTimeRange;
     title: string = 'Create';
-    customDatepicker: DatePickerControlComponent;
     calendarDateTimeFields = new Map();
     multiSelectFields = new Map();
     checkBoxFields = new Map();
@@ -32,8 +29,10 @@ export class ManageIncidentComponent implements OnInit {
     incidentId: number = 0;
     version: number;
     signature: string;
+    selectedItems = [];
+    selectedCheckboxItems = [];
 
-    constructor(private formBuilder: FormBuilder,
+    constructor(
         private route: ActivatedRoute,
         private router: Router,
         private incidentService: IncidentService,
@@ -73,13 +72,12 @@ export class ManageIncidentComponent implements OnInit {
     }
 
     getIncidentById(id: number) {
+
         this.incidentService.getIncident(this.incidentId).subscribe((incident: Incident) => {
             this.version = incident.version;
             this.signature = incident.signature;
 
             _.each(incident.customFields, field => {
-                //console.log(field.value)
-                let value = ''
                 if (field.isTimestamp) {
                     let date = new Date(field.value.timestamp);
                     this.calendarDateTimeDefaultValue = new DateTimeRange({
@@ -90,10 +88,14 @@ export class ManageIncidentComponent implements OnInit {
                 } else if (field.isBool) {
                     this.incidentForm.get(field.name).patchValue(field.value.bool);
                 } else if (field.isEnumeration) {
-                    if (field.displayName.includes(',checkbox,') || field.displayName.includes(',multiselect,')) {
-                        //console.log(field.value.text)
-                        //    this.multiSelectFields.set(field.id, field.value.text.split(","))
-                        //this.incidentForm.get(field.name).patchValue(field.value.text.split(","));
+                    if (field.displayName.includes(',multiselect,')) {
+                        this.selectedItems = field.value.text.split(",");
+                        this.incidentForm.get(field.name).patchValue(this.selectedItems);
+                    }
+                    else if (field.displayName.includes(',checkbox,')) {
+                        _.each(field.validValues, value => {
+                            _.includes(field.value.text.split(","), value) ? this.selectedCheckboxItems.push(value) : this.selectedCheckboxItems.push(null)
+                        });
                     }
                     else {
                         this.incidentForm.get(field.name).patchValue(field.value.text);
@@ -116,18 +118,16 @@ export class ManageIncidentComponent implements OnInit {
             this.multiSelectFields.set(fieldId, $event)
         }
         else {
-            if (!this.multiSelectFields.has(fieldId)) {
+            if (!this.multiSelectFields.has(fieldId))
                 this.multiSelectFields.set(fieldId, []);
-            }
 
             if (this.multiSelectFields.get(fieldId).includes($event)) {
-                if (!type) {
-                    // @TODO - Remove value
-                    this.multiSelectFields.delete(this.multiSelectFields.get(fieldId))
-                }
+                if (!type)
+                    this.multiSelectFields.get(fieldId).pop($event)
             }
             else {
-                this.multiSelectFields.get(fieldId).push($event);
+                if ($event !== undefined)
+                    this.multiSelectFields.get(fieldId).push($event);
             }
         }
     }
@@ -179,8 +179,6 @@ export class ManageIncidentComponent implements OnInit {
             return;
         }
 
-        //console.log(this.incidentForm)
-
         _.each(this.customFields, field => {
             let item = {}
             if ((field.isText || field.isUrl) &&
@@ -197,9 +195,7 @@ export class ManageIncidentComponent implements OnInit {
                 item["timestamp"] = new Date(dateTimeStr).getTime();
             } else if (field.isEnumeration) {
                 if (this.multiSelectFields.get(field.id)) {
-                    item["text"] = (this.multiSelectFields.get(field.id).length > 1) ? this.multiSelectFields.get(field.id).join(",") :
-                        this.multiSelectFields.get(field.id);
-
+                    item["text"] = this.multiSelectFields.get(field.id).join(",");
                 } else if (this.checkBoxFields.get(field.id)) {
                     item["text"] = this.checkBoxFields.get(field.id).join(",");
                 } else {
@@ -211,7 +207,6 @@ export class ManageIncidentComponent implements OnInit {
 
         let incident = new Incident();
         incident.allCustomFields = this.customFields;
-        //console.log(incident);
         let mGroupId = this.commonService.createGroupId();
 
         if (this.incidentId === undefined) {
