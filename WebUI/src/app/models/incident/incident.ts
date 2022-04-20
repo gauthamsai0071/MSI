@@ -19,6 +19,12 @@ export class Incident {
     incidentTime?: Date;
 
     customFields: CustomField[] = [];
+    public get allCustomFields(): CustomField[] {
+        return this.customFields;
+    }
+    public set allCustomFields(value: CustomField[]) {
+        this.customFields = value;
+    }
     clips: Clips[] = [];
     recordings: Recordings[] = [];
 }

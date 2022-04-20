@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { Component, OnInit } from "@angular/core";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { DatePickerControlComponent, DateTimeRange } from "@msi/cobalt";
+import { DateTimeRange } from "@msi/cobalt";
 import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
-import { toLower } from "lodash";
-import moment from "moment";
+import { IDropdownSettings } from "ng-multiselect-dropdown";
+import { CustomField } from "../../../models/common/custom-field";
 import { Incident } from "../../../models/incident/incident";
 import { CommonService } from "../../../services/common/common.service";
 import { IncidentService } from "../../../services/incident/incident.service";
@@ -14,30 +14,33 @@ import { IncidentService } from "../../../services/incident/incident.service";
     templateUrl: './manage-incident.component.html',
     styleUrls: ['./manage-incident.component.scss']
 })
-export class ManageIncidentComponent implements OnInit {    
+export class ManageIncidentComponent implements OnInit {
     incidentForm: FormGroup = null;
-    incidentId: number = 0;
     submitted = false;
-    view: boolean = false;
     formResetting: boolean = true;
-    incidentTimeDatePickerValue: string;
-    incidentTimeDefaultValue: DateTimeRange;
-    getVersion: number;
-    getSignature: string;
-    title: string = "Create";
+    customFields: CustomField[] = [];
+    calendarDateTimeDefaultValue: DateTimeRange;
+    title: string = 'Create';
+    calendarDateTimeFields = new Map();
+    multiSelectFields = new Map();
+    checkBoxFields = new Map();
+    dropdownSettings: IDropdownSettings = {};
+    view: boolean = false;
+    incidentId: number = 0;
+    version: number;
+    signature: string;
+    selectedItems = [];
+    selectedCheckboxItems = [];
 
-    get formControls() { return this.incidentForm.controls; }
-    
-    private textFields = ["title", "reference-code", "notes", "signature", "clip-count"];
-    private dateTimeFields = ["creation-time", "update-time", "incident-time"];
-
-    @ViewChild('customDatepicker', { static: true }) customDatepicker: DatePickerControlComponent;
-
-    constructor(private formBuilder: FormBuilder, private route: ActivatedRoute,
-                private router: Router, private incidentService: IncidentService, private commonService: CommonService) {
+    constructor(
+        private route: ActivatedRoute,
+        private router: Router,
+        private incidentService: IncidentService,
+        private commonService: CommonService) {
     }
 
     ngOnInit(): void {
+
         let url: string = this.route.routeConfig.path;
         if (url === "view/:id") {
             this.view = true;
@@ -48,47 +51,125 @@ export class ManageIncidentComponent implements OnInit {
         }
 
         this.incidentId = this.route.snapshot.params['id'];
-        this.buildIncidentForm();
+
+        let mGroupId = this.commonService.createGroupId();
+        this.incidentService.getTemplate(mGroupId).subscribe((incident: Incident) => {
+            this.customFields = incident.customFields;
+            this.buildIncidentForm();
+
+            if (this.incidentId !== undefined) {
+                this.getIncidentById(this.incidentId);
+            }
+        });
 
         if (this.incidentId === undefined) {
             let date = new Date();
-            this.incidentTimeDefaultValue = new DateTimeRange({
+            this.calendarDateTimeDefaultValue = new DateTimeRange({
                 startDate: new NgbDate(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()),
                 startTime: { hour: date.getHours(), minute: date.getMinutes(), second: 0 }
             });
         }
-        else {
-            this.getIncidentById(this.incidentId);
-        }
-    }
-
-    onCalendarDateChanged($event) {
-        if (this.customDatepicker) {
-            this.incidentTimeDatePickerValue = this.customDatepicker.dateTextModel;
-        }
     }
 
     getIncidentById(id: number) {
-        let field = null;
-        this.incidentService.getIncident(this.incidentId).subscribe((incident: Incident) => {
-            this.getVersion = incident.version;
-            this.getSignature = incident.signature;
-            _.each(this.textFields, data => {
-                field = incident.customFields.find(item => toLower(item.name) == toLower(data));
-                if (field.value !== undefined)
-                    this.incidentForm.get(data).patchValue(field.value.text);
-            });
 
-            _.each(this.dateTimeFields, dateTimeData => {
-                field = incident.customFields.find(item => toLower(item.name) == toLower(dateTimeData));
-                let dateTimeValue = moment(field.value.timestamp).format("DD/MM/YYYY HH:mm");
-                if (dateTimeData === 'incident-time') {
-                    this.customDatepicker.dateTextModel = dateTimeValue;
-                } else {
-                    this.incidentForm.get(dateTimeData).patchValue(dateTimeValue);
+        this.incidentService.getIncident(this.incidentId).subscribe((incident: Incident) => {
+            this.version = incident.version;
+            this.signature = incident.signature;
+
+            _.each(incident.customFields, field => {
+                if (field.isTimestamp) {
+                    let date = new Date(field.value.timestamp);
+                    this.calendarDateTimeDefaultValue = new DateTimeRange({
+                        startDate: new NgbDate(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()),
+                        startTime: { hour: date.getHours(), minute: date.getMinutes(), second: 0 }
+                    });
+                    this.incidentForm.get(field.name).patchValue(this.calendarDateTimeDefaultValue);
+                } else if (field.isBool) {
+                    this.incidentForm.get(field.name).patchValue(field.value.bool);
+                } else if (field.isEnumeration) {
+                    if (field.displayName.includes(',multiselect,')) {
+                        this.selectedItems = field.value.text.split(",");
+                        this.incidentForm.get(field.name).patchValue(this.selectedItems);
+                    }
+                    else if (field.displayName.includes(',checkbox,')) {
+                        _.each(field.validValues, value => {
+                            _.includes(field.value.text.split(","), value) ? this.selectedCheckboxItems.push(value) : this.selectedCheckboxItems.push(null)
+                        });
+                    }
+                    else {
+                        this.incidentForm.get(field.name).patchValue(field.value.text);
+                    }
+                }
+                else {
+                    this.incidentForm.get(field.name).patchValue(field.value.text);
                 }
             });
         });
+    }
+
+    onCalendarDateChanged($event, calendarFieldId) {
+        this.calendarDateTimeDefaultValue = $event;
+        this.calendarDateTimeFields.set(calendarFieldId, this.calendarDateTimeDefaultValue)
+    }
+
+    onMultiSelectChanged($event, fieldId, type) {
+        if ($event instanceof Array) {
+            this.multiSelectFields.set(fieldId, $event)
+        }
+        else {
+            if (!this.multiSelectFields.has(fieldId))
+                this.multiSelectFields.set(fieldId, []);
+
+            if (this.multiSelectFields.get(fieldId).includes($event)) {
+                if (!type)
+                    this.multiSelectFields.get(fieldId).pop($event)
+            }
+            else {
+                if ($event !== undefined)
+                    this.multiSelectFields.get(fieldId).push($event);
+            }
+        }
+    }
+
+    onCheckboxChange($event, value, fieldId) {
+        if ($event) {
+            if (!this.checkBoxFields.has(fieldId)) {
+                this.checkBoxFields.set(fieldId, []);
+            }
+            this.checkBoxFields.get(fieldId).push(value);
+        }
+        else {
+            const index = this.checkBoxFields?.get(fieldId)?.indexOf(value);
+            this.checkBoxFields?.get(fieldId)?.splice(index, 1);
+        }
+    }
+
+    get formControls() { return this.incidentForm.controls; }
+
+    buildIncidentForm() {
+        this.incidentForm = new FormGroup({});
+        for (let i = 0; i < this.customFields.length; i++) {
+            let defaultValue = null;
+            if (this.customFields[i].fieldType === 'USER_DEFINED') {
+                if (this.customFields[i].isBool)
+                    defaultValue = (this.customFields[i].defaultValue.bool) ? this.customFields[i].defaultValue.bool : false;
+                else
+                    defaultValue = (this.customFields[i].defaultValue) ? this.customFields[i].defaultValue.text : '';
+            }
+
+            let validators = [Validators.required];
+            if (this.customFields[i].isUrl) {
+                validators.push(Validators.pattern(this.customFields[i].validatorPattern));
+            }
+
+            if (this.customFields[i].mandatory) {
+                this.incidentForm.addControl(this.customFields[i].name, new FormControl(defaultValue, validators))
+            }
+            else {
+                this.incidentForm.addControl(this.customFields[i].name, new FormControl(defaultValue))
+            }
+        }
     }
 
     onSubmit() {
@@ -98,58 +179,50 @@ export class ManageIncidentComponent implements OnInit {
             return;
         }
 
-        const formValue = this.incidentForm.value;
-
-        if (this.incidentTimeDatePickerValue !== '') {
-            this.incidentTimeDatePickerValue = this.commonService.convertStringToTimesamp(this.incidentTimeDatePickerValue);
-        }
-
-        let mGroupId = this.commonService.createGroupId();
-        let fields = null;
-        this.incidentService.getTemplate(mGroupId).subscribe((incident: Incident) => {
-
-            _.each(this.textFields, data => {
-                fields = incident.customFields.find(item => toLower(item.name) == toLower(data));
-                let formFieldValue = this.incidentForm.get(data).value;
-                if (fields !== undefined && formFieldValue !== '') {
-                    fields.value = { "text": formFieldValue };
+        _.each(this.customFields, field => {
+            let item = {}
+            if ((field.isText || field.isUrl) &&
+                this.incidentForm.get(field.name).value !== undefined &&
+                this.incidentForm.get(field.name).value !== null &&
+                this.incidentForm.get(field.name).value !== '') {
+                item["text"] = this.incidentForm.get(field.name).value;
+            }
+            else if (field.isBool) {
+                item["bool"] = this.incidentForm.get(field.name).value;
+            }
+            else if (field.isTimestamp && field.fieldType === 'USER_DEFINED' && this.calendarDateTimeFields.get(field.id)) {
+                let dateTimeStr = this.calendarDateTimeDefaultValue.startDate.month + "/" + this.calendarDateTimeDefaultValue.startDate.day + "/" + this.calendarDateTimeDefaultValue.startDate.year + " " + this.calendarDateTimeDefaultValue.startTime.hour + ":" + this.calendarDateTimeDefaultValue.startTime.minute;
+                item["timestamp"] = new Date(dateTimeStr).getTime();
+            } else if (field.isEnumeration) {
+                if (this.multiSelectFields.get(field.id)) {
+                    item["text"] = this.multiSelectFields.get(field.id).join(",");
+                } else if (this.checkBoxFields.get(field.id)) {
+                    item["text"] = this.checkBoxFields.get(field.id).join(",");
+                } else {
+                    item["text"] = this.incidentForm.get(field.name).value;
                 }
+            }
+            field.value = item;
+        });
+
+        let incident = new Incident();
+        incident.allCustomFields = this.customFields;
+        let mGroupId = this.commonService.createGroupId();
+
+        if (this.incidentId === undefined) {
+            this.incidentService.createIncident(mGroupId, incident).subscribe((incident: Incident) => {
+                this.incidentService.deleteMediaGroup(mGroupId).subscribe();
+                return this.router.navigateByUrl('/incidents/view/' + incident.id);
             });
+        }
+        else {
+            incident.id = this.incidentId;
+            incident.signature = this.signature;
+            incident.version = this.version;
 
-            fields = incident.customFields.find(item => toLower(item.name) == toLower("incident-time"));
-            if (fields !== undefined && this.incidentTimeDatePickerValue !== '') {
-                fields.value = { "timestamp": Number(this.incidentTimeDatePickerValue) };
-            }
-
-            if (this.incidentId === undefined) {
-                this.incidentService.createIncident(mGroupId, incident).subscribe((incident: Incident) => {
-                    this.incidentService.deleteMediaGroup(mGroupId).subscribe();
-                    return this.router.navigateByUrl('/incidents/view/' + incident.id);
-                });
-            }
-            else {
-                incident.id = this.incidentId;
-                incident.signature = this.getSignature;
-                incident.version = this.getVersion;
-
-                this.incidentService.updateIncident(this.incidentId, mGroupId, incident).subscribe((incident: Incident) => {
-                    return this.router.navigateByUrl('/incidents/view/' + incident.id);
-                });
-            }
-        });
+            this.incidentService.updateIncident(this.incidentId, mGroupId, incident).subscribe((incident: Incident) => {
+                return this.router.navigateByUrl('/incidents/view/' + incident.id);
+            });
+        }
     }
-
-    buildIncidentForm(): void {
-        this.incidentForm = this.formBuilder.group({
-            title: ['', Validators.required],
-            "creation-time": [''],
-            "update-time": [''],
-            "incident-time": [''],
-            "reference-code": [''],
-            notes: [''],
-            "clip-count": ['None'],
-            owner: [sessionStorage.getItem('username')],
-            signature: [''],
-        });
-    }    
 }
