@@ -35,7 +35,7 @@ export class CustomField {
     showInIncidentEditor: boolean;
     canRead: boolean;
     defaultValue: { bool?: boolean, text?: string, timestamp?: number };
-    value: { text?: string, timestamp?: number };
+    value: { bool?: boolean, text?: string, timestamp?: number };
     validValueLabels: string[] = [];
     validValues: string[] = [];
 }
