@@ -88,21 +88,23 @@ export class ManageIncidentComponent implements OnInit {
                 } else if (field.isBool) {
                     this.incidentForm.get(field.name).patchValue(field.value.bool);
                 } else if (field.isEnumeration) {
-                    if (field.displayName.includes(',multiselect,')) {
+                    if (field.displayName.includes(',multiselect,') && field.value !== undefined) {
                         this.selectedItems = field.value.text.split(",");
                         this.incidentForm.get(field.name).patchValue(this.selectedItems);
                     }
-                    else if (field.displayName.includes(',checkbox,')) {
+                    else if (field.displayName.includes(',checkbox,') && field.value !== undefined) {
                         _.each(field.validValues, value => {
                             _.includes(field.value.text.split(","), value) ? this.selectedCheckboxItems.push(value) : this.selectedCheckboxItems.push(null)
                         });
                     }
                     else {
-                        this.incidentForm.get(field.name).patchValue(field.value.text);
+                        if (field.value !== undefined)
+                            this.incidentForm.get(field.name).patchValue(field.value.text);
                     }
                 }
                 else {
-                    this.incidentForm.get(field.name).patchValue(field.value.text);
+                    if (field.value !== undefined)
+                        this.incidentForm.get(field.name).patchValue(field.value.text);
                 }
             });
         });
