@@ -28,6 +28,7 @@ export class PlayerComponent implements OnInit {
   @ViewChild("videoPlayer", { static: false }) videoplayer: ElementRef;
 
   id : number;
+  mouseOver:boolean=false
   offset = "61";
   public feed: Feed;
   public apiUrls :ApiUrls;
@@ -481,5 +482,12 @@ export class PlayerComponent implements OnInit {
       if (myVideo.paused) myVideo.play();
       else myVideo.pause();
     }  */
+    over(){
+      this.mouseOver=true
+    }
+    out(){
+      this.mouseOver=false;
+    }
+
 
 }
