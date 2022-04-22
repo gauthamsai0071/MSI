@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import _ from 'lodash';
 import moment from 'moment';
 import { Subscription } from 'rxjs';
-import { DialogService } from 'src/app/services/common/dialog.service';
+import { DialogService } from '../../../../services/common/dialog.service';
 import { MediaFilterService } from '../../../../services/media/media-filter.service';
-import { PlayerComponent } from 'src/app/components/common/player/player.component';
+import { PlayerComponent } from '../../../common/player/player.component';
+import { ManageIncidentComponent } from '../../../incident/manage/manage-incident.component';
 
 @Component({
   selector: 'app-media-search-result',
@@ -13,44 +14,44 @@ import { PlayerComponent } from 'src/app/components/common/player/player.compone
 })
 export class MediaSearchResultComponent implements OnInit {
   rows: Array<any> = [];
-  isAstroFieldsVisible:boolean = true;
-  private customFields :any = null;
-  private dataSub : Subscription;
-  private systemSub : Subscription;
+  isAstroFieldsVisible: boolean = true;
+  private customFields: any = null;
+  private dataSub: Subscription;
+  private systemSub: Subscription;
 
   showhidecoloumns: { [key: string]: boolean };
 
   constructor(
-    private mediaFilters : MediaFilterService,
-    private mediaFilterService : MediaFilterService,
+    private mediaFilters: MediaFilterService,
+    private mediaFilterService: MediaFilterService,
     private dialogService: DialogService) {
-      this.showhidecoloumns = {
-        'media_name' : true,
-        'timestamp' : true,
-        'mimeType' : true,
-        'media_duration' : true,
-        'talkgroupId' : true,
-        'agencyName' : true,
-        'unitId' : false,
-        'channel' : false,
-        'siteId' : false,
-        'zoneId' : false,
-        'rscAlias' : false,
-        'individualAlias' : false,
-        'System' : true,
-        'originatingMDN' : false,
-        'terminatingMDN' : false,
-        'participatingMDN' : false,
-        'talkgroupName' : false
-      };
-    }
+    this.showhidecoloumns = {
+      'media_name': true,
+      'timestamp': true,
+      'mimeType': true,
+      'media_duration': true,
+      'talkgroupId': true,
+      'agencyName': true,
+      'unitId': false,
+      'channel': false,
+      'siteId': false,
+      'zoneId': false,
+      'rscAlias': false,
+      'individualAlias': false,
+      'System': true,
+      'originatingMDN': false,
+      'terminatingMDN': false,
+      'participatingMDN': false,
+      'talkgroupName': false
+    };
+  }
 
   ngOnInit() {
-    
-    this.dataSub = this.mediaFilterService.filteredRespone$.subscribe(result =>{
-      if(result){
+
+    this.dataSub = this.mediaFilterService.filteredRespone$.subscribe(result => {
+      if (result) {
         this.rows = result;
-      }else{
+      } else {
         this.rows = [];
       }
     });
@@ -58,7 +59,7 @@ export class MediaSearchResultComponent implements OnInit {
       this.customFields = result;
     })
     this.systemSub = this.mediaFilterService.systemSelected$.subscribe(result => {
-      if(result == 'astro'){
+      if (result == 'astro') {
         this.showhidecoloumns['unitId'] = true;
         this.showhidecoloumns['channel'] = true;
         this.showhidecoloumns['siteId'] = true;
@@ -69,7 +70,7 @@ export class MediaSearchResultComponent implements OnInit {
         this.showhidecoloumns['terminatingMDN'] = false;
         this.showhidecoloumns['participatingMDN'] = false;
         this.showhidecoloumns['talkgroupName'] = false;
-      }else if(result =='broadband'){
+      } else if (result == 'broadband') {
         this.showhidecoloumns['unitId'] = false;
         this.showhidecoloumns['channel'] = false;
         this.showhidecoloumns['siteId'] = false;
@@ -80,7 +81,7 @@ export class MediaSearchResultComponent implements OnInit {
         this.showhidecoloumns['terminatingMDN'] = true;
         this.showhidecoloumns['participatingMDN'] = true;
         this.showhidecoloumns['talkgroupName'] = true;
-      }else{
+      } else {
         this.showhidecoloumns['unitId'] = false;
         this.showhidecoloumns['channel'] = false;
         this.showhidecoloumns['siteId'] = false;
@@ -95,14 +96,14 @@ export class MediaSearchResultComponent implements OnInit {
     })
   }
 
-  findElement(row : any, fieldName: string){
+  findElement(row: any, fieldName: string) {
     let ans = null;
     _.each(row?.customFields, cf => {
-      if(cf.name === fieldName){
-        if(cf.isTimestamp == true){
+      if (cf.name === fieldName) {
+        if (cf.isTimestamp == true) {
           ans = moment(cf.value?.timestamp).format("DD MMM YYYY hh:mm a");
-        }else{
-          ans =  cf.value?.text;
+        } else {
+          ans = cf.value?.text;
         }
         return ans;
       }
@@ -111,6 +112,12 @@ export class MediaSearchResultComponent implements OnInit {
   }
   onMediaPlay(row): void {
     this.dialogService.showDialog(row.name, PlayerComponent, row.id, { id: row.id })
-    .subscribe();
+      .subscribe();
+  }
+
+
+  createIncident(tableRows): void {
+    this.dialogService.showDialog('Add media to New Incident', ManageIncidentComponent, tableRows, { rows: tableRows })
+      .subscribe();
   }
 }

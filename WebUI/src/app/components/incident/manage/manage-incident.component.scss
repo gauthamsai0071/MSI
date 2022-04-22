@@ -1,15 +1,37 @@
 .incidents {
-    .msi-card {
-        max-width: 100%;
+
+    .title {
+        font-family   : Public Sans;
+        font-size     : 14px;
+        font-weight   : 600;
+        line-height   : 24px;
+        letter-spacing: 0px;
+        text-align    : left;
     }
 
-    input,
-    .msi-select, .ng-multiselect {
-        width: 20%;
+    input ::ng-deep,
+    .msi-select ::ng-deep,
+    .ng-multiselect ::ng-deep,
+    .msi-date-time-picker ::ng-deep .date-time-control,
+    textarea ::ng-deep {
+        width: 100%;
+    }
+
+    .actions {
+        width     : 100%;
+        text-align: right;
+
+        .msi-link {
+            text-decoration: none;
+            font-weight    : bold;
+            position       : relative;
+            top            : 5px;
+        }
     }
 
     .form-button {
         margin-top: 8px;
         display   : inline-block;
+        text-align: right;
     }
 }

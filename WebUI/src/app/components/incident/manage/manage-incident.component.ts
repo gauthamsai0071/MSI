@@ -1,6 +1,5 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
 import { DateTimeRange } from "@msi/cobalt";
 import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
@@ -14,55 +13,47 @@ import { IncidentService } from "../../../services/incident/incident.service";
     templateUrl: './manage-incident.component.html',
     styleUrls: ['./manage-incident.component.scss']
 })
+
 export class ManageIncidentComponent implements OnInit {
+
+    @Input()
+    popupParam: { mode: string, id: number, rows: [] };
+
+    @Output()
+    popupResult: EventEmitter<any>;
+
     incidentForm: FormGroup = null;
     submitted = false;
     formResetting: boolean = true;
     customFields: CustomField[] = [];
     calendarDateTimeDefaultValue: DateTimeRange;
-    title: string = 'Create';
     calendarDateTimeFields = new Map();
     multiSelectFields = new Map();
     checkBoxFields = new Map();
     dropdownSettings: IDropdownSettings = {};
     view: boolean = false;
-    incidentId: number = 0;
     version: number;
     signature: string;
     selectedItems = [];
     selectedCheckboxItems = [];
 
     constructor(
-        private route: ActivatedRoute,
-        private router: Router,
         private incidentService: IncidentService,
         private commonService: CommonService) {
     }
 
     ngOnInit(): void {
-
-        let url: string = this.route.routeConfig.path;
-        if (url === "view/:id") {
-            this.view = true;
-            this.title = "View";
-        }
-        else if (url === "edit/:id") {
-            this.title = "Edit";
-        }
-
-        this.incidentId = this.route.snapshot.params['id'];
-
         let mGroupId = this.commonService.createGroupId();
-        this.incidentService.getTemplate(mGroupId).subscribe((incident: Incident) => {
+        this.incidentService.getTemplate(mGroupId, '').subscribe((incident: Incident) => {
             this.customFields = incident.customFields;
             this.buildIncidentForm();
 
-            if (this.incidentId !== undefined) {
-                this.getIncidentById(this.incidentId);
+            if (this.popupParam.id > 0) {
+                this.getIncidentById(this.popupParam.id);
             }
         });
 
-        if (this.incidentId === undefined) {
+        if (this.popupParam.id === 0) {
             let date = new Date();
             this.calendarDateTimeDefaultValue = new DateTimeRange({
                 startDate: new NgbDate(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()),
@@ -72,8 +63,7 @@ export class ManageIncidentComponent implements OnInit {
     }
 
     getIncidentById(id: number) {
-
-        this.incidentService.getIncident(this.incidentId).subscribe((incident: Incident) => {
+        this.incidentService.getIncident(this.popupParam.id).subscribe((incident: Incident) => {
             this.version = incident.version;
             this.signature = incident.signature;
 
@@ -159,17 +149,21 @@ export class ManageIncidentComponent implements OnInit {
                 else
                     defaultValue = (this.customFields[i].defaultValue) ? this.customFields[i].defaultValue.text : '';
             }
+            else if (this.customFields[i].fieldType === 'CLIP_COUNT') {
+                defaultValue = (this.popupParam.rows) ? this.popupParam.rows.length : 0;
+            }
 
-            let validators = [Validators.required];
+            let validators = [];
             if (this.customFields[i].isUrl) {
                 validators.push(Validators.pattern(this.customFields[i].validatorPattern));
             }
 
             if (this.customFields[i].mandatory) {
+                validators.push(Validators.required);
                 this.incidentForm.addControl(this.customFields[i].name, new FormControl(defaultValue, validators))
             }
             else {
-                this.incidentForm.addControl(this.customFields[i].name, new FormControl(defaultValue))
+                this.incidentForm.addControl(this.customFields[i].name, new FormControl(defaultValue, validators))
             }
         }
     }
@@ -193,7 +187,8 @@ export class ManageIncidentComponent implements OnInit {
                 item["bool"] = this.incidentForm.get(field.name).value;
             }
             else if (field.isTimestamp && field.fieldType === 'USER_DEFINED' && this.calendarDateTimeFields.get(field.id)) {
-                let dateTimeStr = this.calendarDateTimeDefaultValue.startDate.month + "/" + this.calendarDateTimeDefaultValue.startDate.day + "/" + this.calendarDateTimeDefaultValue.startDate.year + " " + this.calendarDateTimeDefaultValue.startTime.hour + ":" + this.calendarDateTimeDefaultValue.startTime.minute;
+                let dateTimeFieldControl = this.calendarDateTimeFields.get(field.id);
+                let dateTimeStr = dateTimeFieldControl.startDate.month + "/" + dateTimeFieldControl.startDate.day + "/" + dateTimeFieldControl.startDate.year + " " + dateTimeFieldControl.startTime.hour + ":" + dateTimeFieldControl.startTime.minute;
                 item["timestamp"] = new Date(dateTimeStr).getTime();
             } else if (field.isEnumeration) {
                 if (this.multiSelectFields.get(field.id)) {
@@ -211,20 +206,30 @@ export class ManageIncidentComponent implements OnInit {
         incident.allCustomFields = this.customFields;
         let mGroupId = this.commonService.createGroupId();
 
-        if (this.incidentId === undefined) {
+        if (this.popupParam.id === 0) {
             this.incidentService.createIncident(mGroupId, incident).subscribe((incident: Incident) => {
                 this.incidentService.deleteMediaGroup(mGroupId).subscribe();
-                return this.router.navigateByUrl('/incidents/view/' + incident.id);
+                this.close();
             });
         }
         else {
-            incident.id = this.incidentId;
+            incident.id = this.popupParam.id;
             incident.signature = this.signature;
             incident.version = this.version;
 
-            this.incidentService.updateIncident(this.incidentId, mGroupId, incident).subscribe((incident: Incident) => {
-                return this.router.navigateByUrl('/incidents/view/' + incident.id);
+            this.incidentService.updateIncident(this.popupParam.id, mGroupId, incident).subscribe((incident: Incident) => {
+                this.close()
             });
         }
+    }
+
+    close(): void {
+        if (!this.popupResult.isStopped && this.popupResult.observers !== null) {
+            this.popupResult.emit();
+        }
+    }
+
+    cancel(): void {
+        this.popupResult.emit(null);
     }
 }

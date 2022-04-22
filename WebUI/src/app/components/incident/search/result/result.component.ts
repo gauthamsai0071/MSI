@@ -38,7 +38,7 @@ export class IncidentSearchResultComponent {
 
           field = incident.customFields.find(item => toLower(item.name) == toLower("incidentTime"));
           incident.incidentTime = field !== undefined ? moment(field.value.timestamp).toDate() : null;
-      });
+        });
 
         this.results = response;
       });
@@ -47,13 +47,19 @@ export class IncidentSearchResultComponent {
   results: Incident[] = [];
 
   constructor(private incidentSearchService: IncidentSearchService,
-              private dialogService: DialogService) {
+    private dialogService: DialogService) {
   }
-  
+
   addIncident(): void {
     this.dialogService.showDialog('Create Incident', AddIncidentComponent, 100, { id: 100 })
-      .subscribe((result?: { incidentId?: number }) => {        
-          this.newIncidentId = result ? result.incidentId : null;
+      .subscribe((result?: { incidentId?: number }) => {
+        this.newIncidentId = result ? result.incidentId : null;
       });
+  }
+
+  manageIncident(mode: string, id?: number): void {
+    const title = mode.charAt(0).toUpperCase() + mode.slice(1);
+    this.dialogService.showDialog(title + ' Incident', ManageIncidentComponent, id, { mode: mode, id: id })
+      .subscribe();
   }
 }

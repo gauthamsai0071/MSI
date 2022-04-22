@@ -1,5 +1,8 @@
 <div class="incident-search-result-wrapper">
-    <button (click)="addIncident()">Add Incident</button> {{newIncidentId}}
+    <!-- <button (click)="addIncident()">Add Incident</button> {{newIncidentId}} -->
+    <div class="list-top-actions">
+        <msi-icon (click)="manageIncident('create', 0)" name="ic_add" class="ic_add" title="Create Incident"></msi-icon>
+    </div>
     <div class="list-view-label-wrapper">
         <msi-icon name="ic_data_table" class="ic-data-table"></msi-icon>
         <p class="list-view-label">List View</p>
@@ -27,7 +30,14 @@
         </ng-container>
         <ng-container msiColDef="text" [width]="50" [fixedWidth]="true">
             <ng-container *msiCellDef="let row">
-                <msi-icon name="ic_add" class="icon-demo"></msi-icon>
+                <msi-icon (click)="manageIncident('edit',row.id)" name="ic_edit" class="ic_edit" title="Edit Incident">
+                </msi-icon>
+            </ng-container>
+        </ng-container>
+        <ng-container msiColDef="text" [width]="50" [fixedWidth]="true">
+            <ng-container *msiCellDef="let row">
+                <msi-icon (click)="manageIncident('view',row.id)" name="ic_list_arrow_right" class="ic_list_arrow_right" title="View Incident">
+                </msi-icon>
             </ng-container>
         </ng-container>
         <ng-container msiColDef="text" [width]="20" [fixedWidth]="true">

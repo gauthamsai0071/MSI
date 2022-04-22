@@ -1,57 +1,52 @@
 <div class="media-search-result-wrapper">
+    <!-- <button (click)="createIncident(table.selectedRows)">Add to new Incident</button> -->
     <div class="list-view-label-wrapper">
         <msi-icon name="ic_data_table" class="ic-data-table"></msi-icon>
         <p class="list-view-label">List View</p>
     </div>
-    <table class="msiDatatable"  msi-data-table #table [rows]="rows"
-        style="width: 100%;"
-        [condensed]="false" [sticky]="true" [pinning]="false" [selection]="true" 
-        [horizontalScrollbar]="true"
-        [virtualScroll]="true">
+    <table class="msiDatatable" msi-data-table #table [rows]="rows" style="width: 100%;" [condensed]="false"
+        [sticky]="true" [pinning]="false" [selection]="true" [horizontalScrollbar]="true" [virtualScroll]="true">
         <ng-container class="search-results">
-            <ng-container msiColDef colType="action" colLock="left" [width]="50" [fixedWidth]="true" *ngIf="table.selection">
+            <ng-container msiColDef colType="action" colLock="left" [width]="50" [fixedWidth]="true"
+                *ngIf="table.selection">
                 <ng-container *msiHeaderCellDef>
-                <msi-checkbox
-                    [checked]="table.selectionState === 'all'"
-                    [indeterminate]="table.selectionState === 'some'"
-                    (click)="table.toggleAllRowsSelected($event)"
-                    [disabled]="false">
-                </msi-checkbox>
+                    <msi-checkbox [checked]="table.selectionState === 'all'"
+                        [indeterminate]="table.selectionState === 'some'" (click)="table.toggleAllRowsSelected($event)"
+                        [disabled]="false">
+                    </msi-checkbox>
                 </ng-container>
                 <ng-container *msiCellDef="let row">
-                <msi-checkbox
-                    [(ngModel)]="table.getRowState(row).selected"
-                    (change)="table.updateSelectionState()">
-                </msi-checkbox>
+                    <msi-checkbox [(ngModel)]="table.getRowState(row).selected" (change)="table.updateSelectionState()">
+                    </msi-checkbox>
                 </ng-container>
             </ng-container>
-            <ng-container [sortable]="false" [width]="45" [fixedWidth]="true" msiColDef="icon"  [filterable]="false" [draggable]="true"
-                [resizable]="true">
+            <ng-container [sortable]="false" [width]="45" [fixedWidth]="true" msiColDef="icon" [filterable]="false"
+                [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef></ng-container>
                 <ng-container *msiCellDef="let row">
-                        <msi-icon (click)="onMediaPlay( row )" name="ic_media_play" class="ic-media-play"></msi-icon>
+                    <msi-icon (click)="onMediaPlay( row )" name="ic_media_play" class="ic-media-play"></msi-icon>
                 </ng-container>
-            </ng-container> 
-            
-            <ng-container *ngIf="showhidecoloumns['media_name']" [fixedWidth]="true" [width]="190"  msiColDef="name"
-                [sortable]="true" [filterable]="false" [draggable]="true" [resizable]="true">
-                    <ng-container *msiHeaderCellDef>Name</ng-container>
-                    <ng-container *msiCellDef="let row">
-                        <a class="anchor-fileName" href="javascript:void (0)">
-                            <div msiTooltip="{{findElement(row, 'media_name') }}">
-                                {{row.name}}
-                            </div>
-                        </a>
-                    </ng-container>
             </ng-container>
-            <ng-container [width]="170" [fixedWidth]="true" *ngIf="showhidecoloumns['timestamp']" msiColDef="Retention" 
+
+            <ng-container *ngIf="showhidecoloumns['media_name']" [fixedWidth]="true" [width]="190" msiColDef="name"
+                [sortable]="true" [filterable]="false" [draggable]="true" [resizable]="true">
+                <ng-container *msiHeaderCellDef>Name</ng-container>
+                <ng-container *msiCellDef="let row">
+                    <a class="anchor-fileName" href="javascript:void (0)">
+                        <div msiTooltip="{{findElement(row, 'media_name') }}">
+                            {{row.name}}
+                        </div>
+                    </a>
+                </ng-container>
+            </ng-container>
+            <ng-container [width]="170" [fixedWidth]="true" *ngIf="showhidecoloumns['timestamp']" msiColDef="Retention"
                 [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Capture Date</ng-container>
                 <ng-container *msiCellDef="let row">
                     {{findElement(row, 'timestamp') }}
                 </ng-container>
             </ng-container>
-            <ng-container [width]="120" [fixedWidth]="true" *ngIf="showhidecoloumns['mimeType']" msiColDef="Retention" 
+            <ng-container [width]="120" [fixedWidth]="true" *ngIf="showhidecoloumns['mimeType']" msiColDef="Retention"
                 [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Media Type</ng-container>
                 <ng-container *msiCellDef="let row">
@@ -60,8 +55,8 @@
                     </div>
                 </ng-container>
             </ng-container>
-            <ng-container [width]="100" [fixedWidth]="true" *ngIf="showhidecoloumns['media_duration']" msiColDef="Retention" 
-                [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
+            <ng-container [width]="100" [fixedWidth]="true" *ngIf="showhidecoloumns['media_duration']"
+                msiColDef="Retention" [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Duration</ng-container>
                 <ng-container *msiCellDef="let row">
                     <div msiTooltip="{{findElement(row, 'media_duration') }}">
@@ -69,16 +64,16 @@
                     </div>
                 </ng-container>
             </ng-container>
-            <ng-container [width]="125" [fixedWidth]="true" *ngIf="showhidecoloumns['talkgroupId']" msiColDef="Retention" 
-                [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
+            <ng-container [width]="125" [fixedWidth]="true" *ngIf="showhidecoloumns['talkgroupId']"
+                msiColDef="Retention" [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Talkgroup ID</ng-container>
                 <ng-container *msiCellDef="let row">
-                    <div msiTooltip="{{findElement(row, 'talkgroupId') }}" position = 'left'>
+                    <div msiTooltip="{{findElement(row, 'talkgroupId') }}" position='left'>
                         {{findElement(row, 'talkgroupId') }}
                     </div>
                 </ng-container>
             </ng-container>
-            <ng-container [width]="120" [fixedWidth]="true" *ngIf="showhidecoloumns['agencyName']" msiColDef="Retention" 
+            <ng-container [width]="120" [fixedWidth]="true" *ngIf="showhidecoloumns['agencyName']" msiColDef="Retention"
                 [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Agency</ng-container>
                 <ng-container *msiCellDef="let row">
@@ -86,8 +81,8 @@
                         {{findElement(row, 'agencyName') }}
                     </div>
                 </ng-container>
-            </ng-container>            
-            <ng-container [width]="93" [fixedWidth]="true" *ngIf="showhidecoloumns['unitId']" msiColDef="Retention" 
+            </ng-container>
+            <ng-container [width]="93" [fixedWidth]="true" *ngIf="showhidecoloumns['unitId']" msiColDef="Retention"
                 [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Unit ID</ng-container>
                 <ng-container *msiCellDef="let row">
@@ -96,7 +91,7 @@
                     </div>
                 </ng-container>
             </ng-container>
-            <ng-container [width]="100" [fixedWidth]="true" *ngIf="showhidecoloumns['channel']" msiColDef="Retention" 
+            <ng-container [width]="100" [fixedWidth]="true" *ngIf="showhidecoloumns['channel']" msiColDef="Retention"
                 [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Channel</ng-container>
                 <ng-container *msiCellDef="let row">
@@ -105,7 +100,7 @@
                     </div>
                 </ng-container>
             </ng-container>
-            <ng-container [width]="93" [fixedWidth]="true" *ngIf="showhidecoloumns['siteId']" msiColDef="Retention" 
+            <ng-container [width]="93" [fixedWidth]="true" *ngIf="showhidecoloumns['siteId']" msiColDef="Retention"
                 [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Site ID</ng-container>
                 <ng-container *msiCellDef="let row">
@@ -114,7 +109,7 @@
                     </div>
                 </ng-container>
             </ng-container>
-            <ng-container [width]="93" [fixedWidth]="true" *ngIf="showhidecoloumns['zoneId']" msiColDef="Retention" 
+            <ng-container [width]="93" [fixedWidth]="true" *ngIf="showhidecoloumns['zoneId']" msiColDef="Retention"
                 [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Zone ID</ng-container>
                 <ng-container *msiCellDef="let row">
@@ -123,7 +118,7 @@
                     </div>
                 </ng-container>
             </ng-container>
-            <ng-container [width]="150" [fixedWidth]="true" *ngIf="showhidecoloumns['rscAlias']" msiColDef="Retention" 
+            <ng-container [width]="150" [fixedWidth]="true" *ngIf="showhidecoloumns['rscAlias']" msiColDef="Retention"
                 [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Resource Alias</ng-container>
                 <ng-container *msiCellDef="let row">
@@ -131,9 +126,9 @@
                         {{findElement(row, 'rscAlias') }}
                     </div>
                 </ng-container>
-            </ng-container>            
-            <ng-container [width]="150" [fixedWidth]="true" *ngIf="showhidecoloumns['individualAlias']" msiColDef="Retention" 
-                [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
+            </ng-container>
+            <ng-container [width]="150" [fixedWidth]="true" *ngIf="showhidecoloumns['individualAlias']"
+                msiColDef="Retention" [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Individual Alias</ng-container>
                 <ng-container *msiCellDef="let row">
                     <div msiTooltip="{{findElement(row, 'individualAlias') }}">
@@ -141,7 +136,7 @@
                     </div>
                 </ng-container>
             </ng-container>
-            <ng-container [width]="100" [fixedWidth]="true" *ngIf="showhidecoloumns['System']" msiColDef="Retention" 
+            <ng-container [width]="100" [fixedWidth]="true" *ngIf="showhidecoloumns['System']" msiColDef="Retention"
                 [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>System</ng-container>
                 <ng-container *msiCellDef="let row">
@@ -150,8 +145,8 @@
                     </div>
                 </ng-container>
             </ng-container>
-            <ng-container [width]="150" [fixedWidth]="true" *ngIf="showhidecoloumns['originatingMDN']" msiColDef="Retention" 
-                [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
+            <ng-container [width]="150" [fixedWidth]="true" *ngIf="showhidecoloumns['originatingMDN']"
+                msiColDef="Retention" [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Originating MDN</ng-container>
                 <ng-container *msiCellDef="let row">
                     <div msiTooltip="{{findElement(row, 'originatingMDN') }}">
@@ -159,8 +154,8 @@
                     </div>
                 </ng-container>
             </ng-container>
-            <ng-container [width]="150" [fixedWidth]="true" *ngIf="showhidecoloumns['terminatingMDN']" msiColDef="Retention" 
-                [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
+            <ng-container [width]="150" [fixedWidth]="true" *ngIf="showhidecoloumns['terminatingMDN']"
+                msiColDef="Retention" [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Terminating MDN</ng-container>
                 <ng-container *msiCellDef="let row">
                     <div msiTooltip="{{findElement(row, 'terminatingMDN') }}">
@@ -168,24 +163,24 @@
                     </div>
                 </ng-container>
             </ng-container>
-            <ng-container [width]="150" [fixedWidth]="true" *ngIf="showhidecoloumns['participatingMDN']" msiColDef="Retention" 
-                [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
+            <ng-container [width]="150" [fixedWidth]="true" *ngIf="showhidecoloumns['participatingMDN']"
+                msiColDef="Retention" [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Participating MDN</ng-container>
                 <ng-container *msiCellDef="let row">
                     <div msiTooltip="{{findElement(row, 'participatingMDN') }}">
                         {{findElement(row, 'participatingMDN') }}
                     </div>
                 </ng-container>
-            </ng-container> 
-            <ng-container [width]="150" [fixedWidth]="true" *ngIf="showhidecoloumns['talkgroupName']" msiColDef="Retention" 
-                [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
+            </ng-container>
+            <ng-container [width]="150" [fixedWidth]="true" *ngIf="showhidecoloumns['talkgroupName']"
+                msiColDef="Retention" [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Talkgroup Name</ng-container>
                 <ng-container *msiCellDef="let row">
                     <div msiTooltip="{{findElement(row, 'talkgroupName') }}">
                         {{findElement(row, 'talkgroupName') }}
                     </div>
                 </ng-container>
-            </ng-container>           
+            </ng-container>
 
 
         </ng-container>
