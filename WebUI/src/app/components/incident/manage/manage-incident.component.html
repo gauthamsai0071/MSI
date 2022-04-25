@@ -1,7 +1,7 @@
 <div class="incidents">
     <form [formGroup]="incidentForm" (ngSubmit)="onSubmit()" *ngIf="incidentForm !== null">
         <div *ngFor="let field of customFields">
-            <div *ngIf="field.isTimestamp && field.showInSummary">
+            <div *ngIf="field.isTimestamp && !((popupParam.mode === 'create' && field.fieldType === 'CREATION_TIME') || (popupParam.mode === 'create' && field.fieldType === 'UPDATE_TIME'))">
                 <div class="form-group">
                     <label class="msi-label" for="{{ field.name }}">
                         {{ field.displayName }}
@@ -17,7 +17,7 @@
                     </app-input-control>
                 </div>
             </div>
-            <div *ngIf="(field.isText || field.isUrl)">
+            <div *ngIf="(field.isText || field.isUrl) && !((popupParam.mode === 'create' && field.fieldType === 'OWNER') || (popupParam.mode === 'create' && field.fieldType === 'SIGNATURE'))">
                 <div class="form-group">
                     <label class="msi-label" for="{{ field.name }}">
                         {{ field.displayName }}
