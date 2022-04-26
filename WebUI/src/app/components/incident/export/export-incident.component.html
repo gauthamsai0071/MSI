@@ -1,78 +1,69 @@
-<app-header></app-header>
 <div class="form-wrapper exports">
-    <msi-card>
-        <msi-card-title class="msi-border-primary-10">
-            <span>Export Incident</span>
-        </msi-card-title>
-        <msi-card-content>
-            <form [formGroup]="exportForm" (ngSubmit)="onSubmit()">
-                <div class="form-group">
-                    <label class="msi-label" for="description">
-                        Title
-                    </label>
-                    <app-input-control [controlName]="'description'" [formResetting]="formResetting"
-                        [LabelText]="'Description'">
-                        <input class="msi-input" type="text" id="description" autocomplete="title"
-                            formControlName="description"
-                            [class.error]="!formResetting && formControls.description.invalid">
-                    </app-input-control>
+    <form [formGroup]="exportForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label class="msi-label" for="description">
+                Title
+            </label>
+            <app-input-control [controlName]="'description'" [formResetting]="formResetting"
+                [LabelText]="'Description'">
+                <input class="msi-input" type="text" id="description" autocomplete="title" formControlName="description"
+                    [class.error]="!formResetting && formControls.description.invalid">
+            </app-input-control>
+        </div>
+        <div class="form-group" formGroupName="exportProfile">
+            <div>
+                <label class="msi-label label-tooltip" for="id">
+                    Profile <msi-icon *ngIf="profileSelectedValue === 'VIDEO_MP4'" class="info_icon"
+                        name="ic_information"
+                        msiTooltip="An MP4 export will produce an MP4 file which is a standard video format which can be played with standard media players."
+                        position="right"></msi-icon>
+                    <msi-icon *ngIf="profileSelectedValue === 'VIDEO_DVD'" class="info_icon" name="ic_information"
+                        msiTooltip="A DVD export will produce an ISO file, which you can download and burn to a DVD on your own computer if you have a suitable DVD drive."
+                        position="right"></msi-icon>
+                    <msi-icon *ngIf="profileSelectedValue === 'EVIDENCE_EXPORT'" class="info_icon" name="ic_information"
+                        msiTooltip="An evidence export will produce an MP4 file, the original video files and metadata about the incident, which can be imported into another system."
+                        position="right"></msi-icon>
+                </label>
+                <msi-select *ngIf="export" formControlName="profileId" id="profileId" (change)="outputSelectChanges()"
+                    #msiProfile>
+                    <msi-select-option *ngFor="let option of export.profiles;" [value]="option.type">
+                        {{option.name}}
+                    </msi-select-option>
+                </msi-select>
+            </div>
+            <div>
+                <div *ngIf="profileSelectedValue === 'VIDEO_DVD'"> &nbsp;
+                    <msi-select formControlName="profileDvdFormat" id="profileDvdFormat">
+                        <msi-select-option [value]="false">PAL</msi-select-option>
+                        <msi-select-option [value]="true">NTSC</msi-select-option>
+                    </msi-select> &nbsp;
+                    <msi-select formControlName="profileSelectMedia" id="profileSelectMedia">
+                        <msi-select-option [value]="4.7">DVD±R</msi-select-option>
+                        <msi-select-option [value]="4.7">DVD±RW</msi-select-option>
+                        <msi-select-option [value]="8.55">DVD±R DL</msi-select-option>
+                        <msi-select-option [value]="4.7">DVD-RAM</msi-select-option>
+                        <msi-select-option [value]="9.4">DVD-RAM DL</msi-select-option>
+                        <msi-select-option [value]="1.46">MiniDVD</msi-select-option>
+                        <msi-select-option [value]="2.66">MiniDVD DL</msi-select-option>
+                    </msi-select>
                 </div>
-                <div class="form-group" formGroupName="exportProfile">
-                    <div>
-                        <label class="msi-label label-tooltip" for="id">
-                            Profile <msi-icon *ngIf="profileSelectedValue === 'VIDEO_MP4'" class="info_icon"
-                                name="ic_information"
-                                msiTooltip="An MP4 export will produce an MP4 file which is a standard video format which can be played with standard media players."
-                                position="right"></msi-icon>
-                            <msi-icon *ngIf="profileSelectedValue === 'VIDEO_DVD'" class="info_icon"
-                                name="ic_information"
-                                msiTooltip="A DVD export will produce an ISO file, which you can download and burn to a DVD on your own computer if you have a suitable DVD drive."
-                                position="right"></msi-icon>
-                            <msi-icon *ngIf="profileSelectedValue === 'EVIDENCE_EXPORT'" class="info_icon"
-                                name="ic_information"
-                                msiTooltip="An evidence export will produce an MP4 file, the original video files and metadata about the incident, which can be imported into another system."
-                                position="right"></msi-icon>
-                        </label>
-                        <msi-select *ngIf="export" formControlName="profileId" id="profileId" (change)="outputSelectChanges()"
-                            #msiProfile>
-                            <msi-select-option *ngFor="let option of export.profiles;" [value]="option.type">
-                                {{option.name}}
-                            </msi-select-option>
-                        </msi-select>
-                    </div>
-                    <div>
-                        <div *ngIf="profileSelectedValue === 'VIDEO_DVD'"> &nbsp;
-                            <msi-select formControlName="profileDvdFormat" id="profileDvdFormat">
-                                <msi-select-option [value]="false">PAL</msi-select-option>
-                                <msi-select-option [value]="true">NTSC</msi-select-option>
-                            </msi-select> &nbsp;
-                            <msi-select formControlName="profileSelectMedia" id="profileSelectMedia">
-                                <msi-select-option [value]="4.7">DVD±R</msi-select-option>
-                                <msi-select-option [value]="4.7">DVD±RW</msi-select-option>
-                                <msi-select-option [value]="8.55">DVD±R DL</msi-select-option>
-                                <msi-select-option [value]="4.7">DVD-RAM</msi-select-option>
-                                <msi-select-option [value]="9.4">DVD-RAM DL</msi-select-option>
-                                <msi-select-option [value]="1.46">MiniDVD</msi-select-option>
-                                <msi-select-option [value]="2.66">MiniDVD DL</msi-select-option>
-                            </msi-select>
-                        </div>
-                        <msi-toggle class="export-toggle" *ngIf="profileSelectedValue !== 'EVIDENCE_EXPORT'"
-                            text="Title pages" formControlName="includeFootage" id="includeFootage">
-                        </msi-toggle>
-                        <div *ngIf="profileSelectedValue === 'EVIDENCE_EXPORT'">
-                            <msi-toggle class="export-toggle" text="Include original footage"
-                                formControlName="includeConvertedFootage" id="includeConvertedFootage">
-                            </msi-toggle>
-                            <msi-toggle class="export-toggle" text="Include confidential metadata"
-                                formControlName="includeMetadata" id="includeMetadata">
-                            </msi-toggle>
-                        </div>
-                    </div>
+                <msi-toggle class="export-toggle" *ngIf="profileSelectedValue !== 'EVIDENCE_EXPORT'" text="Title pages"
+                    formControlName="includeFootage" id="includeFootage">
+                </msi-toggle>
+                <div *ngIf="profileSelectedValue === 'EVIDENCE_EXPORT'">
+                    <msi-toggle class="export-toggle" text="Include original footage"
+                        formControlName="includeConvertedFootage" id="includeConvertedFootage">
+                    </msi-toggle>
+                    <msi-toggle class="export-toggle" text="Include confidential metadata"
+                        formControlName="includeMetadata" id="includeMetadata">
+                    </msi-toggle>
                 </div>
-                <div>
-                    <button class="msi-btn form-button" type="submit">Submit</button>
-                </div>
-            </form>
-        </msi-card-content>
-    </msi-card>
+            </div>
+        </div>
+        <div class="actions">
+            <a href="javascript:void(0)" class="msi-link" (click)="cancel()" title="Cancel">Cancel</a>
+            &nbsp;
+            <button type="submit" class="msi-btn form-button" title="Submit">Submit</button>
+        </div>
+    </form>
 </div>

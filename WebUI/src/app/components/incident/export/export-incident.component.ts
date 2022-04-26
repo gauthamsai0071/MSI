@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import _, { toLower } from "lodash";
@@ -17,8 +17,13 @@ import { ToastService } from "@msi/cobalt";
 })
 export class ExportIncidentComponent implements OnInit {
 
+    @Input()
+    popupParam: { mode: string, id: number, rows: [] };
+
+    @Output()
+    popupResult: EventEmitter<any>;
+
     exportForm: FormGroup = null;
-    incidentId: number = 0;
     submitted = false;
     formResetting: boolean = true;
     profileSelectedValue: string;
@@ -27,17 +32,16 @@ export class ExportIncidentComponent implements OnInit {
     exportProfile: ExportProfile;
     mGroupId: string | null;
 
-    constructor(private formBuilder: FormBuilder, private route: ActivatedRoute, private router: Router, private incidentService: IncidentService, private commonService: CommonService, private toastService: ToastService) {
+    constructor(private formBuilder: FormBuilder, private incidentService: IncidentService, private commonService: CommonService, private toastService: ToastService) {
     }
 
     ngOnInit(): void {
-        this.incidentId = this.route.snapshot.params['id'];
         this.buildExportForm();
 
         this.mGroupId = this.commonService.createGroupId();
         forkJoin([
-            this.incidentService.getIncident(this.incidentId),
-            this.incidentService.getExportTemplate(this.incidentId, this.mGroupId)
+            this.incidentService.getIncident(this.popupParam.id),
+            this.incidentService.getExportTemplate(this.popupParam.id, this.mGroupId)
         ]).subscribe(([responseIncidents, responseExport]) => {
             this.incident = responseIncidents;
 
@@ -72,9 +76,9 @@ export class ExportIncidentComponent implements OnInit {
 
         _.unset(form.value, 'exportProfile.profileId');
 
-        this.incidentService.createExport(this.incidentId, form.value).subscribe((response: ExportProfile) => {
+        this.incidentService.createExport(this.popupParam.id, form.value).subscribe((response: ExportProfile) => {
             this.incidentService.deleteMediaGroup(this.mGroupId).subscribe();
-            return this.router.navigateByUrl('/incidents/exports');
+            this.close();
         }, (error) => {
             if (error.status === 400 && error.error.errorKey === 'errorExportingIncidentNoClipsFound') {
                 this.toastService.error("Error while exporting incident: the export contains no clips.", undefined, { autoDismiss: 5000, closeButton: true });
@@ -98,5 +102,15 @@ export class ExportIncidentComponent implements OnInit {
     }
 
     get formControls() { return this.exportForm.controls; }
+
+    close(): void {
+        if (!this.popupResult.isStopped && this.popupResult.observers !== null) {
+            this.popupResult.emit();
+        }
+    }
+
+    cancel(): void {
+        this.popupResult.emit(null);
+    }
 
 }    

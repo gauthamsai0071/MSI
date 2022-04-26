@@ -50,9 +50,9 @@
         </ng-container>
         <ng-container msiColDef="text" [width]="20" [fixedWidth]="true" [sortable]="false">
             <ng-container *msiCellDef="let row">
-                <a [routerLink]="['/incidents/export', row.id]" title="Export" class="msi-link">
-                    <msi-icon name="ic_export" class="icon-demo"></msi-icon>
-                </a>
+                <msi-icon (click)="manageIncident('export',row.id)" name="ic_export" class="ic_export"
+                    title="Export Incident">
+                </msi-icon>
             </ng-container>
         </ng-container>
     </table>

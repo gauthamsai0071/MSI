@@ -5,6 +5,7 @@ import { Incident } from '../../../../models/incident/incident';
 import { DialogService } from '../../../../services/common/dialog.service';
 import { IncidentSearchService } from '../../../../services/incident/search.service';
 import { AddIncidentComponent } from '../../add/add-incident.component';
+import { ExportIncidentComponent } from '../../export/export-incident.component';
 import { ManageIncidentComponent } from '../../manage/manage-incident.component';
 
 @Component({
@@ -58,8 +59,9 @@ export class IncidentSearchResultComponent {
   }
 
   manageIncident(mode: string, id?: number): void {
+    const componentName = (mode === 'export') ? ExportIncidentComponent : ManageIncidentComponent;
     const title = mode.charAt(0).toUpperCase() + mode.slice(1);
-    this.dialogService.showDialog(title + ' Incident', ManageIncidentComponent, id, { mode: mode, id: id })
+    this.dialogService.showDialog(title + ' Incident', componentName, id, { mode: mode, id: id })
       .subscribe();
   }
 }

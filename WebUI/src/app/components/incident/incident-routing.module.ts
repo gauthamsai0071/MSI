@@ -9,8 +9,7 @@ import { IncidentSearchComponent } from './search/search.component';
 const routes: Routes = [    
     { path: '', redirectTo: 'search' },
     { path: 'search', component: IncidentSearchComponent, canActivate: [AuthGuard] },
-    { path: 'exports', component: ExportListComponent, canActivate: [AuthGuard] },
-    { path: 'export/:id', component: ExportIncidentComponent, canActivate: [AuthGuard] }
+    { path: 'exports', component: ExportListComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({
