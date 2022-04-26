@@ -1,7 +1,8 @@
-<div class="incidents">
+<div class="incidents" *ngIf="popupParam.mode !== 'delete' else deleteIncidentBlock">
     <form [formGroup]="incidentForm" (ngSubmit)="onSubmit()" *ngIf="incidentForm !== null">
         <div *ngFor="let field of customFields">
-            <div *ngIf="field.isTimestamp && !((popupParam.mode === 'create' && field.fieldType === 'CREATION_TIME') || (popupParam.mode === 'create' && field.fieldType === 'UPDATE_TIME'))">
+            <div
+                *ngIf="field.isTimestamp && !((popupParam.mode === 'create' && field.fieldType === 'CREATION_TIME') || (popupParam.mode === 'create' && field.fieldType === 'UPDATE_TIME'))">
                 <div class="form-group">
                     <label class="msi-label" for="{{ field.name }}">
                         {{ field.displayName }}
@@ -17,7 +18,8 @@
                     </app-input-control>
                 </div>
             </div>
-            <div *ngIf="(field.isText || field.isUrl) && !((popupParam.mode === 'create' && field.fieldType === 'OWNER') || (popupParam.mode === 'create' && field.fieldType === 'SIGNATURE'))">
+            <div
+                *ngIf="(field.isText || field.isUrl) && !((popupParam.mode === 'create' && field.fieldType === 'OWNER') || (popupParam.mode === 'create' && field.fieldType === 'SIGNATURE'))">
                 <div class="form-group">
                     <label class="msi-label" for="{{ field.name }}">
                         {{ field.displayName }}
@@ -124,9 +126,23 @@
             </div>
         </div>
         <div *ngIf="popupParam.mode !== 'view'" class="actions">
-            <a href="javascript:void(0)" class="msi-link" (click)="cancel()">Cancel</a>
+            <a href="javascript:void(0)" class="msi-link" (click)="cancel()" title="Cancel">Cancel</a>
             &nbsp;
-            <button type="submit" class="msi-btn form-button">Submit</button>
+            <button type="submit" class="msi-btn form-button" title="Submit">Submit</button>
+        </div>
+        <div *ngIf="popupParam.mode === 'view'" class="actions">
+            <button type="button" (click)="manageIncident('edit',popupParam.id)"
+                class="msi-btn form-button" title="Edit">Edit</button>
         </div>
     </form>
 </div>
+<ng-template #deleteIncidentBlock>
+    <div class="deleteIncidents">
+        Are you sure that you want to delete this incident?
+        <div class="actions">
+            <a href="javascript:void(0)" class="msi-link" (click)="cancel()" title="Cancel">Cancel</a>
+            &nbsp;
+            <button type="button" class="msi-btn delete-btn" (click)="deleteIncident(popupParam.id)" title="Delete">Delete</button>
+        </div>
+    </div>
+</ng-template>

@@ -35,6 +35,11 @@ export class IncidentService {
     return this.http.delete(url);
   }
 
+  public deleteIncident(id: number) {
+    let url = 'api/incidents/' + id + '/delete';
+    return this.http.post(url, { "deleteFieldValues": [] });
+  }
+
   public getIncident(id: number): Observable<Incident> {
     let mGroupId = this.commonSrv.createGroupId();
     let url = 'api/incidents/' + id + '?mgroupid=' + mGroupId;

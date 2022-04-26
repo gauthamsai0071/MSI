@@ -26,21 +26,29 @@
             <ng-container *msiHeaderCellDef>
                 <div msiTooltip="Left" position="left">Incident Time</div>
             </ng-container>
-            <ng-container *msiCellDef="let row">{{row.incidentTime | date:'dd/MM/YYYY HH:mm'}}</ng-container>
+            <ng-container *msiCellDef="let row"> {{row.incidentTime | date:'dd/MM/YYYY HH:mm'}}</ng-container>
         </ng-container>
-        <ng-container msiColDef="text" [width]="50" [fixedWidth]="true">
+        <ng-container msiColDef="text" [width]="50" [fixedWidth]="true" [sortable]="false">
             <ng-container *msiCellDef="let row">
                 <msi-icon (click)="manageIncident('edit',row.id)" name="ic_edit" class="ic_edit" title="Edit Incident">
                 </msi-icon>
             </ng-container>
         </ng-container>
-        <ng-container msiColDef="text" [width]="50" [fixedWidth]="true">
+        <ng-container msiColDef="text" [width]="50" [fixedWidth]="true" [sortable]="false">
             <ng-container *msiCellDef="let row">
-                <msi-icon (click)="manageIncident('view',row.id)" name="ic_list_arrow_right" class="ic_list_arrow_right" title="View Incident">
+                <msi-icon (click)="manageIncident('view',row.id)" name="ic_arrow_right" class="ic_arrow_right"
+                    title="View Incident">
                 </msi-icon>
             </ng-container>
         </ng-container>
-        <ng-container msiColDef="text" [width]="20" [fixedWidth]="true">
+        <ng-container msiColDef="text" [width]="50" [fixedWidth]="true" [sortable]="false">
+            <ng-container *msiCellDef="let row">
+                <msi-icon (click)="manageIncident('delete',row.id)" name="ic_remove" class="ic_remove"
+                    title="Delete Incident">
+                </msi-icon>
+            </ng-container>
+        </ng-container>
+        <ng-container msiColDef="text" [width]="20" [fixedWidth]="true" [sortable]="false">
             <ng-container *msiCellDef="let row">
                 <a [routerLink]="['/incidents/export', row.id]" title="Export" class="msi-link">
                     <msi-icon name="ic_export" class="icon-demo"></msi-icon>

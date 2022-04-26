@@ -9,9 +9,6 @@ import { IncidentSearchComponent } from './search/search.component';
 const routes: Routes = [    
     { path: '', redirectTo: 'search' },
     { path: 'search', component: IncidentSearchComponent, canActivate: [AuthGuard] },
-    { path: 'create', component: ManageIncidentComponent, canActivate: [AuthGuard] },
-    { path: 'view/:id', component: ManageIncidentComponent, canActivate: [AuthGuard] },
-    { path: 'edit/:id', component: ManageIncidentComponent, canActivate: [AuthGuard] },
     { path: 'exports', component: ExportListComponent, canActivate: [AuthGuard] },
     { path: 'export/:id', component: ExportIncidentComponent, canActivate: [AuthGuard] }
 ];

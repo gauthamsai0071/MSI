@@ -35,3 +35,19 @@
         text-align: right;
     }
 }
+
+.deleteIncidents {
+
+    .actions {
+        text-align: right;
+
+        .msi-link {
+            text-decoration: none;
+            font-weight    : bold;
+        }
+
+        .delete-btn {
+            display: inline;
+        }
+    }
+}

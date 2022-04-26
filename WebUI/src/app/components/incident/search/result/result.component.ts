@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import _, { result, toLower } from 'lodash';
+import _, { toLower } from 'lodash';
 import moment from 'moment';
 import { Incident } from '../../../../models/incident/incident';
 import { DialogService } from '../../../../services/common/dialog.service';
@@ -33,13 +33,13 @@ export class IncidentSearchResultComponent {
           let field = incident.customFields.find(item => toLower(item.name) == toLower("title"));
           incident.title = (field && field.value) !== undefined ? field.value.text : '';
 
-          field = incident.customFields.find(item => toLower(item.name) == toLower("referencecode"));
-          incident.referenceCode = field !== undefined ? field.value.text : '';
+          field = incident.customFields.find(item => toLower(item.name) == toLower("reference-code"));
+          incident.referenceCode = (field && field.value) !== undefined ? field.value.text : '';
 
-          field = incident.customFields.find(item => toLower(item.name) == toLower("incidentTime"));
-          incident.incidentTime = field !== undefined ? moment(field.value.timestamp).toDate() : null;
+          field = incident.customFields.find(item => toLower(item.name) == toLower("incident-time"));
+
+          incident.incidentTime = (field && field.value) !== undefined ? moment(field.value.timestamp).toDate() : null;
         });
-
         this.results = response;
       });
   }

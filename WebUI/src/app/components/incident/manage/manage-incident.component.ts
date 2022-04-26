@@ -43,22 +43,24 @@ export class ManageIncidentComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        let mGroupId = this.commonService.createGroupId();
-        this.incidentService.getTemplate(mGroupId, '').subscribe((incident: Incident) => {
-            this.customFields = incident.customFields;
-            this.buildIncidentForm();
+        if (this.popupParam.mode !== 'delete') {
+            let mGroupId = this.commonService.createGroupId();
+            this.incidentService.getTemplate(mGroupId, '').subscribe((incident: Incident) => {
+                this.customFields = incident.customFields;
+                this.buildIncidentForm();
 
-            if (this.popupParam.id > 0) {
-                this.getIncidentById(this.popupParam.id);
-            }
-        });
-
-        if (this.popupParam.id === 0) {
-            let date = new Date();
-            this.calendarDateTimeDefaultValue = new DateTimeRange({
-                startDate: new NgbDate(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()),
-                startTime: { hour: date.getHours(), minute: date.getMinutes(), second: 0 }
+                if (this.popupParam.id > 0) {
+                    this.getIncidentById(this.popupParam.id);
+                }
             });
+
+            if (this.popupParam.id === 0) {
+                let date = new Date();
+                this.calendarDateTimeDefaultValue = new DateTimeRange({
+                    startDate: new NgbDate(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()),
+                    startTime: { hour: date.getHours(), minute: date.getMinutes(), second: 0 }
+                });
+            }
         }
     }
 
@@ -223,6 +225,11 @@ export class ManageIncidentComponent implements OnInit {
         }
     }
 
+    deleteIncident(id: number) {
+        this.incidentService.deleteIncident(id).subscribe();
+        this.close();
+    }
+
     close(): void {
         if (!this.popupResult.isStopped && this.popupResult.observers !== null) {
             this.popupResult.emit();
@@ -231,5 +238,9 @@ export class ManageIncidentComponent implements OnInit {
 
     cancel(): void {
         this.popupResult.emit(null);
+    }
+
+    manageIncident(mode: string, id?: number): void {
+        this.popupParam.mode = 'edit';
     }
 }
