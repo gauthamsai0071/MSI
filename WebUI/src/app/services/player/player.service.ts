@@ -10,7 +10,11 @@ export class PlayerService {
   constructor(private http: HttpClient) { }
 
   getPlayableDetails(url,body):Observable<any>{
-    return this.http.post(url,body); 
+      return this.http.post(url,body); 
   }
 
+  downloadVideo(url):Observable<any>{
+    return this.http.get(url,
+      {responseType:'blob'}); 
+  }
 }

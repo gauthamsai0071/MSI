@@ -26,9 +26,9 @@
                     </span>
                     <span class="icon">
                         <i class="material-icons volume" (click)="muteVolume()" (mouseover)="over()"
-                            (mouseout)="out()">volume_up</i>
+                            >volume_up</i>
                         <input type="range" min="0" max="100" class="volume_range" (change)="changeVolume()"
-                            *ngIf="mouseOver">
+                            *ngIf="mouseOver" (mouseout)="out()">
                     </span>
                     <div class="timer">
                         <span class="current">0:00</span> / <span class="duration">0:00</span>
@@ -36,7 +36,12 @@
                 </div>
                 <div class="controls-right">
                     <span class="icon">
-                        <i class="material-icons settingsBtn" (click)="onClickSettingBtn()">settings</i>
+                        <msi-icon name="ic_download" class="material-icons ic-download" (click)="downloadFile()">
+                        </msi-icon>
+                    </span>
+                    <span class="icon">
+                        <msi-icon name="ic_settings" class="material-icons ic-settings" (click)="onClickSettingBtn()">
+                            </msi-icon>
                     </span>
                     <span class="icon">
                         <i class="material-icons picture_in_picutre"
