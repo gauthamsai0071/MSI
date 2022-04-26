@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { CustomField } from '../../models/common/custom-field';
 
 @Injectable()
 export class MediaFilterService {
@@ -13,16 +14,16 @@ export class MediaFilterService {
   constructor(private http: HttpClient) { }
   
   getCustomFields() {
-    return this.http.get('api/videos/customFields');
+    return this.http.get<CustomField[]>('api/videos/customFields');
   }
 
-  public  notifysystemSelected(data: any) {
+  public  notifysystemSelected(data: string) {
     if (data) {
       this.systemSelected.next(data);
     }
   }
   
-  public static notifyfilteredRespone(data: any) {
+  public static notifyfilteredRespone(data: string) {
     if (data) {
       this.filteredRespone.next(data);
     }else{
