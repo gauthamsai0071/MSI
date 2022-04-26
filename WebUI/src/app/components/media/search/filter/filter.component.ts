@@ -12,7 +12,7 @@ import { Feedwebsocket } from '../../../../../app/models/feed/feedwebsocket';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../../../../app/services/auth/auth.service';
 import { Feedsubscription } from '../../../../../app/models/feed/feedsubscription';
-import { Subscription } from 'rxjs';
+import { CustomField } from '../../../../models/common/custom-field';
 
 @Component({
   selector: 'app-media-filter',
@@ -22,11 +22,11 @@ import { Subscription } from 'rxjs';
 
 export class MediaFilterComponent implements OnInit {
   filterCriteria : FormGroup = null;
-  customFields :any = null;
-  advancedFilter : any = '';
-  private location : any = null;
+  customFields :CustomField[] = null;
+  advancedFilter : string = '';
+  private location : { lat : number, lng: number};
   private radius : null;
-  searchFields :any = [];
+  searchFields: CustomField[] = [];
   queryParams:any = [];
   public checkBoxFields = new Map();
   public calendarFields = new Map();
@@ -37,11 +37,7 @@ export class MediaFilterComponent implements OnInit {
   public mgroup : MediaGroupManager;
   public state : StateAdto;
   public socket : Feedwebsocket;
-  searchResult : any;
-  offset = "61";
-  id = "5885";
   url:string;
-  private sub : Subscription;
   constructor(
     private mediaFilters : MediaFilterService,
     private formBuilder: FormBuilder,
@@ -55,14 +51,11 @@ export class MediaFilterComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.mediaFilters.getCustomFields().subscribe((result: any) =>{
+    this.mediaFilters.getCustomFields().subscribe((result: CustomField[]) =>{
       this.customFields = result;
       this.getAllSearchFields();
       this.buildSearchForm();
     });
-    this.sub = this.mediaFilterService.filteredRespone$.subscribe(result =>{
-      this.searchResult = result;
-    })
     this.viewSubscription();
   }
 
@@ -80,7 +73,7 @@ export class MediaFilterComponent implements OnInit {
     let advanceQuery = '';
     _.each(this.searchFields, cf =>{
       let value = this.filterCriteria.get(cf.name)?.value;
-      if(cf.name == 'System'){
+      if(cf.name == 'system'){
         if(value == 'astro'){
           this.mediaFilterService.notifysystemSelected('astro');
         }else if(value == 'broadband'){
@@ -180,14 +173,14 @@ export class MediaFilterComponent implements OnInit {
   }
 
   getLocationData(){
-    let  location = { lat : String, lng: String};
+    let  location : { lat : number, lng: number};
     let radius = this.filterCriteria?.get('radius').value;
     let latLong = this.filterCriteria?.get('latLong').value;
     if(radius){
       this.radius = radius;
     }
     if(latLong){
-      location.lat = (latLong.split(',').slice(0,1)).toString();
+      location.lat = latLong.split(',').slice(0,1).toString();
       location.lng = latLong.split(',').slice(1,2).toString();
       this.location = location;
     }
