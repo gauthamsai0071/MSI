@@ -1,9 +1,9 @@
-import { CreateSubscriptionAdto, CreateSubscriptionResponseAdto, FeedEventAdto, StateAdto } from "../../../app/interfaces/adto";
-import { Feed } from "./feed";
+import { CreateSubscriptionAdto, CreateSubscriptionResponseAdto, FeedEventAdto, StateAdto } from "../../interfaces/adto";
+import { FeedManager } from "./feed-manager";
 import { HttpClient } from '@angular/common/http';
-import { ApiUrls } from "../../../app/util/api-urls";
+import { ApiUrls } from "../../util/api-urls";
 import { MediaGroupManager } from "./media-group-manager";
-import { AuthService } from "../../../app/services/auth/auth.service";
+import { AuthService } from "../../services/auth/auth.service";
 
 export class Feedsubscription {
     private cancelled : boolean;
@@ -19,13 +19,13 @@ export class Feedsubscription {
     public urls : ApiUrls;
     public mgroup : MediaGroupManager;
     public state : StateAdto;
-    feed : Feed;
+    feed : FeedManager;
     refCount: number = 0;
     
 
     constructor( public url : any, private getData? : () => CreateSubscriptionAdto,public _http?: HttpClient,private authService?: AuthService ) {
         //super();
-        this.feed = new Feed(this.urls,this.mgroup,this.state,this._http,this.authService)
+        this.feed = new FeedManager(this.urls,this.mgroup,this.state,this._http)
         this.feed.addSubscription( this );
     }
 
@@ -49,7 +49,6 @@ export class Feedsubscription {
                     this.id = null;
                 }
                 this.feed.removeSubscription( this );
-                //this.trigger('cancel');
             }
         }
         
@@ -70,7 +69,7 @@ export class Feedsubscription {
             }
         }
 
-       send() {
+       async send() {
             let data : CreateSubscriptionAdto = (this.getData ? this.getData() : null) || {};
             let feedId = this.feed.feedId;
             data.feedId = feedId;
@@ -79,32 +78,8 @@ export class Feedsubscription {
                 console.log(res);
                 this.feed.finishedSending()
             });
-            //const response = await this._http.post(this.url,data).toPromise();
-           /*  console.log("send res" + response);
-            return response; */
-              
-           /*  this._http.post(this.url,data).subscribe(
-                (res) =>{
-                    console.log(res);
-                },
-                // Errors will call this callback instead:
-                err => {
-                console.log('Something went wrong!');
-                }
-            ); */
-           /*  $.postJSON( this.url, data ).done(
-                ( response : CreateSubscriptionResponseAdto ) => {
-                    if ( feedId === this.feed.feedId && response )
-                        this.gotSubscriptionId( response.subscriptionId )
-                }
-            ).fail(
-                ( jqXHR : JQueryXHR, textStatus : string, errorThrown ) => {
-                    if ( feedId === this.feed.feedId )
-                        this.handleError( jqXHR )
-                }
-            ).always(
-                () => this.feed.finishedSending()
-            ); */
+            const response = await this._http.post(this.url,data).toPromise();
+            return response;
         }
 
         idChanged() {
@@ -154,7 +129,6 @@ export class Feedsubscription {
             if ( loaded )
                 this.loaded = true;
 
-            //this.trigger('data', data, reset, finished);
             if ( loaded )
                 //this.trigger('loaded');
             if ( this.errorReported ) {
@@ -176,30 +150,6 @@ export class Feedsubscription {
             this.errorReported = true;
             //this.trigger('error', unauthorised);
         }
-
-       /*  handleError( jqXHR : JQueryXHR ) {
-
-            let feedError = jqXHR.status === 401 || jqXHR.status >= 500;
-
-            if ( jqXHR.status === 400 ) {
-                try {
-                    let json = <ErrorAdto>JSON.parse(jqXHR.responseText);
-                    if ( json && json.errorCode === 'FEED_EXPIRED' ) {
-                        feedError = true;
-                    }
-                }
-                catch (e) {}
-            }
-
-            if ( feedError ) {
-                // Not logged in, or a server error - this affects the whole feed
-                this.feed.subscriptionError(jqXHR, jqXHR.status < 500 );
-            } else {
-                // Fatal error just for this subscription - we won't retry unless the feed is recreated
-                this.errorReported = true;
-                //this.trigger('error', jqXHR);
-            }
-        } */
 
         private gotSubscriptionId( subscriptionId : number ) {
             if ( this.cancelled ) {
@@ -237,19 +187,6 @@ export class Feedsubscription {
                     }
 
                 );
-              /*   $.postJSON( amendment.url, data ).done(
-                    ( response : CreateSubscriptionResponseAdto ) => {
-                        if ( this.feed.feedId === feedId && response )
-                            this.gotSubscriptionId( response.subscriptionId )
-                    }
-                ).fail(
-                    ( jqXHR, textStatus, errorThrown ) => {
-                        if ( this.feed.feedId === feedId )
-                            this.handleError( jqXHR )
-                    }
-                ).always(
-                    () => this.feed.finishedSending()
-                ); */
             }
         }
 }

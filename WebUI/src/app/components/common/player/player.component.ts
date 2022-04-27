@@ -1,12 +1,10 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild,OnDestroy } from '@angular/core';
 import { event } from 'jquery';
-import { forkJoin } from 'rxjs';
-import { ModalDialogComponent } from 'src/app/shared/modal-dialog/modal-dialog.component';
+import { forkJoin, Subscription } from 'rxjs';
+import { ModalDialogComponent } from '../../../shared/modal-dialog/modal-dialog.component';
 import { StateAdto, VideoFilesSubscriptionAdto } from '../../../interfaces/adto';
-import { Feed } from '../../../models/feed/feed';
-import { Feedsubscription } from '../../../models/feed/feedsubscription';
-import { Feedwebsocket } from '../../../models/feed/feedwebsocket';
+import { FeedManager } from '../../../models/feed/feed-manager';
 import { MediaGroupManager } from '../../../models/feed/media-group-manager';
 import { AuthService } from '../../../services/auth/auth.service';
 import { PlayerService } from '../../../services/player/player.service';
@@ -18,8 +16,7 @@ import { ApiUrls } from '../../../util/api-urls';
   templateUrl: './player.component.html',
   styleUrls: ['./player.component.scss']
 })
-export class PlayerComponent implements OnInit {
-
+export class PlayerComponent implements OnDestroy, OnInit {
   @Input()
   set popupParam(value: { id?: number }) {
     if (value) {
@@ -32,24 +29,21 @@ export class PlayerComponent implements OnInit {
   id: number;
   mouseOver: boolean = false
   offset = "61";
-  public feed: Feed;
-  public apiUrls: ApiUrls;
-  public mgroup: MediaGroupManager;
-  public state: StateAdto;
-  public socket: Feedwebsocket;
-  msg: string;
-  url: string;
+  public feed: FeedManager;
+  public apiUrls :ApiUrls;
+  public mgroup : MediaGroupManager;
+  public state : StateAdto;
+  msg : string;
+  url:string;
   videoModel = [];
-  videoPlayModel: any;
-  public thumbUri: any;
-  thumbnail: string;
-  playingVideo: boolean = false;
-  videoSource = '';
-  socketResponse: string[] = [];
-
-  play_pause: any;
-  progressAreaTime: any;
-  controls: any;
+  videoPlayModel : any;
+  public thumbUri : any;
+  thumbnail : string;
+  playingVideo:boolean = false;
+  videoSource='';
+  play_pause : any;
+  progressAreaTime : any;
+  controls : any;
   progressArea: any;
   progress_Bar: any;
   fast_rewind: any;
@@ -83,11 +77,11 @@ export class PlayerComponent implements OnInit {
   isTrue: boolean = false;
   displayVTT: boolean;
   mediaVtt = [];
-  displayVTTText: string;
+  displayVTTText:string;
+  private subscription?: Subscription;
 
-  constructor(private recordingService: RecordingService, private http: HttpClient, private authService: AuthService, private playerService: PlayerService, private modalComp: ModalDialogComponent) {
-    this.feed = new Feed(this.apiUrls, this.mgroup, this.state, this.http, this.authService);
-    this.socket = new Feedwebsocket(this.feed, this.url, null);
+  constructor(private recordingService : RecordingService,private http : HttpClient,private authService: AuthService,private playerService: PlayerService,private modalComp: ModalDialogComponent) { 
+    this.feed = new FeedManager(this.apiUrls,this.mgroup,this.state,this.http);
     this.apiUrls = new ApiUrls();
   }
 
@@ -166,31 +160,24 @@ export class PlayerComponent implements OnInit {
   }
 
   // Pause video function
-  pauseVideo() {
-    // this.isPlaying = false;
+   pauseVideo() {
     this.play_pause.innerHTML = "play_arrow";
-    // this.play_pause.title = "play";
-    this.videoplayer.nativeElement.classList.remove('paused')
-    this.videoplayer.nativeElement.pause();
+   this.videoplayer.nativeElement.classList.remove('paused')
+   this.videoplayer.nativeElement.pause();
   }
 
   playPause() {
     const isVideoPaused = this.videoplayer.nativeElement.classList.contains('paused');
-    (isVideoPaused && this.isPlaying) ? this.pauseVideo() : this.playVideoSrc();
-    //this.videoSource = this.videoPlayModel.mediaUri+'/fmp4?msessid='+this.createGroupId()+'&quality=1&start='+this.videoplayer.nativeElement.currentTime+'&duration=full&requestId=1&suspend=true&maxDimension=621'
-    // this.playVideo();
+    (isVideoPaused && this.isPlaying)? this.pauseVideo() : this.playVideoSrc();
   }
 
   skip(value) {
     var video = document.getElementById("main-video") as HTMLVideoElement;
     video.currentTime += value;
-  }
-
-  fastRewind() {
-    this.videoplayer.nativeElement.currentTime = -2;
-    /* const rewindUrl = this.videoPlayModel.mediaUri+'/audio?msessid='+this.createGroupId()+'&quality=5&start='+this.currentTime+'&duration=0.2&requestId=2'
-    this.videoSource = rewindUrl;
-    this.updateProgressBarTime(event); */
+  }      
+  
+  fastRewind(){
+    this.videoplayer.nativeElement.currentTime =-2;
   }
 
   fastForward() {
@@ -199,12 +186,9 @@ export class PlayerComponent implements OnInit {
 
   loadedDataTotalDuration(val) {
     let videoDuration = val;
-    /*  if(sessionStorage.socketResponse && JSON.parse(sessionStorage.socketResponse)){
-       videoDuration = JSON.parse(sessionStorage.socketResponse).data[JSON.parse(sessionStorage.socketResponse).id].videoFiles[0].durationSeconds;
-      } */
-    let totalMin: any = Math.floor(videoDuration / 60);
-    let totalSec: any = Math.floor(videoDuration % 60);
-
+    let totalMin : any = Math.floor(videoDuration / 60);
+    let totalSec : any = Math.floor(videoDuration % 60);
+  
     // if seconds are less then 10 then add 0 at the begning
     totalSec < 10 ? totalSec = "0" + totalSec : totalSec;
     this.totalDuration.innerHTML = `${totalMin} : ${totalSec}`;
@@ -260,10 +244,6 @@ export class PlayerComponent implements OnInit {
       console.log('Audio' + jpegData);
       // When Both are done loading do something
     });
-    /* let videoDuration = this.videoplayer.nativeElement.duration;
-     let progressWidthval = this.progressArea.clientWidth;
-     let ClickOffsetX = e.offsetX;
-     this.currentTime = (ClickOffsetX / progressWidthval) * videoDuration;  */
     this.updateProgressBarTimeNew(event);
   }
 
@@ -308,35 +288,25 @@ export class PlayerComponent implements OnInit {
     var new_url = url.pathname + url.search;
     return new_url;
   }
-
-  /**
-    * Get current User from the server.
-    *
-    * @returns {json} current user.
-    */
-  public getJpegJson(): any {
-    const jpegUrl = this.convertUrlToJpgeJson();
-    //this.baseUrl = this.videoPlayModel.mediaUri+'/jpegjson?msessid='+this.createGroupId()+'&quality=5&qdiv=1&start='+this.currentTime+'&duration=0.001&exactSeek=true&exactDuration=true&maxDimension=621'
-    const reqHeader = new HttpHeaders({ 'Content-Type': 'application/json', 'No-Auth': 'True' });
-    this.http.get(jpegUrl, { headers: reqHeader }).subscribe(json => console.log("Jpeg Response" + json));
-    /* return this.http.get(new_url)
-      .pipe(map(
-        (res: any) => console.log("Res" +res.data)
-        )); */
-  }
-
-  public getAudioJson(): any {
-    const audioUrl = this.convertUrlToAudio();
-    //this.baseUrl = this.videoPlayModel.mediaUri+'/jpegjson?msessid='+this.createGroupId()+'&quality=5&qdiv=1&start='+this.currentTime+'&duration=0.001&exactSeek=true&exactDuration=true&maxDimension=621'
-    const reqHeader = new HttpHeaders({ 'Content-Type': 'application/json', 'No-Auth': 'True' });
-    this.http.get(audioUrl, { headers: reqHeader }).subscribe(json => console.log("Audio Response" + json));
-    /* return this.http.get(new_url)
-      .pipe(map(
-        (res: any) => console.log("Res" +res.data)
-        )); */
-  }
-
-  changeVolume() {
+  
+   /**
+     * Get current User from the server.
+     *
+     * @returns {json} current user.
+     */
+    public getJpegJson(): any {
+      const jpegUrl = this.convertUrlToJpgeJson();
+      const reqHeader = new HttpHeaders({ 'Content-Type': 'application/json', 'No-Auth': 'True' });
+     this.http.get(jpegUrl,{ headers: reqHeader }).subscribe(json => console.log("Jpeg Response"+json));
+    }
+  
+    public getAudioJson(): any {
+      const audioUrl = this.convertUrlToAudio();
+      const reqHeader = new HttpHeaders({ 'Content-Type': 'application/json', 'No-Auth': 'True' });
+     this.http.get(audioUrl,{ headers: reqHeader }).subscribe(json => console.log("Audio Response"+json));
+    }
+  
+  changeVolume(){
     this.videoplayer.nativeElement.volume = this.volume_range.value / 100;
     if (this.volume_range.value == 0) {
       this.volume.innerHTML = "volume_off";
@@ -407,106 +377,82 @@ export class PlayerComponent implements OnInit {
   changePlaybackState(selected: any) {
     this.currentPlayback = selected;
   }
+  
+    showView(){
+      if (this.id) {
+        // let url = this.appUrls.videoInfo(this.id, this.offset);
+         let videoRecUrl = 'api/videos/'+this.id+'/recording';
+   
+         this.recordingService.getRecordings(videoRecUrl).subscribe(result => {
+           console.log(result);
+        })
+     }
+    }
+  
+    private createGroupId() : string {
+      return '' + Math.floor(Math.random() * 100000000 );
+    }
+  
+    displayPlayer(){
+    this.subscription = this.playerService.data$.subscribe(res =>{
+      this.videoModel.push(res);
+    });
+       this.fetchMediaPreparations();
+       this.playVideo();
+    }
+  
+   fetchMediaPreparations() {
+      this.mediaVtt =[];
+      let preparationConfig = {url:''};
+      preparationConfig.url = this.apiUrls.videoPreparations(Number(this.id));
+      this.http.get(preparationConfig.url).subscribe((res: any) =>{
+        console.log(res);
+        if (res !== undefined && res !== null && res.length > 0) {
+          this.mediaVtt = [...res[0].annotationConfig.annotations];
+        }
+      });
+    }
+  
+    playVideo(){
+      let playUrl = 'api/videos/'+this.id+'/original/play';
+      let data = { mgroupid : this.createGroupId() };
+      this.playerService.getPlayableDetails(playUrl,data).subscribe((res) =>{
+        console.log(res);
+        this.videoPlayModel = res;
+        this.loadedDataTotalDuration(this.videoPlayModel.duration)
+       // this.playingVideo = true;
+        this.videoSource = this.videoPlayModel.mediaUri+'/fmp4?msessid='+this.createGroupId()+'&quality=1&start='+(this.currentTime ? this.currentTime : 0)+'&duration=full&requestId='+this.updateRequestId()+'&suspend=true&maxDimension=621'       
+     });
+    }
 
-  showView() {
-    if (this.id) {
-      // let url = this.appUrls.videoInfo(this.id, this.offset);
-      let videoRecUrl = 'api/videos/' + this.id + '/recording';
-
-      this.recordingService.getRecordings(videoRecUrl).subscribe(result => {
-        console.log(result);
+    over() {
+      this.mouseOver = true
+    }
+    out() {
+      this.mouseOver = false;
+    }
+    
+    downloadFile() {
+      this.url = 'api/videos/' + this.id + '/file'
+  
+      this.playerService.downloadVideo('api/videos/' + this.id + '/file').subscribe((res) => {
+        var vidFile = new Blob([res], { type: 'application/octet-stream;' });
+        var vidURL = window.URL.createObjectURL(vidFile);
+        console.log(vidURL)
+        var tempLink = document.createElement('a');
+        tempLink.href = vidURL;
+        tempLink.setAttribute('download', `${this.modalComp.title}.mp4`);
+        tempLink.click();
+        this.showProgress = false;
+        URL.revokeObjectURL(vidURL);
       })
-
-      this.viewSubscription();
+  
+  
     }
-  }
-
-  private createGroupId(): string {
-    return '' + Math.floor(Math.random() * 100000000);
-  }
-
-  viewSubscription() {
-    sessionStorage.removeItem('socketResponse');
-    let queryParams: VideoFilesSubscriptionAdto = {
-      /*  feedId: "1", */
-      thumbnail: 'SINGLE',
-      thumbnailOffset: this.offset,
-      includeDeleted: true,
-      mgroupid: this.createGroupId()
-    };
-    let videoSubscribeUrl = 'api/videos/' + this.id + '/subscribe';
-    let subscription = new Feedsubscription(videoSubscribeUrl, (this.apiUrls.videoSubscribe(this.id), () => queryParams), this.http, this.authService);
-    // let subscription = new Feedsubscription(this.apiUrls.videoSubscribe( this.id ),() => queryParams);
-    console.log("subscription data" + subscription);
-
-    //subscription.on( 'data', ( data, reset ) => this.onSubscriptionData(data) );
-
-    // this.playVideo();
-  }
-
-  displayPlayer() {
-    // this.playingVideo = false;
-    if (sessionStorage.socketResponse && JSON.parse(sessionStorage.socketResponse)) {
-      this.videoModel.push(JSON.parse(sessionStorage.socketResponse).data[JSON.parse(sessionStorage.socketResponse).id].videoFiles[0]);
-    }
-    this.thumbUri = (this.videoModel[0] && this.videoModel[0].thumbnail && this.videoModel[0].thumbnail.uri) ? this.videoModel[0].thumbnail.uri + '&quality=2&maxDimension=640' : '';
-    this.showView();
-    this.fetchMediaPreparations();
-    this.playVideo();
-  }
-
-  fetchMediaPreparations() {
-    this.mediaVtt = [];
-    let preparationConfig = { url: '' };
-    preparationConfig.url = this.apiUrls.videoPreparations(Number(this.id));
-    this.http.get(preparationConfig.url).subscribe((res: any) => {
-      console.log(res);
-      if (res !== undefined && res !== null && res.length > 0) {
-        this.mediaVtt = [...res[0].annotationConfig.annotations];
+    ngOnDestroy() {
+      if (this.subscription) {
+        this.subscription.unsubscribe();
       }
-    });
-  }
-
-  playVideo() {
-    let playUrl = 'api/videos/' + this.id + '/original/play';
-    let data = { mgroupid: this.createGroupId() };
-    this.playerService.getPlayableDetails(playUrl, data).subscribe((res) => {
-      console.log(res);
-      this.videoPlayModel = res;
-      this.loadedDataTotalDuration(this.videoPlayModel.duration)
-      // this.playingVideo = true;
-      this.videoSource = this.videoPlayModel.mediaUri + '/fmp4?msessid=' + this.createGroupId() + '&quality=1&start=' + (this.currentTime ? this.currentTime : 0) + '&duration=full&requestId=' + this.updateRequestId() + '&suspend=true&maxDimension=621'
-    });
-  }
-
-  /*  playPause() {
-     var myVideo: any = document.getElementById("main-video");
-     if (myVideo.paused) myVideo.play();
-     else myVideo.pause();
-   }  */
-  over() {
-    this.mouseOver = true
-  }
-  out() {
-    this.mouseOver = false;
-  }
-
-
-  downloadFile() {
-    this.url = 'api/videos/' + this.id + '/file'
-
-    this.playerService.downloadVideo('api/videos/' + this.id + '/file').subscribe((res) => {
-      var vidFile = new Blob([res], { type: 'application/octet-stream;' });
-      var vidURL = window.URL.createObjectURL(vidFile);
-      console.log(vidURL)
-      var tempLink = document.createElement('a');
-      tempLink.href = vidURL;
-      tempLink.setAttribute('download', `${this.modalComp.title}.mp4`);
-      tempLink.click();
-      this.showProgress = false;
-      URL.revokeObjectURL(vidURL);
-    })
-
-
-  }
+    }
 }
+

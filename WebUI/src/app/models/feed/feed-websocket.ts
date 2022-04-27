@@ -1,8 +1,9 @@
 import { BehaviorSubject } from "rxjs";
 import { MediaFilterService } from "../../services/media/media-filter.service";
-import { Feed } from "./feed";
+import { FeedManager } from "./feed-manager";
 import { io } from 'socket.io-client';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
+import { PlayerService } from "src/app/services/player/player.service";
 
 export class Feedwebsocket {
 
@@ -13,7 +14,7 @@ export class Feedwebsocket {
     private keepAliveResponseTimeout: any;
     public messageResponse : any;
     
-    constructor(private feed : Feed, private url: string, public mediaFilterService: MediaFilterService) {}
+    constructor(private feed : FeedManager, private url: string, public mediaFilterService: MediaFilterService) {}
 
       start() : any {          
         this.ws = new WebSocket(this.url);        
@@ -28,7 +29,7 @@ export class Feedwebsocket {
 
         this.ws.onclose = ( closeEvent ) => {
             if (this.ws) {
-                console.log(("Feed websocket closed with status " + closeEvent.code) + (closeEvent.reason ? ": " + closeEvent.reason : ""));
+                console.log(("FeedManager websocket closed with status " + closeEvent.code) + (closeEvent.reason ? ": " + closeEvent.reason : ""));
                 this.feed.creatingSocket = false;
                 this.cleanupFeed(false);
             }
@@ -36,7 +37,7 @@ export class Feedwebsocket {
 
         this.ws.onerror = ( errorEvent ) => {
             if (this.ws) {
-                console.log("Feed websocket has encountered an error");
+                console.log("FeedManager websocket has encountered an error");
                 console.log(errorEvent);
             }
         };
@@ -58,11 +59,16 @@ export class Feedwebsocket {
                                 if(this.feed.subscriptions[0].url == "/api/videos/subscribe"){
                                     MediaFilterService.notifyfilteredRespone(this.messageResponse);
                                 }
-                                sessionStorage.setItem('socketResponse',JSON.stringify(message.eventData));
+                                else {
+                                    PlayerService.getMediaResponse(JSON.stringify(message.eventData));
+                                }
                             }else if(message.eventData && message.eventData.id && message.eventData.data[message.eventData.id].moreVideoFilesAvailable == false){
                                 if(this.feed.subscriptions[0].url == "/api/videos/subscribe"){
                                     MediaFilterService.notifyfilteredRespone(null);
                                 }
+                            }
+                            else{
+                                MediaFilterService.notifyfilteredRespone(null);
                             }
                             break;
                         case "SESSION_EXPIRED":
@@ -91,7 +97,6 @@ export class Feedwebsocket {
                 this.cleanupFeed( false );
             }, 15000 );
             clearTimeout( this.idleTimer );
-            this.idleTimer = setTimeout(() => this.sendKeepAlive(), 30000)
         }
     }
 

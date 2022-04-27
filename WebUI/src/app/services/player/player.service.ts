@@ -1,11 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject,ReplaySubject } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlayerService {
+
+  private dataSubject = new ReplaySubject<any>(1);
+  
+  data$: Observable<any> = this.dataSubject.asObservable();
+  static dataSubject: any;
 
   constructor(private http: HttpClient) { }
 
@@ -17,4 +23,12 @@ export class PlayerService {
     return this.http.get(url,
       {responseType:'blob'}); 
   }
+  public static getMediaResponse(data: any) {
+    if (data) {
+      this.dataSubject.next(data)
+    }else{
+      this.dataSubject.next(null)
+    }
+  }
+
 }

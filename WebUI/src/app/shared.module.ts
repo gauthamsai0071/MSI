@@ -5,6 +5,7 @@ import { IconModule, ItemModule, ModalHeaderDirective, ModalModule, ModalService
 import { HttpClientModule, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { environment } from '../environments/environment';
 import { AuthInterceptor } from './_interceptor/auth-interceptor';
+import { CacheInterceptor } from './_interceptor/cache-interceptor';
 import { CalendarComponent } from './shared/calendar/calendar.component';
 import { CommonModule } from '@angular/common';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
@@ -65,6 +66,7 @@ import { PlayerComponent } from './components/common/player/player.component';
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptor, multi: true },
     ToastService,
     ModalService
   ]

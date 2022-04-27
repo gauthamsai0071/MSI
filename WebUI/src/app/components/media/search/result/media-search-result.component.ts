@@ -17,8 +17,10 @@ import { CustomField } from '../../../../models/common/custom-field';
 export class MediaSearchResultComponent implements OnInit {
   rows: MediaFile[] = [];
   private customFields :CustomField[] = null;
-  private dataSub: Subscription;
-  private systemSub: Subscription;
+  isAstroFieldsVisible:boolean = true;
+  private dataSub : Subscription;
+  private systemSub : Subscription;
+  isLoading : boolean;
 
   showhidecoloumns: { [key: string]: boolean };
 
@@ -47,9 +49,10 @@ export class MediaSearchResultComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    this.isLoading = true;
     this.dataSub = this.mediaFilterService.filteredRespone$.subscribe(result => {
       if(result){
+        this.isLoading = false;
         _.each(result, mediaFile => {
 
           let field = mediaFile.customFields.find(item => toLower(item.name) == toLower("timestamp"));
@@ -96,8 +99,6 @@ export class MediaSearchResultComponent implements OnInit {
           
         })
         this.rows = result;
-      }else{
-        this.rows = [];
       }
     });
     this.mediaFilterService.getCustomFields().subscribe((result : CustomField[]) => {
@@ -149,5 +150,8 @@ export class MediaSearchResultComponent implements OnInit {
   createIncident(tableRows): void {
     this.dialogService.showDialog('Add media to New Incident', ManageIncidentComponent, tableRows, { rows: tableRows })
       .subscribe();
+  }
+  onScrolledToBottom(event: any) {
+    console.log('scrolled to bottom row:', event);
   }
 }

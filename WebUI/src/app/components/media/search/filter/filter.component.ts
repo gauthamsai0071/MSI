@@ -4,15 +4,15 @@ import { DateTimeRange } from '@msi/cobalt';
 import { MediaFilterService } from '../../../../services/media/media-filter.service';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import _ from 'lodash';
-import { Feed } from '../../../../../app/models/feed/feed';
+import { FeedManager } from '../../../../models/feed/feed-manager';
 import { ApiUrls } from '../../../../../app/util/api-urls';
 import { MediaGroupManager } from '../../../../../app/models/feed/media-group-manager';
 import { StateAdto, VideoFilesSubscriptionAdto } from '../../../../../app/interfaces/adto';
-import { Feedwebsocket } from '../../../../../app/models/feed/feedwebsocket';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../../../../app/services/auth/auth.service';
-import { Feedsubscription } from '../../../../../app/models/feed/feedsubscription';
+import { Feedsubscription } from '../../../../models/feed/feed-subscription';
 import { CustomField } from '../../../../models/common/custom-field';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-media-filter',
@@ -32,11 +32,13 @@ export class MediaFilterComponent implements OnInit {
   public calendarFields = new Map();
   captureDateModel: DateTimeRange = new DateTimeRange();
   dropdownSettings:IDropdownSettings = {};
-  public feed: Feed;
+  public feed: FeedManager;
   public apiUrls :ApiUrls;
   public mgroup : MediaGroupManager;
   public state : StateAdto;
-  public socket : Feedwebsocket;
+  searchResult : any;
+  offset = "61";
+  id = "5885";
   url:string;
   constructor(
     private mediaFilters : MediaFilterService,
@@ -45,8 +47,7 @@ export class MediaFilterComponent implements OnInit {
     private authService: AuthService,
     private mediaFilterService : MediaFilterService
   ) { 
-    this.feed = new Feed(this.apiUrls,this.mgroup,this.state,this.http,this.authService);
-    this.socket = new Feedwebsocket(this.feed,this.url, null);
+    this.feed = new FeedManager(this.apiUrls,this.mgroup,this.state,this.http);
     this.apiUrls = new ApiUrls();
   }
 
@@ -147,7 +148,7 @@ export class MediaFilterComponent implements OnInit {
   }
 
   viewSubscription(){
-    sessionStorage.removeItem('socketResponse');
+    //sessionStorage.removeItem('socketResponse');
     let queryParams : VideoFilesSubscriptionAdto = {
      /*  feedId: "1", */
       thumbnail: 'SINGLE',
