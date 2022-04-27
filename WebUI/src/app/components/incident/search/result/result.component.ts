@@ -28,6 +28,7 @@ export class IncidentSearchResultComponent {
     showShared: boolean, showExternal: boolean, showActiveExternal: boolean,
     searchFilters: { [key: string]: string }
   }) {
+    this._filterCriteria = value;
     this.incidentSearchService.search(value.owner, value.text, value.showCurrent, value.showDeleted, value.showShared,
       value.showExternal, value.showActiveExternal, value.searchFilters).subscribe(response => {
         _.each(response, incident => {
@@ -62,6 +63,17 @@ export class IncidentSearchResultComponent {
     const componentName = (mode === 'export') ? ExportIncidentComponent : ManageIncidentComponent;
     const title = mode.charAt(0).toUpperCase() + mode.slice(1);
     this.dialogService.showDialog(title + ' Incident', componentName, id, { mode: mode, id: id })
-      .subscribe();
+      .subscribe(result => {
+        this.filterCriteria = {
+          owner: this._filterCriteria.owner,
+          text: this._filterCriteria.text,
+          showCurrent: this._filterCriteria.showCurrent,
+          showDeleted: this._filterCriteria.showDeleted,
+          showShared: this._filterCriteria.showShared,
+          showExternal: this._filterCriteria.showExternal,
+          showActiveExternal: this._filterCriteria.showActiveExternal,
+          searchFilters: this._filterCriteria.searchFilters
+        }
+      });
   }
 }

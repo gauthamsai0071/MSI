@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
 import _, { toLower } from "lodash";
 import { forkJoin } from "rxjs";
 import { Export } from "../../../models/incident/export/export";
