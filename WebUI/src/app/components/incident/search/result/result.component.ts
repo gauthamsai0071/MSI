@@ -4,7 +4,6 @@ import moment from 'moment';
 import { Incident } from '../../../../models/incident/incident';
 import { DialogService } from '../../../../services/common/dialog.service';
 import { IncidentSearchService } from '../../../../services/incident/search.service';
-import { AddIncidentComponent } from '../../add/add-incident.component';
 import { ExportIncidentComponent } from '../../export/export-incident.component';
 import { ManageIncidentComponent } from '../../manage/manage-incident.component';
 
@@ -50,13 +49,6 @@ export class IncidentSearchResultComponent {
 
   constructor(private incidentSearchService: IncidentSearchService,
     private dialogService: DialogService) {
-  }
-
-  addIncident(): void {
-    this.dialogService.showDialog('Create Incident', AddIncidentComponent, 100, { id: 100 })
-      .subscribe((result?: { incidentId?: number }) => {
-        this.newIncidentId = result ? result.incidentId : null;
-      });
   }
 
   manageIncident(mode: string, id?: number): void {

@@ -11,7 +11,6 @@ import { IncidentService } from '../../services/incident/incident.service';
 import { IncidentSavedFiltersComponent } from './search/filter/saved-filters/saved-filters.component';
 import { ExportIncidentComponent } from './export/export-incident.component';
 import { ExportListComponent } from './export/list/export-list.component';
-import { AddIncidentComponent } from './add/add-incident.component';
 
 @NgModule({
   declarations: [
@@ -21,8 +20,7 @@ import { AddIncidentComponent } from './add/add-incident.component';
     IncidentSearchComponent,
     IncidentFilterComponent,
     IncidentSearchResultComponent,
-    IncidentSavedFiltersComponent,
-    AddIncidentComponent
+    IncidentSavedFiltersComponent
   ],
   imports: [
     ModalModule,
@@ -30,7 +28,6 @@ import { AddIncidentComponent } from './add/add-incident.component';
     IncidentRoutingModule
   ],
   entryComponents: [
-    AddIncidentComponent,
     ManageIncidentComponent
   ],
   providers: [
