@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import _ from 'lodash';
+import _, { toLower } from 'lodash';
 import moment from 'moment';
 import { Subscription } from 'rxjs';
-import { DialogService } from 'src/app/services/common/dialog.service';
+import { DialogService } from '../../../../services/common/dialog.service';
 import { MediaFilterService } from '../../../../services/media/media-filter.service';
-import { PlayerComponent } from 'src/app/components/common/player/player.component';
+import { PlayerComponent } from '../../../common/player/player.component';
+import { ManageIncidentComponent } from '../../../incident/manage/manage-incident.component';
+import { MediaFile } from '../../../../models/media/mediaFile';
+import { CustomField } from '../../../../models/common/custom-field';
 
 @Component({
   selector: 'app-media-search-result',
@@ -12,53 +15,96 @@ import { PlayerComponent } from 'src/app/components/common/player/player.compone
   styleUrls: ['./media-search-result.component.scss']
 })
 export class MediaSearchResultComponent implements OnInit {
-  rows: Array<any> = [];
-  isAstroFieldsVisible:boolean = true;
-  private customFields :any = null;
-  private dataSub : Subscription;
-  private systemSub : Subscription;
+  rows: MediaFile[] = [];
+  private customFields :CustomField[] = null;
+  private dataSub: Subscription;
+  private systemSub: Subscription;
 
   showhidecoloumns: { [key: string]: boolean };
 
   constructor(
-    private mediaFilters : MediaFilterService,
-    private mediaFilterService : MediaFilterService,
+    private mediaFilterService: MediaFilterService,
     private dialogService: DialogService) {
-      this.showhidecoloumns = {
-        'media_name' : true,
-        'timestamp' : true,
-        'mimeType' : true,
-        'media_duration' : true,
-        'talkgroupId' : true,
-        'agencyName' : true,
-        'unitId' : false,
-        'channel' : false,
-        'siteId' : false,
-        'zoneId' : false,
-        'rscAlias' : false,
-        'individualAlias' : false,
-        'System' : true,
-        'originatingMDN' : false,
-        'terminatingMDN' : false,
-        'participatingMDN' : false,
-        'talkgroupName' : false
-      };
-    }
+    this.showhidecoloumns = {
+      'media_name': true,
+      'timestamp': true,
+      'mimeType': true,
+      'media_duration': true,
+      'talkgroupId': true,
+      'agencyName': true,
+      'unitId': false,
+      'channel': false,
+      'siteId': false,
+      'zoneId': false,
+      'rscAlias': false,
+      'individualAlias': false,
+      'System': true,
+      'originatingMDN': false,
+      'terminatingMDN': false,
+      'participatingMDN': false,
+      'talkgroupName': false
+    };
+  }
 
   ngOnInit() {
-    
-    this.dataSub = this.mediaFilterService.filteredRespone$.subscribe(result =>{
+
+    this.dataSub = this.mediaFilterService.filteredRespone$.subscribe(result => {
       if(result){
+        _.each(result, mediaFile => {
+
+          let field = mediaFile.customFields.find(item => toLower(item.name) == toLower("timestamp"));
+          mediaFile.timestamp = field !== undefined ? moment(field.value?.timestamp).toDate() : null;
+
+          field = mediaFile.customFields.find(item => toLower(item.name) == toLower("mimeType"));
+          mediaFile.mimeType = field !== undefined ? field.value?.text : '';
+
+          field = mediaFile.customFields.find(item => toLower(item.name) == toLower("talkgroupId"));
+          mediaFile.talkgroupId = field !== undefined ? field.value?.text : '';
+          
+          field = mediaFile.customFields.find(item => toLower(item.name) == toLower("agencyName"));
+          mediaFile.agencyName = field !== undefined ? field.value?.text : '';
+          
+          field = mediaFile.customFields.find(item => toLower(item.name) == toLower("unitId"));
+          mediaFile.unitId = field !== undefined ? field.value?.text : '';
+          
+          field = mediaFile.customFields.find(item => toLower(item.name) == toLower("channel"));
+          mediaFile.channel = field !== undefined ? field.value?.text : '';
+          
+          field = mediaFile.customFields.find(item => toLower(item.name) == toLower("siteId"));
+          mediaFile.siteId = field !== undefined ? field.value?.text : '';
+          
+          field = mediaFile.customFields.find(item => toLower(item.name) == toLower("zoneId"));
+          mediaFile.zoneId = field !== undefined ? field.value?.text : '';
+          
+          field = mediaFile.customFields.find(item => toLower(item.name) == toLower("rscAlias"));
+          mediaFile.rscAlias = field !== undefined ? field.value?.text : '';
+          
+          field = mediaFile.customFields.find(item => toLower(item.name) == toLower("individualAlias"));
+          mediaFile.individualAlias = field !== undefined ? field.value?.text : '';
+          
+          field = mediaFile.customFields.find(item => toLower(item.name) == toLower("originatingMDN"));
+          mediaFile.originatingMDN = field !== undefined ? field.value?.text : '';
+          
+          field = mediaFile.customFields.find(item => toLower(item.name) == toLower("terminatingMDN"));
+          mediaFile.terminatingMDN = field !== undefined ? field.value?.text : '';
+
+          field = mediaFile.customFields.find(item => toLower(item.name) == toLower("participatingMDN"));
+          mediaFile.participatingMDN = field !== undefined ? field.value?.text : '';
+          
+          field = mediaFile.customFields.find(item => toLower(item.name) == toLower("talkgroupName"));
+          mediaFile.talkgroupName = field !== undefined ? field.value?.text : '';
+          
+        })
         this.rows = result;
       }else{
         this.rows = [];
       }
     });
-    this.mediaFilters.getCustomFields().subscribe(result => {
+    this.mediaFilterService.getCustomFields().subscribe((result : CustomField[]) => {
       this.customFields = result;
     })
-    this.systemSub = this.mediaFilterService.systemSelected$.subscribe(result => {
-      if(result == 'astro'){
+    this.systemSub = this.mediaFilterService.systemSelected$.subscribe((result : string) => {
+      if (result == 'astro') {
         this.showhidecoloumns['unitId'] = true;
         this.showhidecoloumns['channel'] = true;
         this.showhidecoloumns['siteId'] = true;
@@ -69,7 +115,7 @@ export class MediaSearchResultComponent implements OnInit {
         this.showhidecoloumns['terminatingMDN'] = false;
         this.showhidecoloumns['participatingMDN'] = false;
         this.showhidecoloumns['talkgroupName'] = false;
-      }else if(result =='broadband'){
+      } else if (result == 'broadband') {
         this.showhidecoloumns['unitId'] = false;
         this.showhidecoloumns['channel'] = false;
         this.showhidecoloumns['siteId'] = false;
@@ -80,7 +126,7 @@ export class MediaSearchResultComponent implements OnInit {
         this.showhidecoloumns['terminatingMDN'] = true;
         this.showhidecoloumns['participatingMDN'] = true;
         this.showhidecoloumns['talkgroupName'] = true;
-      }else{
+      } else {
         this.showhidecoloumns['unitId'] = false;
         this.showhidecoloumns['channel'] = false;
         this.showhidecoloumns['siteId'] = false;
@@ -95,22 +141,13 @@ export class MediaSearchResultComponent implements OnInit {
     })
   }
 
-  findElement(row : any, fieldName: string){
-    let ans = null;
-    _.each(row?.customFields, cf => {
-      if(cf.name === fieldName){
-        if(cf.isTimestamp == true){
-          ans = moment(cf.value?.timestamp).format("DD MMM YYYY hh:mm a");
-        }else{
-          ans =  cf.value?.text;
-        }
-        return ans;
-      }
-    })
-    return ans ? ans : '-';
-  }
   onMediaPlay(row): void {
     this.dialogService.showDialog(row.name, PlayerComponent, row.id, { id: row.id })
-    .subscribe();
+      .subscribe();
+  }
+
+  createIncident(tableRows): void {
+    this.dialogService.showDialog('Add media to New Incident', ManageIncidentComponent, tableRows, { rows: tableRows })
+      .subscribe();
   }
 }

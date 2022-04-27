@@ -1,83 +1,148 @@
-<app-header></app-header>
-<div class="form-wrapper incidents">
-    <msi-card>
-        <msi-card-title class="msi-border-primary-10">
-            <span>{{ title }} Incident</span>
-        </msi-card-title>
-        <msi-card-content>
-            <form [formGroup]="incidentForm" (ngSubmit)="onSubmit()" *ngIf="incidentForm !== null">
+<div class="incidents" *ngIf="popupParam.mode !== 'delete' else deleteIncidentBlock">
+    <form [formGroup]="incidentForm" (ngSubmit)="onSubmit()" *ngIf="incidentForm !== null">
+        <div *ngFor="let field of customFields">
+            <div
+                *ngIf="field.isTimestamp && !((popupParam.mode === 'create' && field.fieldType === 'CREATION_TIME') || (popupParam.mode === 'create' && field.fieldType === 'UPDATE_TIME'))">
                 <div class="form-group">
-                    <label class="msi-label" for="title">
-                        Title
+                    <label class="msi-label" for="{{ field.name }}">
+                        {{ field.displayName }}
                     </label>
-                    <app-input-control [controlName]="'title'" [formResetting]="formResetting" [LabelText]="'Title'">
-                        <input class="msi-input" type="text" id="title" autocomplete="title" formControlName="title"
-                            [class.error]="!formResetting && formControls.title.invalid" [readonly]="view">
+                    <app-input-control [controlName]="field.name" [formResetting]="formResetting"
+                        [LabelText]="field.displayName">
+                        <msi-date-time-picker-control class="msi-date-time-picker" formControlName="{{ field.name }}"
+                            [dropdown]="true" [defaultValue]="calendarDateTimeDefaultValue" [dateFormat]='"DD/MM/YYYY"'
+                            [timeFormat]="'HH:mm'" [dateTimeMask]='"00/00/0000 00:00"'
+                            [disabled]="(field.fieldType === 'USER_DEFINED' && popupParam.mode !== 'view') ? false : true"
+                            (dateChanged)="onCalendarDateChanged($event, field.id)">
+                        </msi-date-time-picker-control>
                     </app-input-control>
                 </div>
+            </div>
+            <div
+                *ngIf="(field.isText || field.isUrl) && !((popupParam.mode === 'create' && field.fieldType === 'OWNER') || (popupParam.mode === 'create' && field.fieldType === 'SIGNATURE'))">
                 <div class="form-group">
-                    <label class="msi-label" for="creation-time">
-                        Creation time
+                    <label class="msi-label" for="{{ field.name }}">
+                        {{ field.displayName }}
                     </label>
-                    <input class="msi-input" type="text" id="creation-time" autocomplete="creation-time"
-                        formControlName="creation-time"  [attr.disabled]="true">
+                    <div *ngIf="(field.numTextLines === 0 || field.numTextLines === 1)">
+                        <app-input-control [controlName]="field.name" [formResetting]="formResetting"
+                            [LabelText]="field.displayName">
+                            <input class="msi-input" type="text" autocomplete="{{ field.name }}"
+                                formControlName="{{ field.name }}" placeholder="Enter {{ field.displayName}}"
+                                [readonly]="(field.fieldType === 'USER_DEFINED' && popupParam.mode !== 'view') ? false : true"
+                                [class.error]="!formResetting && formControls[field.name].invalid">
+                        </app-input-control>
+                    </div>
+                    <div *ngIf="field.numTextLines > 1">
+                        <app-input-control [controlName]="field.name" [formResetting]="formResetting"
+                            [LabelText]="field.displayName">
+                            <textarea class="msi-textarea" formControlName="{{field.name}}"
+                                rows="{{field.numTextLines}}" placeholder="Enter {{ field.displayName}}"
+                                [readonly]="(field.fieldType === 'USER_DEFINED' && popupParam.mode !== 'view') ? false : true"
+                                [class.error]="!formResetting && formControls[field.name].invalid"></textarea>
+                        </app-input-control>
+                    </div>
                 </div>
+            </div>
+            <div *ngIf="field.isBool">
                 <div class="form-group">
-                    <label class="msi-label" for="update-time">
-                        Update time
+                    <label class="msi-label" for="{{ field.name }}">
+                        {{ field.displayName }}
                     </label>
-                    <input class="msi-input" type="text" id="update-time" autocomplete="update-time"
-                        formControlName="update-time" [attr.disabled]="true">
+                    <app-input-control [controlName]="field.name" [formResetting]="formResetting"
+                        [LabelText]="field.displayName">
+                        <msi-checkbox formControlName="{{ field.name }}"
+                            [disabled]="(field.fieldType === 'USER_DEFINED' && popupParam.mode !== 'view') ? false : true"
+                            [class.error]="!formResetting && formControls[field.name].invalid"></msi-checkbox>
+                    </app-input-control>
                 </div>
-                <div class="form-group">
-                    <label class="msi-label" for="incident-time">
-                        Incident time
+            </div>
+            <div *ngIf="field.isEnumeration">
+                <div *ngIf="field.displayName.includes(',radio,')" class="form-group">
+                    <label class="msi-label" for="{{ field.name }}">
+                        {{field.displayName.split(',radio,').slice(0, -1)}}
                     </label>
-                    <msi-date-time-picker-control id="incident-time" formControlName="incident-time" [disabled]="view"
-                        [dropdown]="true" [defaultValue]="incidentTimeDefaultValue" [dateFormat]='"DD/MM/YYYY"'
-                        [timeFormat]="'HH:mm'" [dateTimeMask]='"00/00/0000 00:00"'
-                        (dateChanged)="onCalendarDateChanged($event)" #customDatepicker>
-                    </msi-date-time-picker-control>
+                    <app-input-control [controlName]="field.name" [formResetting]="formResetting"
+                        [LabelText]="field.displayName">
+                        <msi-radio-group class="radio-group" [inline]="true" formControlName="{{field.name}}"
+                            [class.error]="!formResetting && formControls[field.name].invalid">
+                            <msi-radio-button class="msi-radio-button" ngDefaultControl
+                                [disabled]="(field.fieldType === 'USER_DEFINED' && popupParam.mode !== 'view') ? false : true"
+                                *ngFor="let option of field.validValues; let i = index" [value]="option">
+                                {{field.validValueLabels[i]}}</msi-radio-button>
+                        </msi-radio-group>
+                    </app-input-control>
                 </div>
-                <div class="form-group">
-                    <label class="msi-label" for="reference-code">
-                        Reference code
+                <div *ngIf="field.displayName.includes(',checkbox,')" class="form-group">
+                    <label class="msi-label" for="{{ field.name }}">
+                        {{field.displayName.split(',checkbox,').slice(0, -1)}}
                     </label>
-                    <input class="msi-input" type="text" id="reference-code" autocomplete="reference-code"
-                        formControlName="reference-code" [readonly]="view">
+                    <app-input-control [controlName]="field.name" [formResetting]="formResetting"
+                        [LabelText]="field.displayName">
+                        <msi-checkbox-group class="checkbox-group" formControlName="{{field.name}}" ngDefaultControl>
+                            <msi-checkbox class="{{field.name}}"
+                                [disabled]="(field.fieldType === 'USER_DEFINED' && popupParam.mode !== 'view') ? false : true"
+                                (change)="onCheckboxChange( $event, option, field.id)"
+                                *ngFor="let option of field.validValues; let i = index" [value]="field.validValues[i]"
+                                [checked]="(field.validValues[i] === selectedCheckboxItems[i]) ? true : false">
+                                {{field.validValueLabels[i]}}</msi-checkbox>
+                        </msi-checkbox-group>
+                    </app-input-control>
+
                 </div>
-                <div class="form-group">
-                    <label class="msi-label" for="notes">
-                        Notes
+                <div *ngIf="field.displayName.includes(',multiselect,')" class="form-group ng-multiselect">
+                    <label class="msi-label" for="{{ field.name }}">
+                        {{field.displayName.split(',multiselect,').slice(0, -1)}}
                     </label>
-                    <textarea class="msi-textarea" id="notes" autocomplete="notes" formControlName="notes" cols="22"
-                        rows="10" [readonly]="view"></textarea>
+                    <app-input-control [controlName]="field.name" [formResetting]="formResetting"
+                        [LabelText]="field.displayName">
+                        <ng-multiselect-dropdown [settings]="dropdownSettings" [placeholder]="'Select'"
+                            formControlName="{{field.name}}" [data]="field.validValues" [(ngModel)]="selectedItems"
+                            (onFilterChange)="onMultiSelectChanged($event, field.id, 0)"
+                            (onDropDownClose)="onMultiSelectChanged($event, field.id, 0)"
+                            (onSelect)="onMultiSelectChanged($event, field.id, 1)"
+                            (onSelectAll)="onMultiSelectChanged($event, field.id, 1)"
+                            (onDeSelect)="onMultiSelectChanged($event, field.id, 0)"
+                            (onDeSelectAll)="onMultiSelectChanged($event, field.id, 0)"
+                            [disabled]="(field.fieldType === 'USER_DEFINED' && popupParam.mode !== 'view') ? false : true"
+                            [class.error]="!formResetting && formControls[field.name].invalid">
+                        </ng-multiselect-dropdown>
+                    </app-input-control>
                 </div>
-                <div class="form-group">
-                    <label class="msi-label" for="clip-count">
-                        Clip count
+                <div *ngIf="!(field.displayName.includes(',radio,') || field.displayName.includes(',checkbox,') || field.displayName.includes(',multiselect,'))"
+                    class="form-group">
+                    <label class="msi-label" for="{{ field.name }}">
+                        {{ field.displayName }}
                     </label>
-                    <input class="msi-input" type="text" id="clip-count" autocomplete="clip-count" formControlName="clip-count"
-                        [attr.disabled]="true">
+                    <app-input-control [controlName]="field.name" [formResetting]="formResetting"
+                        [LabelText]="field.displayName">
+                        <msi-select formControlName="{{field.name}}" placeholder="Select Value"
+                            [disabled]="(field.fieldType === 'USER_DEFINED' && popupParam.mode !== 'view') ? false : true">
+                            <msi-select-option *ngFor="let option of field.validValues; let i = index" [value]="option">
+                                {{field.validValueLabels[i]}}</msi-select-option>
+                        </msi-select>
+                    </app-input-control>
                 </div>
-                <div class="form-group">
-                    <label class="msi-label" for="owner">
-                        Owner
-                    </label>
-                    <input class="msi-input" type="text" id="owner" autocomplete="owner" formControlName="owner"
-                        [attr.disabled]="true">
-                </div>
-                <div class="form-group">
-                    <label class="msi-label" for="signature">
-                        Signature
-                    </label>
-                    <input class="msi-input" type="text" id="signature" autocomplete="signature"
-                        formControlName="signature" [attr.disabled]="true">
-                </div>
-                <div *ngIf="!view">
-                    <button class="msi-btn form-button" type="submit">Submit</button>
-                </div>
-            </form>
-        </msi-card-content>
-    </msi-card>
+            </div>
+        </div>
+        <div *ngIf="popupParam.mode !== 'view'" class="actions">
+            <a href="javascript:void(0)" class="msi-link" (click)="cancel()" title="Cancel">Cancel</a>
+            &nbsp;
+            <button type="submit" class="msi-btn form-button" title="Submit">Submit</button>
+        </div>
+        <div *ngIf="popupParam.mode === 'view'" class="actions">
+            <button type="button" (click)="manageIncident('edit',popupParam.id)"
+                class="msi-btn form-button" title="Edit">Edit</button>
+        </div>
+    </form>
 </div>
+<ng-template #deleteIncidentBlock>
+    <div class="deleteIncidents">
+        Are you sure that you want to delete this incident?
+        <div class="actions">
+            <a href="javascript:void(0)" class="msi-link" (click)="cancel()" title="Cancel">Cancel</a>
+            &nbsp;
+            <button type="button" class="msi-btn delete-btn" (click)="deleteIncident(popupParam.id)" title="Delete">Delete</button>
+        </div>
+    </div>
+</ng-template>

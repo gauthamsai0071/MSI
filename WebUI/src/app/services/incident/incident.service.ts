@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Incident } from '../../../app/models/incident/incident';
 import { Export } from '../../models/incident/export/export';
@@ -9,13 +8,15 @@ import { CommonService } from '../common/common.service';
 import { SavedFilter } from '../../models/incident/savedFilter';
 import { ExportProfile } from '../../models/incident/export/exportProfile';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class IncidentService {
 
-  constructor(private http: HttpClient, private commonSrv: CommonService, private router: Router) { }
+  constructor(private http: HttpClient, private commonSrv: CommonService) { }
 
-  public getTemplate(id: string): Observable<Incident> {
-    let url = 'api/incidents/template?mgroupid=' + id;
+  public getTemplate(id: string, videoIds: string): Observable<Incident> {
+    let url = 'api/incidents/template?mgroupid=' + id + videoIds;
     return this.http.get<Incident>(url);
   }
 
@@ -32,6 +33,11 @@ export class IncidentService {
   public deleteMediaGroup(id: string) {
     let url = 'api/mediaGroups/' + id;
     return this.http.delete(url);
+  }
+
+  public deleteIncident(id: number) {
+    let url = 'api/incidents/' + id + '/delete';
+    return this.http.post(url, { "deleteFieldValues": [] });
   }
 
   public getIncident(id: number): Observable<Incident> {

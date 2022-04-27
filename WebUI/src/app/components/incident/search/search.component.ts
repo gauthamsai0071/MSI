@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { IncidentFilter, SaveNewFilter } from 'src/app/models/incident/savedFilter';
+import { IncidentFilter, SaveNewFilter } from '../../../models/incident/savedFilter';
 
 @Component({
   templateUrl: './search.component.html',

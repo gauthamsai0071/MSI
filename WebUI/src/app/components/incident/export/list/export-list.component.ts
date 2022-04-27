@@ -21,6 +21,7 @@ export class ExportListComponent implements OnInit {
     }
 
     downloadExport(id: number) {
+        this.incidentService.downloadExportById(id).subscribe();
     }
 
     deleteExport(id: number) {

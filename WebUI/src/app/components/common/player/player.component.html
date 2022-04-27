@@ -1,10 +1,13 @@
 <div class="container">
     <div id="video_player">
-        <video src="{{videoSource}}" id="main-video" #videoPlayer (timeupdate)="setCurrentTime($event)" crossorigin="use-credentials" preload="metadata"></video>
+        <video src="{{videoSource}}" id="main-video" #videoPlayer (timeupdate)="setCurrentTime($event)"
+            crossorigin="use-credentials" preload="metadata"></video>
         <div id="overlay" *ngIf="displayVTT">{{displayVTTText}} </div>
         <div class="progressAreaTime">0:00</div>
         <div class="controls">
-            <div class="progress-area" (click)="updateProgressArea($event)" (mousemove)="updateProgressAreaTimeOnMouseMove($event)" (mouseleave)="updateProgressAreaTimeOnMouseLeave()">
+            <div class="progress-area" (click)="updateProgressArea($event)"
+                (mousemove)="updateProgressAreaTimeOnMouseMove($event)"
+                (mouseleave)="updateProgressAreaTimeOnMouseLeave()">
                 <div class="progress-bar" (click)="updateProgressBarTimeNew($event)">
                     <span></span>
                 </div>
@@ -12,17 +15,20 @@
             <div class="controls-list">
                 <div class="controls-left">
                     <span class="icon">
-                        <i class="material-icons fast-rewind" (click)="skip(-2)">replay_10</i>
+                        <msi-icon (click)="skip(-2)" name="ic_back_10" class="material-icons fast-rewind"></msi-icon>
                     </span>
                     <span class="icon">
-                        <i class="material-icons play_pause" (click)="playPause()" title="play">play_arrow</i>
+                        <msi-icon (click)="playPause()" name="ic_media_play" class="material-icons play_pause">
+                        </msi-icon>
                     </span>
                     <span class="icon">
-                        <i class="material-icons fast-forward" (click)="skip(2)">forward_10</i>
+                        <msi-icon (click)="skip(2)" name="ic_forward_10" class="material-icons fast-forward"></msi-icon>
                     </span>
                     <span class="icon">
-                        <i class="material-icons volume" (click)="muteVolume()">volume_up</i>
-                        <input type="range" min="0" max="100" class="volume_range" (change)="changeVolume()">
+                        <i class="material-icons volume" (click)="muteVolume()" (mouseover)="over()"
+                            >volume_up</i>
+                        <input type="range" min="0" max="100" class="volume_range" (change)="changeVolume()"
+                            *ngIf="mouseOver" (mouseout)="out()">
                     </span>
                     <div class="timer">
                         <span class="current">0:00</span> / <span class="duration">0:00</span>
@@ -30,10 +36,16 @@
                 </div>
                 <div class="controls-right">
                     <span class="icon">
-                        <i class="material-icons settingsBtn" (click)="onClickSettingBtn()">settings</i>
+                        <msi-icon name="ic_download" class="material-icons ic-download" (click)="downloadFile()">
+                        </msi-icon>
                     </span>
                     <span class="icon">
-                        <i class="material-icons picture_in_picutre" (click)="pictureInPicture()">picture_in_picture_alt</i>
+                        <msi-icon name="ic_settings" class="material-icons ic-settings" (click)="onClickSettingBtn()">
+                            </msi-icon>
+                    </span>
+                    <span class="icon">
+                        <i class="material-icons picture_in_picutre"
+                            (click)="pictureInPicture()">picture_in_picture_alt</i>
                     </span>
                     <span class="icon">
                         <i class="material-icons fullscreen" (click)="fullScreen()">fullscreen</i>
@@ -45,8 +57,9 @@
             <div class="playback">
                 <span>Playback Speed</span>
                 <ul>
-                    <li *ngFor="let selectedPlayback of playbackRates;let i = index"   (click)="onClickPlayback(selectedPlayback.value)" 
-                    [class.active]="currentPlayback == selectedPlayback.value">{{selectedPlayback.name}}</li>
+                    <li *ngFor="let selectedPlayback of playbackRates;let i = index"
+                        (click)="onClickPlayback(selectedPlayback.value)"
+                        [class.active]="currentPlayback == selectedPlayback.value">{{selectedPlayback.name}}</li>
                 </ul>
             </div>
         </div>

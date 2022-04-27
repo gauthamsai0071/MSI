@@ -16,7 +16,7 @@
 
     <div class="msi-common-header-plugin">
       <msi-application-switcher *ngIf="applications_enable">
-        <msi-application-switcher-row class="switcher-row" *ngFor="let service of mockServices" [serviceDescription]="service">
+        <msi-application-switcher-row class="switcher-row" *ngFor="let service of mockServices" [serviceDescription]="service" (click)="redirectAdmin()">
         </msi-application-switcher-row>
       </msi-application-switcher>
     </div>
