@@ -6,7 +6,9 @@ import { CustomField } from '../../models/common/custom-field';
 import { User } from '../../models/common/user';
 import { Incident } from '../../models/incident/incident';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class IncidentSearchService {
   constructor(private http: HttpClient) { }
 

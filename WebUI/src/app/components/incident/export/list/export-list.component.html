@@ -1,58 +1,61 @@
-<app-header></app-header>
-<div class="incident-search-result-wrapper">
-    <table class="msiDatatable" msi-data-table [rows]="results"
-        style="width: 100%; min-width: 365px; flex: 1 1; display: block;height:calc(100vh - 180px);" [condensed]="false"
-        [pinning]="false" [selection]="true" [virtualScroll]="true">
-        <ng-container msiColDef="text" [width]="100" [fixedWidth]="true">
-            <ng-container *msiHeaderCellDef>
-                <div msiTooltip="Left" position="left">Status</div>
+<div *ngIf="popupParam === undefined else deleteBlock">
+    <app-header></app-header>
+    <div class="incident-search-result-wrapper">
+        <table class="msiDatatable" msi-data-table [rows]="results"
+            style="width: 100%; min-width: 365px; flex: 1 1; display: block;height:calc(100vh - 180px);"
+            [condensed]="false" [pinning]="false" [selection]="true" [virtualScroll]="true">
+            <ng-container msiColDef="text" [width]="100" [fixedWidth]="true">
+                <ng-container *msiHeaderCellDef>
+                    <div msiTooltip="Left" position="left">Status</div>
+                </ng-container>
+                <ng-container *msiCellDef="let row">Ready</ng-container>
             </ng-container>
-            <ng-container *msiCellDef="let row">Ready</ng-container>
-        </ng-container>
-        <ng-container msiColDef="text" [width]="100" [fixedWidth]="true">
-            <ng-container *msiHeaderCellDef>
-                <div msiTooltip="Left" position="left">Job</div>
+            <ng-container msiColDef="text" [width]="100" [fixedWidth]="true">
+                <ng-container *msiHeaderCellDef>
+                    <div msiTooltip="Left" position="left">Job</div>
+                </ng-container>
+                <ng-container *msiCellDef="let row">{{ row.signature }}</ng-container>
             </ng-container>
-            <ng-container *msiCellDef="let row">{{ row.signature }}</ng-container>
-        </ng-container>
-        <ng-container msiColDef="text" [width]="150" [fixedWidth]="true">
-            <ng-container *msiHeaderCellDef>
-                <div msiTooltip="Left" position="left">Created</div>
+            <ng-container msiColDef="text" [width]="150" [fixedWidth]="true">
+                <ng-container *msiHeaderCellDef>
+                    <div msiTooltip="Left" position="left">Created</div>
+                </ng-container>
+                <ng-container *msiCellDef="let row">{{ row.creationTime | date:'dd/MM/YYYY HH:mm' }}</ng-container>
             </ng-container>
-            <ng-container *msiCellDef="let row">{{ row.creationTime | date:'dd/MM/YYYY HH:mm' }}</ng-container>
-        </ng-container>
-        <ng-container msiColDef="text" [width]="150" [fixedWidth]="true">
-            <ng-container *msiHeaderCellDef>
-                <div msiTooltip="Left" position="left">Profile name</div>
+            <ng-container msiColDef="text" [width]="150" [fixedWidth]="true">
+                <ng-container *msiHeaderCellDef>
+                    <div msiTooltip="Left" position="left">Profile name</div>
+                </ng-container>
+                <ng-container *msiCellDef="let row">{{ row.exportProfile.name}}</ng-container>
             </ng-container>
-            <ng-container *msiCellDef="let row">{{ row.exportProfile.name}}</ng-container>
-        </ng-container>
-        <ng-container msiColDef="text" [width]="200" [fixedWidth]="true">
-            <ng-container *msiHeaderCellDef>
-                <div msiTooltip="Left" position="left">Description</div>
+            <ng-container msiColDef="text" [width]="200" [fixedWidth]="true">
+                <ng-container *msiHeaderCellDef>
+                    <div msiTooltip="Left" position="left">Description</div>
+                </ng-container>
+                <ng-container *msiCellDef="let row">{{ row.description }}</ng-container>
             </ng-container>
-            <ng-container *msiCellDef="let row">{{ row.description }}</ng-container>
-        </ng-container>
-        <ng-container msiColDef="text" [width]="50" [fixedWidth]="true">
-            <ng-container *msiCellDef="let row">
-                <a href="javascript:void (0)" (click)="downloadExport(row.id)" title="Download Export" class="msi-link">
-                    <msi-icon name="ic_download" class="icon-demo"></msi-icon>
-                </a>
+            <ng-container msiColDef="text" [width]="50" [fixedWidth]="true">
+                <ng-container *msiCellDef="let row">
+                    <msi-icon (click)="manageExport('download',row)" name="ic_download" class="ic_download"
+                        title="Download Export"></msi-icon>
+                </ng-container>
             </ng-container>
-        </ng-container>
-        <ng-container msiColDef="text" [width]="50" [fixedWidth]="true">
-            <ng-container *msiCellDef="let row">
-                <a href="javascript:void (0)" (click)="deleteExport(row.id)" title="Delete Export" class="msi-link">
-                    <msi-icon name="ic_remove" class="icon-demo"></msi-icon>
-                </a>
+            <ng-container msiColDef="text" [width]="50" [fixedWidth]="true">
+                <ng-container *msiCellDef="let row">
+                    <msi-icon (click)="manageExport('delete',row)" name="ic_remove" class="ic_remove"
+                        title="Delete Export">
+                    </msi-icon>
+                </ng-container>
             </ng-container>
-        </ng-container>
-        <ng-container msiColDef="text" [width]="50" [fixedWidth]="true">
-            <ng-container *msiCellDef="let row">
-                <a [routerLink]="['/incidents/export/view', row.id]" title="View Export" class="msi-link">
-                    <msi-icon name="ic_arrow_right" class="icon-demo"></msi-icon>
-                </a>
+            <ng-container msiColDef="text" [width]="50" [fixedWidth]="true">
+                <ng-container *msiCellDef="let row">
+                    <msi-icon (click)="manageExport('view', row)" name="ic_arrow_right" class="ic_remove"
+                        title="View Export"></msi-icon>
+                </ng-container>
             </ng-container>
-        </ng-container>
-    </table>
+        </table>
+    </div>
 </div>
+<ng-template #deleteBlock>
+    <app-confirmation-dialog [type]="'export'" [id]="popupParam.id"></app-confirmation-dialog>
+</ng-template>

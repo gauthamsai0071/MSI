@@ -1,7 +1,9 @@
-import { Component, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
-import { Export } from "../../../..//models/incident/export/export";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { DialogService } from "../../../../services/common/dialog.service";
+import { Export } from "../../../../models/incident/export/export";
 import { IncidentService } from "../../../../services/incident/incident.service";
+import { CommonService } from "../../../../services/common/common.service";
+import { ExportIncidentComponent } from "../export-incident.component";
 
 @Component({
     templateUrl: './export-list.component.html',
@@ -9,9 +11,15 @@ import { IncidentService } from "../../../../services/incident/incident.service"
 })
 export class ExportListComponent implements OnInit {
 
+    @Input()
+    popupParam: { mode: string, id: number };
+
+    @Output()
+    popupResult: EventEmitter<any>;
+
     results: Export[] = [];
 
-    constructor(private router: Router, private incidentService: IncidentService) {
+    constructor(private dialogService: DialogService, private commonService: CommonService, private incidentService: IncidentService) {
     }
 
     ngOnInit() {
@@ -20,11 +28,28 @@ export class ExportListComponent implements OnInit {
         });
     }
 
-    downloadExport(id: number) {
-        this.incidentService.downloadExportById(id).subscribe();
+    manageExport(mode: string, exports: Export): void {
+        const title = mode.charAt(0).toUpperCase() + mode.slice(1);
+        if (mode === 'download') {
+            this.incidentService.downloadExportById(exports.id).subscribe(response => {
+                this.commonService.downloadFile(response, 'export-' + exports.signature + '.zip');
+            });
+        }
+        else {
+            const componentName = (mode === 'delete') ? ExportListComponent : ExportIncidentComponent;
+            this.dialogService.showDialog(title + ' Export', componentName, exports.id, { mode: mode, id: exports.id })
+                .subscribe(result => {
+                });
+        }
     }
 
-    deleteExport(id: number) {
-        this.incidentService.deleteExportById(id).subscribe();
+    close(): void {
+        if (!this.popupResult.isStopped && this.popupResult.observers !== null) {
+            this.popupResult.emit();
+        }
+    }
+
+    cancel(): void {
+        this.popupResult.emit(null);
     }
 }   

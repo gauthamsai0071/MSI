@@ -16,6 +16,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { PortalModule } from '@angular/cdk/portal';
 import { ModalDialogComponent } from './shared/modal-dialog/modal-dialog.component';
 import { PlayerComponent } from './components/common/player/player.component';
+import { ConfirmationDialogComponent } from './components/common/confirmation-dialog/confirmation-dialog.component';
 
 @NgModule({
   imports: [
@@ -41,6 +42,7 @@ import { PlayerComponent } from './components/common/player/player.component';
     InputControlComponent,
     ModalDialogComponent,
     PlayerComponent,
+    ConfirmationDialogComponent
   ],
   exports : [
     RouterModule,
@@ -62,7 +64,8 @@ import { PlayerComponent } from './components/common/player/player.component';
     CalendarComponent,
     InputControlComponent,
     ModalDialogComponent,
-    PlayerComponent
+    PlayerComponent,
+    ConfirmationDialogComponent
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

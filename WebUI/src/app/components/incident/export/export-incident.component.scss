@@ -1,4 +1,4 @@
-.exports {
+.exportIncident {
 
     input ::ng-deep,
     .msi-select ::ng-deep,
@@ -36,4 +36,8 @@
             top            : 5px;
         }
     }
+}
+
+.msi-icon {
+    cursor: pointer;
 }

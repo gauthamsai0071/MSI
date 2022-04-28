@@ -17,7 +17,7 @@ import { ToastService } from "@msi/cobalt";
 export class ExportIncidentComponent implements OnInit {
 
     @Input()
-    popupParam: { mode: string, id: number, rows: [] };
+    popupParam: { mode: string, id: number };
 
     @Output()
     popupResult: EventEmitter<any>;

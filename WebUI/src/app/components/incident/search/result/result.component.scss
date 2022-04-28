@@ -51,11 +51,28 @@
     height: 20px
 }
 
-.msi-icon {
-    cursor: pointer;
-}
-
 .list-top-actions {
     text-align: right;
     left      : 800px;
+    position: relative;
+    cursor: pointer;
+}
+
+.msi-icon, img {
+    cursor: pointer;
+}
+
+.deleteConfirmation {
+    .actions {
+        text-align: right;
+
+        .msi-link {
+            text-decoration: none;
+            font-weight    : bold;
+        }
+
+        .delete-btn {
+            display: inline;
+        }
+    }
 }

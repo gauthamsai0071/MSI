@@ -36,18 +36,6 @@
     }
 }
 
-.deleteIncidents {
-
-    .actions {
-        text-align: right;
-
-        .msi-link {
-            text-decoration: none;
-            font-weight    : bold;
-        }
-
-        .delete-btn {
-            display: inline;
-        }
-    }
+.modal-content ::ng-deep {
+    min-height: 470px;
 }

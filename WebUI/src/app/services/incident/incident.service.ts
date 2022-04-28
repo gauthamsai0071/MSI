@@ -98,7 +98,7 @@ export class IncidentService {
 
   public downloadExportById(id: number) {
     let url = 'api/exports/' + id + '/download';
-    return this.http.get(url);
+    return this.http.get(url, {responseType:'blob'});
   }
 
   public saveIncident(data: any): Observable<any> {

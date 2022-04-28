@@ -1,45 +1,57 @@
-<div class="incident-search-result-wrapper">
-    <!-- <button (click)="addIncident()">Add Incident</button> {{newIncidentId}} -->
+<div class="incident-search-result-wrapper" *ngIf="popupParam === undefined else deleteBlock">
     <div>
         <div class="list-view-label-wrapper">
             <msi-icon name="ic_data_table" class="ic-data-table"></msi-icon>
             <p class="list-view-label">List View</p>
-            <msi-icon (click)="manageIncident('create', 0)" name="ic_add" class="ic_add list-top-actions" title="Create Incident">
-            </msi-icon>
+            <img src="../../../../../assets/applications/ic_incident_add.svg" (click)="manageIncident('create', 0)"
+                name="ic_add" class="ic_add list-top-actions" title="Create Incident" />
         </div>
     </div>
-    <table class="msiDatatable" msi-data-table [rows]="results"
+    <table class="msiDatatable" msi-data-table #table [rows]="results"
         style="width: 100%; min-width: 365px; flex: 1 1; display: block;height:calc(100vh - 180px);" [condensed]="false"
         [pinning]="false" [selection]="true" [virtualScroll]="true">
+        <ng-container msiColDef colType="action" colLock="left" [width]="50" [fixedWidth]="true"
+            *ngIf="table.selection">
+            <ng-container *msiHeaderCellDef>
+                <msi-checkbox [checked]="table.selectionState === 'all'"
+                    [indeterminate]="table.selectionState === 'some'" (click)="table.toggleAllRowsSelected($event)"
+                    [disabled]="false">
+                </msi-checkbox>
+            </ng-container>
+            <ng-container *msiCellDef="let row">
+                <msi-checkbox [(ngModel)]="table.getRowState(row).selected" (change)="table.updateSelectionState()">
+                </msi-checkbox>
+            </ng-container>
+        </ng-container>
         <ng-container msiColDef="text" [width]="200" [fixedWidth]="true">
             <ng-container *msiHeaderCellDef>
                 <div msiTooltip="Left" position="left">Reference Code</div>
             </ng-container>
             <ng-container *msiCellDef="let row">{{row.referenceCode}}</ng-container>
         </ng-container>
-        <ng-container msiColDef="text" [width]="350" [fixedWidth]="true">
+        <ng-container msiColDef="text" [width]="300" [fixedWidth]="true">
             <ng-container *msiHeaderCellDef>
                 <div msiTooltip="Left" position="left">Title</div>
             </ng-container>
             <ng-container *msiCellDef="let row">{{row.title}}</ng-container>
         </ng-container>
-        <ng-container msiColDef="text" [width]="200" [fixedWidth]="true">
+        <ng-container msiColDef="text" [width]="210" [fixedWidth]="true">
             <ng-container *msiHeaderCellDef>
                 <div msiTooltip="Left" position="left">Incident Time</div>
             </ng-container>
-            <ng-container *msiCellDef="let row"> {{row.incidentTime | date:'dd/MM/YYYY HH:mm'}}</ng-container>
+            <ng-container *msiCellDef="let row"> {{row.incidentTime | date:'dd/MM/YYYY HH:mm'}} </ng-container>
         </ng-container>
         <ng-container msiColDef="text" [width]="45" [fixedWidth]="true" [sortable]="false">
             <ng-container *msiCellDef="let row">
-                <msi-icon (click)="manageIncident('edit',row.id)" name="ic_edit" class="ic_edit" title="Edit Incident">
+                <msi-icon (click)="manageIncident('edit',row.id)" name="ic_redaction_project"
+                    class="ic_redaction_project" title="Edit Incident">
                 </msi-icon>
             </ng-container>
         </ng-container>
         <ng-container msiColDef="text" [width]="45" [fixedWidth]="true" [sortable]="false">
             <ng-container *msiCellDef="let row">
-                <msi-icon (click)="manageIncident('view',row.id)" name="ic_arrow_right" class="ic_arrow_right"
-                    title="View Incident">
-                </msi-icon>
+                <img src="../../../../../assets/applications/ic_visibility_on.svg" (click)="manageIncident('view',row.id)"
+                    name="ic_arrow_right" class="ic_arrow_right" title="View Incident" width="21px" height="21px" />
             </ng-container>
         </ng-container>
         <ng-container msiColDef="text" [width]="45" [fixedWidth]="true" [sortable]="false">
@@ -58,3 +70,6 @@
         </ng-container>
     </table>
 </div>
+<ng-template #deleteBlock>
+    <app-confirmation-dialog [type]="'incident'" [id]="popupParam.id"></app-confirmation-dialog>
+</ng-template>

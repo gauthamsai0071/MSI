@@ -1,9 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import _, { toLower } from 'lodash';
 import moment from 'moment';
 import { Incident } from '../../../../models/incident/incident';
 import { DialogService } from '../../../../services/common/dialog.service';
 import { IncidentSearchService } from '../../../../services/incident/search.service';
+import { IncidentService } from '../../../../services/incident/incident.service';
 import { ExportIncidentComponent } from '../../export/export-incident.component';
 import { ManageIncidentComponent } from '../../manage/manage-incident.component';
 
@@ -13,7 +14,12 @@ import { ManageIncidentComponent } from '../../manage/manage-incident.component'
   styleUrls: ['./result.component.scss']
 })
 export class IncidentSearchResultComponent {
-  newIncidentId: number;
+
+  @Input()
+  popupParam: { mode: string, id: number };
+
+  @Output()
+  popupResult: EventEmitter<any>;
 
   private _filterCriteria: {
     owner: string, text: string, showCurrent: boolean, showDeleted: boolean,
@@ -48,11 +54,12 @@ export class IncidentSearchResultComponent {
   results: Incident[] = [];
 
   constructor(private incidentSearchService: IncidentSearchService,
+    private incidentService: IncidentService,
     private dialogService: DialogService) {
   }
 
   manageIncident(mode: string, id?: number): void {
-    const componentName = (mode === 'export') ? ExportIncidentComponent : ManageIncidentComponent;
+    const componentName = (mode === 'export') ? ExportIncidentComponent : (mode === 'delete') ? IncidentSearchResultComponent : ManageIncidentComponent;
     const title = mode.charAt(0).toUpperCase() + mode.slice(1);
     this.dialogService.showDialog(title + ' Incident', componentName, id, { mode: mode, id: id })
       .subscribe(result => {
@@ -67,5 +74,15 @@ export class IncidentSearchResultComponent {
           searchFilters: this._filterCriteria.searchFilters
         }
       });
+  }
+
+  close(): void {
+    if (!this.popupResult.isStopped && this.popupResult.observers !== null) {
+      this.popupResult.emit();
+    }
+  }
+
+  cancel(): void {
+    this.popupResult.emit(null);
   }
 }

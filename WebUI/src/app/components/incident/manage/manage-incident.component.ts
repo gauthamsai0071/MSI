@@ -43,24 +43,22 @@ export class ManageIncidentComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        if (this.popupParam.mode !== 'delete') {
-            let mGroupId = this.commonService.createGroupId();
-            this.incidentService.getTemplate(mGroupId, '').subscribe((incident: Incident) => {
-                this.customFields = incident.customFields;
-                this.buildIncidentForm();
+        let mGroupId = this.commonService.createGroupId();
+        this.incidentService.getTemplate(mGroupId, '').subscribe((incident: Incident) => {
+            this.customFields = incident.customFields;
+            this.buildIncidentForm();
 
-                if (this.popupParam.id > 0) {
-                    this.getIncidentById(this.popupParam.id);
-                }
-            });
-
-            if (this.popupParam.id === 0) {
-                let date = new Date();
-                this.calendarDateTimeDefaultValue = new DateTimeRange({
-                    startDate: new NgbDate(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()),
-                    startTime: { hour: date.getHours(), minute: date.getMinutes(), second: 0 }
-                });
+            if (this.popupParam.id > 0) {
+                this.getIncidentById(this.popupParam.id);
             }
+        });
+
+        if (this.popupParam.id === 0) {
+            let date = new Date();
+            this.calendarDateTimeDefaultValue = new DateTimeRange({
+                startDate: new NgbDate(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()),
+                startTime: { hour: date.getHours(), minute: date.getMinutes(), second: 0 }
+            });
         }
     }
 
@@ -223,11 +221,6 @@ export class ManageIncidentComponent implements OnInit {
                 this.close()
             });
         }
-    }
-
-    deleteIncident(id: number) {
-        this.incidentService.deleteIncident(id).subscribe();
-        this.close();
     }
 
     close(): void {
