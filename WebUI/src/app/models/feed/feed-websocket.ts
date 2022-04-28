@@ -55,7 +55,7 @@ export class Feedwebsocket {
                         case "EVENT_DATA":
                             this.feed.processEventIfReady(message.eventData);
                             if(message.eventData && message.eventData.id && message.eventData.data[message.eventData.id].videoFiles){
-                                this.messageResponse = message?.eventData?.data[2].videoFiles;
+                                this.messageResponse = message?.eventData?.data[2]?.videoFiles;
                                 if(this.feed.subscriptions[0].url == "/api/videos/subscribe"){
                                     MediaFilterService.notifyfilteredRespone(this.messageResponse);
                                 }

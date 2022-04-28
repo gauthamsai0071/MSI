@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import _, { toLower } from 'lodash';
 import moment from 'moment';
 import { Subscription } from 'rxjs';
@@ -14,20 +15,28 @@ import { CustomField } from '../../../../models/common/custom-field';
   templateUrl: './media-search-result.component.html',
   styleUrls: ['./media-search-result.component.scss']
 })
-export class MediaSearchResultComponent implements OnInit {
+export class MediaSearchResultComponent implements OnInit {2
+  @Input()
+  set mediaSearchCriteria( inputValue : {
+    filterCriteria : FormGroup,
+    calendarFields : Map<number, string>,
+    checkBoxFields : Map<string, Array<string>>,
+    searchFields : CustomField[],
+  }){
+    if(inputValue){
+      this.mediaFilterService.buildSearchParams(inputValue.filterCriteria, inputValue.calendarFields, inputValue.checkBoxFields, inputValue.searchFields);
+    }
+  }
   rows: MediaFile[] = [];
-  private customFields :CustomField[] = null;
-  isAstroFieldsVisible:boolean = true;
-  private dataSub : Subscription;
-  private systemSub : Subscription;
+  private filteredMedia : Subscription;
   isLoading : boolean;
 
-  showhidecoloumns: { [key: string]: boolean };
+  showhidecolumns: { [key: string]: boolean };
 
   constructor(
     private mediaFilterService: MediaFilterService,
     private dialogService: DialogService) {
-    this.showhidecoloumns = {
+    this.showhidecolumns = {
       'media_name': true,
       'timestamp': true,
       'mimeType': true,
@@ -49,8 +58,9 @@ export class MediaSearchResultComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.mediaFilterService.buildSearchParams(null, null, null, null);
     this.isLoading = true;
-    this.dataSub = this.mediaFilterService.filteredRespone$.subscribe(result => {
+    this.filteredMedia = this.mediaFilterService.filteredRespone$.subscribe(result => {
       if(result){
         this.isLoading = false;
         _.each(result, mediaFile => {
@@ -84,6 +94,9 @@ export class MediaSearchResultComponent implements OnInit {
           
           field = mediaFile.customFields.find(item => toLower(item.name) == toLower("individualAlias"));
           mediaFile.individualAlias = field !== undefined ? field.value?.text : '';
+
+          field = mediaFile.customFields.find(item => toLower(item.name) == toLower("system"));
+          this.onDisplayColumnChange(field !== undefined ? field.value?.text : '');
           
           field = mediaFile.customFields.find(item => toLower(item.name) == toLower("originatingMDN"));
           mediaFile.originatingMDN = field !== undefined ? field.value?.text : '';
@@ -101,45 +114,6 @@ export class MediaSearchResultComponent implements OnInit {
         this.rows = result;
       }
     });
-    this.mediaFilterService.getCustomFields().subscribe((result : CustomField[]) => {
-      this.customFields = result;
-    })
-    this.systemSub = this.mediaFilterService.systemSelected$.subscribe((result : string) => {
-      if (result == 'astro') {
-        this.showhidecoloumns['unitId'] = true;
-        this.showhidecoloumns['channel'] = true;
-        this.showhidecoloumns['siteId'] = true;
-        this.showhidecoloumns['zoneId'] = true;
-        this.showhidecoloumns['rscAlias'] = true;
-        this.showhidecoloumns['individualAlias'] = true;
-        this.showhidecoloumns['originatingMDN'] = false;
-        this.showhidecoloumns['terminatingMDN'] = false;
-        this.showhidecoloumns['participatingMDN'] = false;
-        this.showhidecoloumns['talkgroupName'] = false;
-      } else if (result == 'broadband') {
-        this.showhidecoloumns['unitId'] = false;
-        this.showhidecoloumns['channel'] = false;
-        this.showhidecoloumns['siteId'] = false;
-        this.showhidecoloumns['zoneId'] = false;
-        this.showhidecoloumns['rscAlias'] = false;
-        this.showhidecoloumns['individualAlias'] = false;
-        this.showhidecoloumns['originatingMDN'] = true;
-        this.showhidecoloumns['terminatingMDN'] = true;
-        this.showhidecoloumns['participatingMDN'] = true;
-        this.showhidecoloumns['talkgroupName'] = true;
-      } else {
-        this.showhidecoloumns['unitId'] = false;
-        this.showhidecoloumns['channel'] = false;
-        this.showhidecoloumns['siteId'] = false;
-        this.showhidecoloumns['zoneId'] = false;
-        this.showhidecoloumns['rscAlias'] = false;
-        this.showhidecoloumns['individualAlias'] = false;
-        this.showhidecoloumns['originatingMDN'] = false;
-        this.showhidecoloumns['terminatingMDN'] = false;
-        this.showhidecoloumns['participatingMDN'] = false;
-        this.showhidecoloumns['talkgroupName'] = false;
-      }
-    })
   }
 
   onMediaPlay(row): void {
@@ -151,6 +125,44 @@ export class MediaSearchResultComponent implements OnInit {
     this.dialogService.showDialog('Add media to New Incident', ManageIncidentComponent, tableRows, { mode: 'mediaIncident', id: 0, rows: tableRows }) 
       .subscribe();
   }
+
+  onDisplayColumnChange(value : string){
+    if(value == 'astro'){
+      this.showhidecolumns['unitId'] = true;
+      this.showhidecolumns['channel'] = true;
+      this.showhidecolumns['siteId'] = true;
+      this.showhidecolumns['zoneId'] = true;
+      this.showhidecolumns['rscAlias'] = true;
+      this.showhidecolumns['individualAlias'] = true;
+      this.showhidecolumns['originatingMDN'] = false;
+      this.showhidecolumns['terminatingMDN'] = false;
+      this.showhidecolumns['participatingMDN'] = false;
+      this.showhidecolumns['talkgroupName'] = false;
+    }else if(value == 'broadband'){
+      this.showhidecolumns['unitId'] = false;
+      this.showhidecolumns['channel'] = false;
+      this.showhidecolumns['siteId'] = false;
+      this.showhidecolumns['zoneId'] = false;
+      this.showhidecolumns['rscAlias'] = false;
+      this.showhidecolumns['individualAlias'] = false;
+      this.showhidecolumns['originatingMDN'] = true;
+      this.showhidecolumns['terminatingMDN'] = true;
+      this.showhidecolumns['participatingMDN'] = true;
+      this.showhidecolumns['talkgroupName'] = true;
+    }else{
+      this.showhidecolumns['unitId'] = false;
+      this.showhidecolumns['channel'] = false;
+      this.showhidecolumns['siteId'] = false;
+      this.showhidecolumns['zoneId'] = false;
+      this.showhidecolumns['rscAlias'] = false;
+      this.showhidecolumns['individualAlias'] = false;
+      this.showhidecolumns['originatingMDN'] = false;
+      this.showhidecolumns['terminatingMDN'] = false;
+      this.showhidecolumns['participatingMDN'] = false;
+      this.showhidecolumns['talkgroupName'] = false;
+    }
+  }
+  
   onScrolledToBottom(event: any) {
     console.log('scrolled to bottom row:', event);
   }
