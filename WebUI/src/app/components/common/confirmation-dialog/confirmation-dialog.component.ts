@@ -13,6 +13,9 @@ export class ConfirmationDialogComponent {
     type: string;
 
     @Input()
+    message: string;
+
+    @Input()
     id: number;
 
     constructor(private dialogRef: MsiModalRef, private incidentService: IncidentService) {
