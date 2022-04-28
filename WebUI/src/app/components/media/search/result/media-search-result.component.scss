@@ -1,61 +1,76 @@
-.media-search-result-wrapper{
-    height:calc(100vh - 103px);
-    background: #FFFFFF;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-sizing: border-box;
+.media-search-result-wrapper {
+    height       : calc(100vh - 103px);
+    background   : #FFFFFF;
+    border       : 1px solid rgba(0, 0, 0, 0.1);
+    box-sizing   : border-box;
     border-radius: 4px;
-    margin-top: 6px;
+    margin-top   : 6px;
 }
-.search-result-data-table{
-    width: 100%; 
-    min-width: 365px; 
-    flex: 1 1; 
-    display: block;
+
+.search-result-data-table {
+    width    : 100%;
+    min-width: 365px;
+    flex     : 1 1;
+    display  : block;
 }
-.list-view-label-wrapper{
-    height:42px;
-    display: flex;
-    align-items: center;
-    box-shadow: inset 0px -1px 0px rgba(0, 0, 0, 0.2);
+
+.list-view-label-wrapper {
+    height       : 42px;
+    display      : flex;
+    align-items  : center;
+    box-shadow   : inset 0px -1px 0px rgba(0, 0, 0, 0.2);
     border-radius: 2px 2px 0px 0px;
 }
-.ic-data-table{
-    padding-left:12px;
+
+.ic-data-table {
+    padding-left: 12px;
 }
-.list-view-label{
-    padding-left: 8px ;
-    font-family: 'Public Sans';
-    font-style: normal;
-    font-weight: 700;
-    font-size: 14px;
-    line-height: 22px;
+
+.list-view-label {
+    padding-left: 8px;
+    font-family : 'Public Sans';
+    font-style  : normal;
+    font-weight : 700;
+    font-size   : 14px;
+    line-height : 22px;
 }
-.msiDatatable{
-    width : 100%;
-    flex: 1 1 0%;
-    display: block;
+
+.msiDatatable {
+    width   : 100%;
+    flex    : 1 1 0%;
+    display : block;
     position: relative;
-    height:calc(100vh - 148px);
+    height  : calc(100vh - 148px);
 }
 
 .cdk-virtual-scroll-viewport {
     width: 1300px !important;
 }
-.anchor-fileName{
+
+.anchor-fileName {
     text-decoration: none;
-    color: var(--text-primary);
+    color          : var(--text-primary);
 
 }
-.ic-media-play{
+
+.ic-media-play {
     margin-top: 6px;
-    width:20px;
-    height:20px;
-    cursor: pointer;
+    width     : 20px;
+    height    : 20px;
+    cursor    : pointer;
 }
+
 .spinner {
-    display: flex;
+    display        : flex;
     justify-content: center;
-    align-items: center;
-    position: relative;
-    bottom: 50%;
+    align-items    : center;
+    position       : relative;
+    bottom         : 50%;
+}
+
+.list-top-actions {
+    text-align: right;
+    left      : 700px;
+    position  : relative;
+    cursor    : pointer;
 }

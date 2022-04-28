@@ -48,10 +48,11 @@
                 </msi-icon>
             </ng-container>
         </ng-container>
-        <ng-container msiColDef="text" [width]="45" [fixedWidth]="true" [sortable]="false">
+        <ng-container msiColDef="text" [width]="47" [fixedWidth]="true" [sortable]="false">
             <ng-container *msiCellDef="let row">
-                <img src="../../../../../assets/applications/ic_visibility_on.svg" (click)="manageIncident('view',row.id)"
-                    name="ic_arrow_right" class="ic_arrow_right" title="View Incident" width="21px" height="21px" />
+                <msi-icon (click)="manageIncident('view',row.id)" name="ic_visibility_on"
+                class="ic_visibility_on" title="View Incident">
+            </msi-icon>
             </ng-container>
         </ng-container>
         <ng-container msiColDef="text" [width]="45" [fixedWidth]="true" [sortable]="false">

@@ -1,8 +1,18 @@
 <div class="media-search-result-wrapper">
-    <!-- <button (click)="createIncident(table.selectedRows)">Add to new Incident</button> -->
     <div class="list-view-label-wrapper">
         <msi-icon name="ic_data_table" class="ic-data-table"></msi-icon>
         <p class="list-view-label">List View</p>
+        <div class="list-top-actions">
+            <img src="../../../../../assets/applications/ic_incident_add.svg" height="22px" width="22px"
+                [msiDropdownTriggerFor]="basicDropdown" />
+            <msi-dropdown #basicDropdown>
+                <msi-dropdown-item>Add to new Incident</msi-dropdown-item>
+                <msi-dropdown-item>Add to existing incident</msi-dropdown-item>
+            </msi-dropdown>
+            <msi-icon name="ic_share_manager" class="ic-data-table" title="Share"></msi-icon>
+            <msi-icon name="ic_download" class="ic-data-table" title="Download"></msi-icon>
+            <msi-icon name="ic_trash" class="ic-data-table" title="Delete"></msi-icon>
+        </div>
     </div>
     <table class="msiDatatable" msi-data-table #table [rows]="rows" style="width: 100%;" [condensed]="false"
         [sticky]="true" [pinning]="false" [selection]="true" [horizontalScrollbar]="true" [virtualScroll]="true">
@@ -68,7 +78,7 @@
                 msiColDef="Retention" [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Talkgroup ID</ng-container>
                 <ng-container *msiCellDef="let row">
-                    <div msiTooltip="{{row.talkgroupId}}" position = 'left'>
+                    <div msiTooltip="{{row.talkgroupId}}" position='left'>
                         {{row.talkgroupId}}
                     </div>
                 </ng-container>
@@ -181,36 +191,36 @@
                     </div>
                 </ng-container>
             </ng-container>
-            <ng-container [width]="45" [fixedWidth]="true" msiColDef="Retention" 
-                [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
+            <ng-container [width]="45" [fixedWidth]="true" msiColDef="Retention" [sortable]="false" [filterable]="false"
+                [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef></ng-container>
                 <ng-container *msiCellDef="let row">
                     <msi-icon name="ic_add"></msi-icon>
                 </ng-container>
             </ng-container>
-            <ng-container [width]="45" [fixedWidth]="true" msiColDef="Retention" 
-                [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
+            <ng-container [width]="45" [fixedWidth]="true" msiColDef="Retention" [sortable]="false" [filterable]="false"
+                [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef></ng-container>
                 <ng-container *msiCellDef="let row">
                     <msi-icon name="ic_record_incident"></msi-icon>
                 </ng-container>
             </ng-container>
-            <ng-container [width]="45" [fixedWidth]="true" msiColDef="Retention" 
-                [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
+            <ng-container [width]="45" [fixedWidth]="true" msiColDef="Retention" [sortable]="false" [filterable]="false"
+                [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef></ng-container>
                 <ng-container *msiCellDef="let row">
                     <msi-icon name="ic_information"></msi-icon>
                 </ng-container>
             </ng-container>
-            <ng-container [width]="45" [fixedWidth]="true" msiColDef="Retention" 
-                [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
+            <ng-container [width]="45" [fixedWidth]="true" msiColDef="Retention" [sortable]="false" [filterable]="false"
+                [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef></ng-container>
                 <ng-container *msiCellDef="let row">
                     <msi-icon name="ic_redaction_project"></msi-icon>
                 </ng-container>
             </ng-container>
-            <ng-container [width]="45" [fixedWidth]="true" msiColDef="Retention" 
-                [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
+            <ng-container [width]="45" [fixedWidth]="true" msiColDef="Retention" [sortable]="false" [filterable]="false"
+                [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef></ng-container>
                 <ng-container *msiCellDef="let row">
                     <msi-icon name="ic_bookmark_add_mark"></msi-icon>

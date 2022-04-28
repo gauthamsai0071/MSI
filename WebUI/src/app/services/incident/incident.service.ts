@@ -76,7 +76,7 @@ export class IncidentService {
     return this.http.get<Export[]>(url);
   }
 
-  public getExportById(id: string): Observable<Export> {
+  public getExportById(id: number): Observable<Export> {
     let url = 'api/exports/' + id;
     return this.http.get<Export>(url);
   }

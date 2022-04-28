@@ -147,8 +147,8 @@ export class MediaSearchResultComponent implements OnInit {
       .subscribe();
   }
 
-  createIncident(tableRows): void {
-    this.dialogService.showDialog('Add media to New Incident', ManageIncidentComponent, tableRows, { rows: tableRows })
+  mediaIncident(tableRows): void {
+    this.dialogService.showDialog('Add media to New Incident', ManageIncidentComponent, tableRows, { mode: 'mediaIncident', id: 0, rows: tableRows }) 
       .subscribe();
   }
   onScrolledToBottom(event: any) {
