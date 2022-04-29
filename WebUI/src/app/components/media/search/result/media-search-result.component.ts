@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import _, { toLower } from 'lodash';
 import moment from 'moment';
 import { Subscription } from 'rxjs';
@@ -15,6 +16,7 @@ import { Feedsubscription } from '../../../../models/feed/feed-subscription';
   templateUrl: './media-search-result.component.html',
   styleUrls: ['./media-search-result.component.scss']
 })
+
 export class MediaSearchResultComponent implements OnInit, OnDestroy {
   @Input()
   set filterCriteria(value: {
@@ -64,23 +66,17 @@ export class MediaSearchResultComponent implements OnInit, OnDestroy {
   }
 
   rows: MediaFile[] = [];
-  private customFields :CustomField[] = null;
-  isAstroFieldsVisible:boolean = true;
-  private dataSub : Subscription;
-  private systemSub : Subscription;
+  private filteredMedia : Subscription;
   isLoading : boolean;
   subscription: Feedsubscription;
 
-  showhidecoloumns: { [key: string]: boolean };
+  showhidecolumns: { [key: string]: boolean };
 
   constructor(
     private mediaFilterService: MediaFilterService,
     private dialogService: DialogService) {
-    
-    
-   
-
-    this.showhidecoloumns = {
+		
+    this.showhidecolumns = {
       'media_name': true,
       'timestamp': true,
       'mimeType': true,
@@ -102,10 +98,8 @@ export class MediaSearchResultComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.mediaFilterService.buildSearchParams(null, null, null, null);
     this.isLoading = true;
-    this.dataSub = this.mediaFilterService.filteredRespone$.subscribe(result => {
-        this.bindGrid();
-    });
 
     this.mediaFilterService.getCustomFields().subscribe((result : CustomField[]) => {
       this.customFields = result;
@@ -205,10 +199,48 @@ export class MediaSearchResultComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
-  createIncident(tableRows): void {
-    this.dialogService.showDialog('Add media to New Incident', ManageIncidentComponent, tableRows, { rows: tableRows })
+  mediaIncident(tableRows): void {
+    this.dialogService.showDialog('Add media to New Incident', ManageIncidentComponent, tableRows, { mode: 'mediaIncident', id: 0, rows: tableRows }) 
       .subscribe();
   }
+
+  onDisplayColumnChange(value : string){
+    if(value == 'astro'){
+      this.showhidecolumns['unitId'] = true;
+      this.showhidecolumns['channel'] = true;
+      this.showhidecolumns['siteId'] = true;
+      this.showhidecolumns['zoneId'] = true;
+      this.showhidecolumns['rscAlias'] = true;
+      this.showhidecolumns['individualAlias'] = true;
+      this.showhidecolumns['originatingMDN'] = false;
+      this.showhidecolumns['terminatingMDN'] = false;
+      this.showhidecolumns['participatingMDN'] = false;
+      this.showhidecolumns['talkgroupName'] = false;
+    }else if(value == 'broadband'){
+      this.showhidecolumns['unitId'] = false;
+      this.showhidecolumns['channel'] = false;
+      this.showhidecolumns['siteId'] = false;
+      this.showhidecolumns['zoneId'] = false;
+      this.showhidecolumns['rscAlias'] = false;
+      this.showhidecolumns['individualAlias'] = false;
+      this.showhidecolumns['originatingMDN'] = true;
+      this.showhidecolumns['terminatingMDN'] = true;
+      this.showhidecolumns['participatingMDN'] = true;
+      this.showhidecolumns['talkgroupName'] = true;
+    }else{
+      this.showhidecolumns['unitId'] = false;
+      this.showhidecolumns['channel'] = false;
+      this.showhidecolumns['siteId'] = false;
+      this.showhidecolumns['zoneId'] = false;
+      this.showhidecolumns['rscAlias'] = false;
+      this.showhidecolumns['individualAlias'] = false;
+      this.showhidecolumns['originatingMDN'] = false;
+      this.showhidecolumns['terminatingMDN'] = false;
+      this.showhidecolumns['participatingMDN'] = false;
+      this.showhidecolumns['talkgroupName'] = false;
+    }
+  }
+  
   onScrolledToBottom(event: any) {
     console.log('scrolled to bottom row:', event);
   }

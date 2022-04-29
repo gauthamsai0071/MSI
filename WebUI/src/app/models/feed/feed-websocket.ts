@@ -55,25 +55,6 @@ export class Feedwebsocket {
                         case "EVENT_DATA":                            
                             if(message.eventData && message.eventData.id) {
                                 this.dataReceived.emit(message.eventData);
-                            }
-
-                            // if(message.eventData && message.eventData.id && message.eventData.data[message.eventData.id].videoFiles){
-                            //     this.messageResponse = message?.eventData?.data[2].videoFiles;
-
-                            //     //     if(this.feed.subscriptions[0].url == "/api/videos/subscribe"){
-                            //     //         MediaFilterService.notifyfilteredRespone(this.messageResponse);
-                            //     //     }
-                            //     //     else {
-                            //     //         PlayerService.getMediaResponse(JSON.stringify(message.eventData));
-                            //     //     }
-                            //     // }else if(message.eventData && message.eventData.id && message.eventData.data[message.eventData.id].moreVideoFilesAvailable == false){
-                            //     //     if(this.feed.subscriptions[0].url == "/api/videos/subscribe"){
-                            //     //         MediaFilterService.notifyfilteredRespone(null);
-                            //     //     }
-                            //     // }
-                            //     // else{
-                            //     //     MediaFilterService.notifyfilteredRespone(null);
-                            // }
                             break;
                         case "SESSION_EXPIRED":
                             this.cleanupFeed(true);

@@ -13,19 +13,6 @@
                     >
                     </app-calendar>
                 </div>
-                <!-- <div *ngIf="field.isTagList">
-                    <div class="label-wrap">
-                        <span class="filter-label-first">{{field.displayName}}</span>
-                    </div>
-                    <msi-select
-                        formControlName="{{field.name}}"
-                        placeholder = "select value"
-                    ><msi-select-option
-                        *ngFor="let option of field.validValues; let i = index"
-                        [value]="option"
-                        >{{field.validValueLabels[i]}}</msi-select-option>
-                    </msi-select>
-                </div> -->
                 <div *ngIf="field.isText">
                     <div class="label-wrap">
                         <span class="filter-label-first">{{field.displayName}}</span>
@@ -61,7 +48,7 @@
                             class="{{field.name}}"   
                             formControlName="{{field.name}}"
                             ngDefaultControl                  
-                            (change)="clickCheckbox( $event, option, field.name, field.id)" *ngFor="let option of field.validValues; let i = index" [value]="field.validValues[i]">{{field.validValueLabels[i]}}</msi-checkbox>
+                            (change)="clickCheckbox( $event, option, field.name)" *ngFor="let option of field.validValues; let i = index" [value]="field.validValues[i]">{{field.validValueLabels[i]}}</msi-checkbox>
                         </msi-checkbox-group>
                     </div>
                     <div *ngIf="field.displayName.includes(',multiselect,')">

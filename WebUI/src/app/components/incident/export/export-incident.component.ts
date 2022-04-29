@@ -35,24 +35,31 @@ export class ExportIncidentComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.buildExportForm();
+        if (this.popupParam.mode === 'view') {
+            this.incidentService.getExportById(this.popupParam.id).subscribe((exports: Export) => {
+                this.export = exports;
+            });
+        }
+        else {
+            this.buildExportForm();
 
-        this.mGroupId = this.commonService.createGroupId();
-        forkJoin([
-            this.incidentService.getIncident(this.popupParam.id),
-            this.incidentService.getExportTemplate(this.popupParam.id, this.mGroupId)
-        ]).subscribe(([responseIncidents, responseExport]) => {
-            this.incident = responseIncidents;
+            this.mGroupId = this.commonService.createGroupId();
+            forkJoin([
+                this.incidentService.getIncident(this.popupParam.id),
+                this.incidentService.getExportTemplate(this.popupParam.id, this.mGroupId)
+            ]).subscribe(([responseIncidents, responseExport]) => {
+                this.incident = responseIncidents;
 
-            let field = this.incident.customFields.find(item => toLower(item.name) == toLower("title"));
-            this.incident.title = field !== undefined ? field.value.text : '';
-            if (field.value !== undefined)
-                this.exportForm.get("description").setValue(field.value.text);
+                let field = this.incident.customFields.find(item => toLower(item.name) == toLower("title"));
+                this.incident.title = field !== undefined ? field.value.text : '';
+                if (field.value !== undefined)
+                    this.exportForm.get("description").setValue(field.value.text);
 
-            this.export = responseExport;
-            this.exportForm.get("exportProfile.profileId").setValue(this.export.profiles[0].type);
-        });
-        this.exportForm.get("exportProfile.profileDvdFormat").setValue(false);
+                this.export = responseExport;
+                this.exportForm.get("exportProfile.profileId").setValue(this.export.profiles[0].type);
+            });
+            this.exportForm.get("exportProfile.profileDvdFormat").setValue(false);
+        }
     }
 
     outputSelectChanges() {

@@ -1,4 +1,4 @@
-<div class="form-wrapper exportIncident">
+<div class="form-wrapper exportIncident"   *ngIf="popupParam.mode !== 'view' else exportView">
     <form [formGroup]="exportForm" (ngSubmit)="onSubmit()">
         <div class="form-group">
             <label class="msi-label" for="description">
@@ -67,3 +67,31 @@
         </div>
     </form>
 </div>
+<ng-template #exportView>
+    <table msi-table id="my-table">
+        <tr>
+            <td>Signature</td>
+            <td>{{ export.signature }}</td>
+        </tr>
+        <tr>
+            <td>Description</td>
+            <td>{{ export.description }}</td>
+        </tr>
+        <tr>
+            <td>Created </td>
+            <td>{{ export.creationTime | date:'dd/MM/YYYY HH:mm' }}</td>
+        </tr>
+        <tr>
+            <td>Type</td>
+            <td>{{ export.exportProfile.name }}</td>
+        </tr>
+        <tr>
+            <td>Status</td>
+            <td>{{ (export.ready) ? 'Ready' : ''}}</td>
+        </tr>
+        <tr>
+            <td>Finished </td>
+            <td>{{ export.completionTime | date:'dd/MM/YYYY HH:mm' }}</td>
+        </tr>
+    </table>
+</ng-template>

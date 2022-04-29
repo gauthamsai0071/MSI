@@ -1,7 +1,7 @@
 <div class="home-wrapper">
   <app-header [selectedIndex]="0"></app-header>
   <div class="media-search-result-wrapper">
-    <app-search class="media-search-component"></app-search>
-    <app-media-search-result class="media-result-component"></app-media-search-result>
+    <app-search class="media-search-component" (searchCriteria)="searchCriteria($event)"></app-search>
+    <app-media-search-result class="media-result-component" [mediaSearchCriteria]="mediaSearchCriteria"></app-media-search-result>
   </div> 
 </div>

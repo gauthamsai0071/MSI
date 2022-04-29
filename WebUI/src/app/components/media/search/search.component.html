@@ -6,7 +6,7 @@
     <msi-tab-group class="media-filters-tab-group">
         <msi-tab label="Filters">
             <div class="filters-wrapper">
-                <app-media-filter></app-media-filter>
+                <app-media-filter (searchMedia)="searchMedia($event)"></app-media-filter>
             </div>
         </msi-tab>
         <msi-tab label="Saved Searches">
