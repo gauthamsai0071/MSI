@@ -4,9 +4,9 @@ import { FormGroup } from '@angular/forms';
 import _ from 'lodash';
 import { Observable,Subject,of } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
-import { VideoFilesSubscriptionAdto } from 'src/app/interfaces/adto';
-import { Feedsubscription } from 'src/app/models/feed/feed-subscription';
-import { ApiUrls } from 'src/app/util/api-urls';
+import { VideoFilesSubscriptionAdto } from '../../interfaces/adto';
+import { Feedsubscription } from '../../models/feed/feed-subscription';
+import { ApiUrls } from '../../util/api-urls';
 import { CustomField } from '../../models/common/custom-field';
 import { AuthService } from '../auth/auth.service';
 
