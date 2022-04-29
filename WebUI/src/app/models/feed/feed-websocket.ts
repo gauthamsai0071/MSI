@@ -55,6 +55,8 @@ export class Feedwebsocket {
                         case "EVENT_DATA":                            
                             if(message.eventData && message.eventData.id) {
                                 this.dataReceived.emit(message.eventData);
+                                console.log('data emitted');
+                            }
                             break;
                         case "SESSION_EXPIRED":
                             this.cleanupFeed(true);

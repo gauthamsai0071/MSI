@@ -6,12 +6,14 @@ import { Observable,Subject,of } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { VideoFilesSubscriptionAdto } from 'src/app/interfaces/adto';
 import { Feedsubscription } from 'src/app/models/feed/feed-subscription';
+import { MediaGroupManagerService } from 'src/app/models/feed/media-group-manager';
 import { ApiUrls } from 'src/app/util/api-urls';
 import { CustomField } from '../../models/common/custom-field';
 import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class MediaFilterService {
+public mediaSubscriptions : Feedsubscription;
   private static filteredRespone = new Subject<any>();
   filteredRespone$ = MediaFilterService.filteredRespone.asObservable().pipe(
     shareReplay(1)
@@ -23,7 +25,8 @@ export class MediaFilterService {
   advancedFilter : string = '';
   
   constructor(private http: HttpClient,
-    private authService: AuthService) { }
+    private authService: AuthService,
+    private mediaGroupManagerService : MediaGroupManagerService) { }
   
   getCustomFields() {
     return this.http.get('api/videos/customFields').pipe(
@@ -112,7 +115,14 @@ export class MediaFilterService {
       limit : 15,
     };
     let videoSubscribeUrl = this.apiUrls.videoListSubscribe;
-    let subscription = new Feedsubscription(videoSubscribeUrl,(this.apiUrls.videoListSubscribe,() => queryParams),this.http,this.authService);
+    this.mediaSubscriptions = new Feedsubscription(videoSubscribeUrl,this.mediaGroupManagerService,(this.apiUrls.videoListSubscribe,() => queryParams),this.http,this.authService);
+    this.mediaSubscriptions.dataReceived.subscribe(result => {
+      console.log(result);
+    })
+  }
+
+  fetchMoreMedia(){
+    this.mediaSubscriptions.amend(this.apiUrls.videoListFetchMore, { limit: 15 });
   }
 
   private createGroupId() : string {
