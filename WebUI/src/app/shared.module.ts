@@ -69,7 +69,7 @@ import { ConfirmationDialogComponent } from './components/common/confirmation-di
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptor, multi: true },
+    // { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptor, multi: true },
     ToastService,
     ModalService
   ]

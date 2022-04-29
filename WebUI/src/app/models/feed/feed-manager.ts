@@ -3,7 +3,7 @@ import { ApiUrls } from "../../util/api-urls";
 import { Feedsubscription } from "./feed-subscription";
 import { Feedwebsocket } from "./feed-websocket";
 import { HttpClient } from '@angular/common/http';
-import { MediaGroupManager } from "./media-group-manager";
+import { MediaGroupManagerService } from "./media-group-manager";
 
 export class FeedManager {
     private static preExpiryNotifyTime = 15000;
@@ -11,11 +11,8 @@ export class FeedManager {
     private restartTimeoutMs = this.initialRestartTimeoutMs;
     private restartBackoffMs = 2000;
     private maxRestartTimeMs = 30000;
-    private transientErrorRetryTimeMs = 10000;
     private keepRunning = true;
 
-    private createRequest : any;
-    private pollRequest : any;
     feedId : string;
     private serverStateSubscriptionId? : number;
     subscriptions : Feedsubscription[] = [];
@@ -30,15 +27,15 @@ export class FeedManager {
     private notifyActiveTimer : number;
 
     private useWebSocketFeeds : boolean;
-    creatingSocket : boolean = false;
     feedSocket : Feedwebsocket;
     
     public usingVmProxy : boolean;
         
-    
-    constructor(private urls : ApiUrls, public mgroup : MediaGroupManager, private state : StateAdto,private _http: HttpClient) {
+    private createRequest : any;
+    private pollRequest : any;
+
+    constructor(private urls : ApiUrls, private groupManager : MediaGroupManagerService, private state : StateAdto, private _http: HttpClient) {
        this.urls = new ApiUrls();
-       this.mgroup = new MediaGroupManager(this.urls,this._http);
         this.initIdleTracker();
         this.useWebSocketFeeds = true;
     }
@@ -79,8 +76,16 @@ export class FeedManager {
                 return;
             }
             if ( this.useWebSocketFeeds )  {
-                this.creatingSocket = true;
-                this.feedSocket = new Feedwebsocket(this, this.urls.wsFeedWithActiveTime(this.getAndResetActiveState()), null);
+                this.feedSocket = new Feedwebsocket(this.urls.wsFeedWithActiveTime(this.getAndResetActiveState()), this.groupManager);
+
+                this.feedSocket.dataReceived.subscribe(response => {
+                    this.initFeed(response);
+                });
+
+                this.feedSocket.socketError.subscribe(error => {
+                    this.handleError(error);
+                });
+
                 this.feedSocket.start();
             }
             else {
@@ -128,6 +133,8 @@ export class FeedManager {
                     this.errorReported = false;
                 }
             }
+
+            this.feedSocket.shutdown();
         }
 
         private feedDeleted() {
@@ -174,8 +181,8 @@ export class FeedManager {
             }
             let feedId = this.feedId;
             let data : any = { activeTime: this.getAndResetActiveState() };
-            if ( this.mgroup.haveLiveGroups() )
-                data.mgroup = this.mgroup.getLiveGroupIds();
+            if ( this.groupManager.haveLiveGroups() )
+                data.mgroup = this.groupManager.getLiveGroupIds();
                 this._http.get(this.urls.feedEvent( feedId, eventId ),data).subscribe(
                     ( dataSet) => {
                         if ( this.keepRunning && feedId === this.feedId ) {

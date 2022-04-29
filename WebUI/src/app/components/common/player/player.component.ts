@@ -5,7 +5,7 @@ import { forkJoin, Subscription } from 'rxjs';
 import { ModalDialogComponent } from '../../../shared/modal-dialog/modal-dialog.component';
 import { StateAdto, VideoFilesSubscriptionAdto } from '../../../interfaces/adto';
 import { FeedManager } from '../../../models/feed/feed-manager';
-import { MediaGroupManager } from '../../../models/feed/media-group-manager';
+import { MediaGroupManagerService } from '../../../models/feed/media-group-manager';
 import { AuthService } from '../../../services/auth/auth.service';
 import { PlayerService } from '../../../services/player/player.service';
 import { RecordingService } from '../../../services/player/recording.service';
@@ -31,7 +31,6 @@ export class PlayerComponent implements OnDestroy, OnInit {
   offset = "61";
   public feed: FeedManager;
   public apiUrls :ApiUrls;
-  public mgroup : MediaGroupManager;
   public state : StateAdto;
   msg : string;
   url:string;
@@ -80,8 +79,8 @@ export class PlayerComponent implements OnDestroy, OnInit {
   displayVTTText:string;
   private subscription?: Subscription;
 
-  constructor(private recordingService : RecordingService,private http : HttpClient,private authService: AuthService,private playerService: PlayerService,private modalComp: ModalDialogComponent) { 
-    this.feed = new FeedManager(this.apiUrls,this.mgroup,this.state,this.http);
+  constructor(private recordingService : RecordingService, private groupManagerService: MediaGroupManagerService, private http : HttpClient,private authService: AuthService,private playerService: PlayerService,private modalComp: ModalDialogComponent) { 
+    this.feed = new FeedManager(this.apiUrls,this.groupManagerService,this.state,this.http);
     this.apiUrls = new ApiUrls();
   }
 

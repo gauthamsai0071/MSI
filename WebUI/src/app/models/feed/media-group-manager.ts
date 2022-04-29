@@ -1,11 +1,15 @@
 import { ApiUrls } from "../../../app/util/api-urls";
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from "@angular/core";
 
-export class MediaGroupManager {
+@Injectable({
+    providedIn: 'root'
+})
+export class MediaGroupManagerService {
     private thumbId : string;
     private playerId : string;
 
-    constructor( private apiUrls : ApiUrls,private http: HttpClient ) {
+    constructor(private http: HttpClient) {
     }
 
     haveLiveGroups() {
@@ -60,7 +64,7 @@ export class MediaGroupManager {
 
     private releaseGroup(mgroupid : string ) {
         if ( mgroupid ) {
-            let url = this.apiUrls.mediaGroup(mgroupid)
+            let url = ApiUrls.mediaGroup(mgroupid)
             this.http.request('delete', url).subscribe();
            /*  $.ajax({
                 type: 'DELETE',

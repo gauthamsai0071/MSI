@@ -1,9 +1,5 @@
-import { BehaviorSubject } from "rxjs";
-import { MediaFilterService } from "../../services/media/media-filter.service";
-import { FeedManager } from "./feed-manager";
-import { io } from 'socket.io-client';
-import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
-import { PlayerService } from "src/app/services/player/player.service";
+import { EventEmitter } from "@angular/core";
+import { MediaGroupManagerService } from "./media-group-manager";
 
 export class Feedwebsocket {
 
@@ -14,7 +10,13 @@ export class Feedwebsocket {
     private keepAliveResponseTimeout: any;
     public messageResponse : any;
     
-    constructor(private feed : FeedManager, private url: string, public mediaFilterService: MediaFilterService) {}
+    dataReceived: EventEmitter<any>;
+    socketError: EventEmitter<any>;
+
+    constructor(private url: string, private groupManager: MediaGroupManagerService) {
+        this.dataReceived = new EventEmitter<any>();
+        this.socketError = new EventEmitter<any>();
+    }
 
       start() : any {          
         this.ws = new WebSocket(this.url);        
@@ -30,7 +32,6 @@ export class Feedwebsocket {
         this.ws.onclose = ( closeEvent ) => {
             if (this.ws) {
                 console.log(("FeedManager websocket closed with status " + closeEvent.code) + (closeEvent.reason ? ": " + closeEvent.reason : ""));
-                this.feed.creatingSocket = false;
                 this.cleanupFeed(false);
             }
         };
@@ -48,28 +49,31 @@ export class Feedwebsocket {
                     let message = JSON.parse(event.data);
                     clearTimeout(this.keepAliveResponseTimeout);
                     switch (message.type) {
-                        case "CREATE_RESPONSE":
-                            this.feed.initFeed(message.response);
-                            this.feed.creatingSocket = false;
+                        case "CREATE_RESPONSE":                            
+                            this.dataReceived.emit(message.response);
                             break;
-                        case "EVENT_DATA":
-                            this.feed.processEventIfReady(message.eventData);
-                            if(message.eventData && message.eventData.id && message.eventData.data[message.eventData.id].videoFiles){
-                                this.messageResponse = message?.eventData?.data[2].videoFiles;
-                                if(this.feed.subscriptions[0].url == "/api/videos/subscribe"){
-                                    MediaFilterService.notifyfilteredRespone(this.messageResponse);
-                                }
-                                else {
-                                    PlayerService.getMediaResponse(JSON.stringify(message.eventData));
-                                }
-                            }else if(message.eventData && message.eventData.id && message.eventData.data[message.eventData.id].moreVideoFilesAvailable == false){
-                                if(this.feed.subscriptions[0].url == "/api/videos/subscribe"){
-                                    MediaFilterService.notifyfilteredRespone(null);
-                                }
+                        case "EVENT_DATA":                            
+                            if(message.eventData && message.eventData.id) {
+                                this.dataReceived.emit(message.eventData);
                             }
-                            else{
-                                MediaFilterService.notifyfilteredRespone(null);
-                            }
+
+                            // if(message.eventData && message.eventData.id && message.eventData.data[message.eventData.id].videoFiles){
+                            //     this.messageResponse = message?.eventData?.data[2].videoFiles;
+
+                            //     //     if(this.feed.subscriptions[0].url == "/api/videos/subscribe"){
+                            //     //         MediaFilterService.notifyfilteredRespone(this.messageResponse);
+                            //     //     }
+                            //     //     else {
+                            //     //         PlayerService.getMediaResponse(JSON.stringify(message.eventData));
+                            //     //     }
+                            //     // }else if(message.eventData && message.eventData.id && message.eventData.data[message.eventData.id].moreVideoFilesAvailable == false){
+                            //     //     if(this.feed.subscriptions[0].url == "/api/videos/subscribe"){
+                            //     //         MediaFilterService.notifyfilteredRespone(null);
+                            //     //     }
+                            //     // }
+                            //     // else{
+                            //     //     MediaFilterService.notifyfilteredRespone(null);
+                            // }
                             break;
                         case "SESSION_EXPIRED":
                             this.cleanupFeed(true);
@@ -89,9 +93,9 @@ export class Feedwebsocket {
     sendKeepAlive() {
         if (this.ready && this.ws) {
             let data: any = {keepAlive: true};
-            data.activeTime = this.feed.getAndResetActiveState();
-            if (this.feed.mgroup.haveLiveGroups())
-                data.mgroup = this.feed.mgroup.getLiveGroupIds();
+            data.activeTime =  Math.max(0, Date.now());
+            if (this.groupManager.haveLiveGroups())
+                data.mgroup = this.groupManager.getLiveGroupIds();
             this.ws.send(JSON.stringify( data ) );
             this.keepAliveResponseTimeout = setTimeout( () => {
                 this.cleanupFeed( false );
@@ -111,7 +115,7 @@ export class Feedwebsocket {
         if (!this.closed) {
             this.closed = true;
             this.ready = false;
-            this.feed.handleError( unauthorised );
+            this.socketError.emit(unauthorised);
         }
     }
 
@@ -134,6 +138,5 @@ export class Feedwebsocket {
             this.ws == null;
             ws.close(status, reason);
         }
-    }
-
+    }    
 }

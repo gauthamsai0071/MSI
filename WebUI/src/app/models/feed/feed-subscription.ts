@@ -2,8 +2,9 @@ import { CreateSubscriptionAdto, CreateSubscriptionResponseAdto, FeedEventAdto, 
 import { FeedManager } from "./feed-manager";
 import { HttpClient } from '@angular/common/http';
 import { ApiUrls } from "../../util/api-urls";
-import { MediaGroupManager } from "./media-group-manager";
+import { MediaGroupManagerService } from "./media-group-manager";
 import { AuthService } from "../../services/auth/auth.service";
+import { EventEmitter } from "@angular/core";
 
 export class Feedsubscription {
     private cancelled : boolean;
@@ -17,16 +18,16 @@ export class Feedsubscription {
     deferredData: FeedEventAdto [] = [];
     preprocessingData : FeedEventAdto;
     public urls : ApiUrls;
-    public mgroup : MediaGroupManager;
     public state : StateAdto;
     feed : FeedManager;
     refCount: number = 0;
-    
+    dataReceived: EventEmitter<any>;
 
-    constructor( public url : any, private getData? : () => CreateSubscriptionAdto,public _http?: HttpClient,private authService?: AuthService ) {
+    constructor( public url : any, private groupManagerService: MediaGroupManagerService, private getData? : () => CreateSubscriptionAdto,public _http?: HttpClient,private authService?: AuthService ) {
         //super();
-        this.feed = new FeedManager(this.urls,this.mgroup,this.state,this._http)
+        this.feed = new FeedManager(this.urls,this.groupManagerService,this.state,this._http)
         this.feed.addSubscription( this );
+        this.dataReceived = new EventEmitter<any>();
     }
 
          // Issue a request for more data, which replaces the existing subscription ID.  Causes initial handlers to be
@@ -78,8 +79,7 @@ export class Feedsubscription {
                 console.log(res);
                 this.feed.finishedSending()
             });
-            const response = await this._http.post(this.url,data).toPromise();
-            return response;
+            return this._http.post(this.url,data);       
         }
 
         idChanged() {
@@ -89,29 +89,30 @@ export class Feedsubscription {
         }
 
         handleData( data : FeedEventAdto ) {
-            if ( this.preprocessingData ) {
-                this.deferredData.push( data );
-            } else {
-                let promise = this.preProcessData( data );
+            this.dataReceived.emit(data);
+            // if ( this.preprocessingData ) {
+            //     this.deferredData.push( data );
+            // } else {
+            //     let promise = this.preProcessData( data );
 
-                if ( promise ) {
-                    this.preprocessingData = data;
-                    promise.always( () => {
-                        if (this.preprocessingData === data && !this.cancelled) {
-                            this.preprocessingData = null;
+            //     if ( promise ) {
+            //         this.preprocessingData = data;
+            //         promise.always( () => {
+            //             if (this.preprocessingData === data && !this.cancelled) {
+            //                 this.preprocessingData = null;
 
-                            this.handleDataNow(data);
+            //                 this.handleDataNow(data);
 
-                            while (this.deferredData.length && !this.cancelled && !this.preprocessingData) {
-                                let nextData = this.deferredData.shift();
-                                this.handleData(nextData);
-                            }
-                        }
-                    });
-                } else {
-                    this.handleDataNow(data);
-                }
-            }
+            //                 while (this.deferredData.length && !this.cancelled && !this.preprocessingData) {
+            //                     let nextData = this.deferredData.shift();
+            //                     this.handleData(nextData);
+            //                 }
+            //             }
+            //         });
+            //     } else {
+            //         this.handleDataNow(data);
+            //     }
+            // }
         }
 
         private preProcessData( data : FeedEventAdto ) {
@@ -175,7 +176,7 @@ export class Feedsubscription {
                 this.amending = true;
                 this.feed.startedSending();
                 this._http.post(amendment.url, data).subscribe(
-                    (res : CreateSubscriptionResponseAdto) =>{
+                    (res : CreateSubscriptionResponseAdto) => {
                         if ( this.feed.feedId === feedId && res )
                         this.gotSubscriptionId( res.subscriptionId )
                         console.log(res);
@@ -183,7 +184,7 @@ export class Feedsubscription {
                     },
                     // Errors will call this callback instead:
                     err => {
-                    console.log('Something went wrong!');
+                        console.log('Something went wrong!');
                     }
 
                 );

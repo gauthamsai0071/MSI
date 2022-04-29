@@ -249,9 +249,9 @@ export class ApiUrls {
 
         sessionUserActive = this.account + '/userActive';
 
-        mediaGroups = this.apiRoot + '/mediaGroups';
+        static mediaGroups = '/api/mediaGroups';
 
-        mediaGroup( mgroupid : string ) { return this.mediaGroups + '/' + mgroupid; }
+        static mediaGroup( mgroupid : string ) { return this.mediaGroups + '/' + mgroupid; }
 
         state = this.apiRoot + '/state';
 

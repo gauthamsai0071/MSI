@@ -9,7 +9,7 @@ const { default: enforceHttps } = require('koa-sslify');
 const bodyParser = require('koa-bodyparser');
 const path = require('path');
 
-const ui_path  = path.join(path.resolve(__dirname, '..'), 'UI\\');
+const ui_path  = path.join(path.resolve(__dirname, '..'), 'UI//');
 
 var serverConfig = JSON.parse(fileSystem.readFileSync('config.json', 'utf8'));
 

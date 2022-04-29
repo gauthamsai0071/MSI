@@ -149,19 +149,7 @@ export class MediaFilterComponent implements OnInit {
 
   viewSubscription(){
     //sessionStorage.removeItem('socketResponse');
-    let queryParams : VideoFilesSubscriptionAdto = {
-     /*  feedId: "1", */
-      thumbnail: 'SINGLE',
-      includeDeleted : true,
-      mgroupid : this.createGroupId(),
-      customValues: this.queryParams,
-      radius : this.radius,
-      location : this.location,
-      advancedFilter : this.advancedFilter
-    };
-    // For video
-    let videoSubscribeUrl = this.apiUrls.videoListSubscribe;
-    let subscription = new Feedsubscription(videoSubscribeUrl,(this.apiUrls.videoListSubscribe,() => queryParams),this.http,this.authService);
+  
   }
   buildSearchForm(){
     this.filterCriteria = new FormGroup({});
