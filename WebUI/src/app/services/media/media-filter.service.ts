@@ -2,20 +2,23 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import _ from 'lodash';
-import { Observable,Subject,of } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
 import { VideoFilesSubscriptionAdto } from '../../interfaces/adto';
 import { Feedsubscription } from '../../models/feed/feed-subscription';
+import { MediaGroupManagerService } from '../../models/feed/media-group-manager';
 import { ApiUrls } from '../../util/api-urls';
 import { CustomField } from '../../models/common/custom-field';
 import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class MediaFilterService {
-  private static filteredRespone = new Subject<any>();
-  filteredRespone$ = MediaFilterService.filteredRespone.asObservable().pipe(
+public mediaSubscriptions : Feedsubscription;
+  private filteredRespone = new Subject<any>();
+  filteredRespone$ = this.filteredRespone.asObservable().pipe(
     shareReplay(1)
   );
+
   public apiUrls :ApiUrls = new ApiUrls();
   queryParams:{id:number , value: string}[] = [];
   private radius : number;
@@ -23,6 +26,7 @@ export class MediaFilterService {
   advancedFilter : string = '';
   
   constructor(private http: HttpClient,
+    private groupManager: MediaGroupManagerService,
     private authService: AuthService) { }
   
   getCustomFields() {
@@ -36,7 +40,7 @@ export class MediaFilterService {
     calendarFields : Map<number, string>,
     checkBoxFields : Map<string, Array<string>>,
     searchFields : CustomField[]
-    ){
+    ) {
       this.queryParams = [];
       this.advancedFilter = '';
       let advanceQuery = '';
@@ -109,21 +113,22 @@ export class MediaFilterService {
       radius : this.radius,
       location : this.location,
       advancedFilter : this.advancedFilter,
-      limit : 15,
+      limit : 50,
     };
     let videoSubscribeUrl = this.apiUrls.videoListSubscribe;
-    let subscription = new Feedsubscription(videoSubscribeUrl,(this.apiUrls.videoListSubscribe,() => queryParams),this.http,this.authService);
+    this.mediaSubscriptions = new Feedsubscription(videoSubscribeUrl, this.groupManager,
+      (this.apiUrls.videoListSubscribe,() => queryParams),this.http, this.authService);
+      
+    this.mediaSubscriptions.dataReceived.subscribe(message => {
+      this.filteredRespone.next(message?.data[2].videoFiles);
+    })
+  }
+
+  fetchMoreMedia(){
+    this.mediaSubscriptions.amend(this.apiUrls.videoListFetchMore, { limit: 15 });
   }
 
   private createGroupId() : string {
     return '' + Math.floor(Math.random() * 100000000 );
-  }
-  
-  public static notifyfilteredRespone(data: string) {
-    if (data) {
-      this.filteredRespone.next(data);
-    }else{
-      this.filteredRespone.next(null);
-    }
-  }
+  }  
 }

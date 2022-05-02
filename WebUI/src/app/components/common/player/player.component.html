@@ -1,6 +1,6 @@
-<div class="container">
+<div class="container" *ngIf="videoSource !== null">
     <div id="video_player">
-        <video src="{{videoSource}}" id="main-video" #videoPlayer (timeupdate)="setCurrentTime($event)"
+        <video [src]="videoSource" id="main-video" #videoPlayer (timeupdate)="setCurrentTime($event)"
             crossorigin="use-credentials" preload="metadata"></video>
         <div id="overlay" *ngIf="displayVTT">{{displayVTTText}} </div>
         <div class="progressAreaTime">0:00</div>
@@ -57,7 +57,7 @@
             <div class="playback">
                 <span>Playback Speed</span>
                 <ul>
-                    <li *ngFor="let selectedPlayback of playbackRates;let i = index"
+                    <li *ngFor="let selectedPlayback of playbackRates"
                         (click)="onClickPlayback(selectedPlayback.value)"
                         [class.active]="currentPlayback == selectedPlayback.value">{{selectedPlayback.name}}</li>
                 </ul>

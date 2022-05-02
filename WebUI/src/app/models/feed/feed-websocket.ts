@@ -1,26 +1,25 @@
 import { EventEmitter } from "@angular/core";
+import { ApiUrls } from "../../util/api-urls";
 import { MediaGroupManagerService } from "./media-group-manager";
 
 export class Feedwebsocket {
-
     private ready = false;
     private closed = false;
     private ws: WebSocket;
-    private idleTimer: any;
     private keepAliveResponseTimeout: any;
-    public messageResponse : any;
-    
-    dataReceived: EventEmitter<any>;
-    socketError: EventEmitter<any>;
+    public messageResponse : any;   
 
-    constructor(private url: string, private groupManager: MediaGroupManagerService) {
+    public dataReceived: EventEmitter<any>;
+    public socketError: EventEmitter<any>;
+
+    constructor(private urls : ApiUrls, private groupManger: MediaGroupManagerService) {
         this.dataReceived = new EventEmitter<any>();
         this.socketError = new EventEmitter<any>();
     }
 
-      start() : any {          
-        this.ws = new WebSocket(this.url);        
-        
+    start() : any {       
+        const url = this.urls.wsFeedWithActiveTime(this.getAndResetActiveState())   
+        this.ws = new WebSocket(url);        
         
         this.ws.onopen = () => {
             if (this.ws) {
@@ -31,7 +30,7 @@ export class Feedwebsocket {
 
         this.ws.onclose = ( closeEvent ) => {
             if (this.ws) {
-                console.log(("FeedManager websocket closed with status " + closeEvent.code) + (closeEvent.reason ? ": " + closeEvent.reason : ""));
+                console.log(("FeedManager websocket closed with status " + closeEvent.code) + (closeEvent.reason ? ": " + closeEvent.reason : ""));              
                 this.cleanupFeed(false);
             }
         };
@@ -49,12 +48,11 @@ export class Feedwebsocket {
                     let message = JSON.parse(event.data);
                     clearTimeout(this.keepAliveResponseTimeout);
                     switch (message.type) {
-                        case "CREATE_RESPONSE":                            
-                            this.dataReceived.emit(message.response);
+                        case "CREATE_RESPONSE":
+                            this.dataReceived.emit(message);
                             break;
-                        case "EVENT_DATA":                            
-                            if(message.eventData && message.eventData.id) {
-                                this.dataReceived.emit(message.eventData);
+                        case "EVENT_DATA":
+                            this.dataReceived.emit(message);                      
                             break;
                         case "SESSION_EXPIRED":
                             this.cleanupFeed(true);
@@ -74,14 +72,13 @@ export class Feedwebsocket {
     sendKeepAlive() {
         if (this.ready && this.ws) {
             let data: any = {keepAlive: true};
-            data.activeTime =  Math.max(0, Date.now());
-            if (this.groupManager.haveLiveGroups())
-                data.mgroup = this.groupManager.getLiveGroupIds();
+            data.activeTime = this.getAndResetActiveState();
+            if (this.groupManger.haveLiveGroups())
+                data.mgroup = this.groupManger.getLiveGroupIds();
             this.ws.send(JSON.stringify( data ) );
-            this.keepAliveResponseTimeout = setTimeout( () => {
-                this.cleanupFeed( false );
-            }, 15000 );
-            clearTimeout( this.idleTimer );
+            // this.keepAliveResponseTimeout = setTimeout( () => {
+            //     this.cleanupFeed( false );
+            // }, 15000 );
         }
     }
 
@@ -96,7 +93,7 @@ export class Feedwebsocket {
         if (!this.closed) {
             this.closed = true;
             this.ready = false;
-            this.socketError.emit(unauthorised);
+            this.socketError.emit( unauthorised );
         }
     }
 
@@ -107,10 +104,12 @@ export class Feedwebsocket {
     }
 
     closeSocket(status: number, reason: string ) {
-            if (this.ws) {
-                this.ws.close(status, reason);
-                this.ws == null;
-            }
+        if (this.ws) {
+            this.ws.close(status, reason);
+            this.ws == null;
+        }
+
+        this.closeSubscriptions();
     }
 
     killSocket(status: number, reason: string ) {
@@ -119,5 +118,17 @@ export class Feedwebsocket {
             this.ws == null;
             ws.close(status, reason);
         }
+
+        this.closeSubscriptions();
     }    
+
+    // Return time since last activity
+    getAndResetActiveState() {        
+        return Math.max(0, Date.now() - this.groupManger.activityTime);
+    }
+
+    closeSubscriptions(): void {
+        this.dataReceived.complete();
+        this.socketError.complete();
+    }
 }

@@ -2,12 +2,15 @@ import { ApiUrls } from "../../../app/util/api-urls";
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from "@angular/core";
 
+
 @Injectable({
-    providedIn: 'root'
+    providedIn: "root"
 })
 export class MediaGroupManagerService {
     private thumbId : string;
     private playerId : string;
+
+    public activityTime : number;
 
     constructor(private http: HttpClient) {
     }
@@ -65,11 +68,7 @@ export class MediaGroupManagerService {
     private releaseGroup(mgroupid : string ) {
         if ( mgroupid ) {
             let url = ApiUrls.mediaGroup(mgroupid)
-            this.http.request('delete', url).subscribe();
-           /*  $.ajax({
-                type: 'DELETE',
-                url: this.apiUrls.mediaGroup(mgroupid)
-            }); */
+            this.http.request('delete', url).subscribe();          
         }
     }
 

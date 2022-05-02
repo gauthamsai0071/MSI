@@ -1,5 +1,5 @@
 import { Component, ViewChild, ViewContainerRef, ComponentRef,
-         OnDestroy, ComponentFactoryResolver, EventEmitter, ElementRef, Inject, AfterViewInit } from '@angular/core';
+         OnDestroy, ComponentFactoryResolver, EventEmitter, ElementRef, Inject, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { ModalSize, MsiModalRef, MSI_MODAL_DATA } from '@msi/cobalt';
 
 @Component({
@@ -24,7 +24,8 @@ export class ModalDialogComponent implements AfterViewInit, OnDestroy {
     constructor(private resolver: ComponentFactoryResolver,
                 private modalRef: MsiModalRef,
                 private elementRef: ElementRef,
-                @Inject(MSI_MODAL_DATA) private dialogData: any) {
+                @Inject(MSI_MODAL_DATA) private dialogData: any,
+                private changeDetectorRef: ChangeDetectorRef) {
         this.title = this.dialogData.title;
         this.component = this.dialogData.component;
         this.data = this.dialogData.data;
@@ -42,6 +43,8 @@ export class ModalDialogComponent implements AfterViewInit, OnDestroy {
             this.result = result;  
             this.modalRef.close(result);            
         });
+
+        this.changeDetectorRef.detectChanges();
     }
 
     public ngOnDestroy(): void {

@@ -1,9 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, ElementRef, Input, OnInit, ViewChild,OnDestroy } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild,OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { event } from 'jquery';
 import { forkJoin, Subscription } from 'rxjs';
 import { ModalDialogComponent } from '../../../shared/modal-dialog/modal-dialog.component';
-import { StateAdto, VideoFilesSubscriptionAdto } from '../../../interfaces/adto';
+import { StateAdto } from '../../../interfaces/adto';
 import { FeedManager } from '../../../models/feed/feed-manager';
 import { MediaGroupManagerService } from '../../../models/feed/media-group-manager';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -16,18 +16,13 @@ import { ApiUrls } from '../../../util/api-urls';
   templateUrl: './player.component.html',
   styleUrls: ['./player.component.scss']
 })
-export class PlayerComponent implements OnDestroy, OnInit {
+export class PlayerComponent implements OnInit {
   @Input()
-  set popupParam(value: { id?: number }) {
-    if (value) {
-      this.id = value.id;
-    }
-  };
+  popupParam: { id?: number };
 
   @ViewChild("videoPlayer", { static: false }) videoplayer: ElementRef;
   showProgress: boolean;
-  id: number;
-  mouseOver: boolean = false
+  mouseOver: boolean = false;
   offset = "61";
   public feed: FeedManager;
   public apiUrls :ApiUrls;
@@ -39,7 +34,7 @@ export class PlayerComponent implements OnDestroy, OnInit {
   public thumbUri : any;
   thumbnail : string;
   playingVideo:boolean = false;
-  videoSource='';
+  videoSource = null;
   play_pause : any;
   progressAreaTime : any;
   controls : any;
@@ -59,7 +54,7 @@ export class PlayerComponent implements OnDestroy, OnInit {
   playback: any;
   isPlaying = true;
   initialViewCheck = false;
-  currentPlayback: any;
+  currentPlayback = '1';
   playbackRates = [
     { id: 0, name: '0.25', value: '0.25' },
     { id: 1, name: '0.5', value: '0.5' },
@@ -77,33 +72,23 @@ export class PlayerComponent implements OnDestroy, OnInit {
   displayVTT: boolean;
   mediaVtt = [];
   displayVTTText:string;
-  private subscription?: Subscription;
+  subscription: Subscription = null;
 
-  constructor(private recordingService : RecordingService, private groupManagerService: MediaGroupManagerService, private http : HttpClient,private authService: AuthService,private playerService: PlayerService,private modalComp: ModalDialogComponent) { 
-    this.feed = new FeedManager(this.apiUrls,this.groupManagerService,this.state,this.http);
+  constructor(private recordingService : RecordingService, private groupManager: MediaGroupManagerService, private http : HttpClient,private authService: AuthService,
+              private playerService: PlayerService,private modalComp: ModalDialogComponent,
+              private changeDetectorRef: ChangeDetectorRef) { 
+    this.feed = new FeedManager(this.apiUrls, this.groupManager, this.state, this.http);
+
+    this.subscription = this.feed.dataReceived.subscribe(response => {
+                          this.videoModel.push(response);
+                        });
+
     this.apiUrls = new ApiUrls();
   }
 
 
-  ngOnInit(): void {
-    this.play_pause = document.querySelector('.play_pause');
-    this.progressAreaTime = document.querySelector('.progressAreaTime');
-    this.controls = document.querySelector('.controls');
-    this.progressArea = document.querySelector('.progress-area');
-    this.progress_Bar = document.querySelector('.progress-bar');
-    this.fast_rewind = document.querySelector('.fast-rewind');
-    this.fast_forward = document.querySelector('.fast-forward');
-    this.volume = document.querySelector('.volume');
-    this.volume_range = document.querySelector('.volume_range');
-    this.current = document.querySelector('.current');
-    this.totalDuration = document.querySelector('.duration');
-    this.auto_play = document.querySelector('.auto-play');
-    this.settingsBtn = document.querySelector('.settingsBtn');
-    this.picture_in_picutre = document.querySelector('.picture_in_picutre');
-    this.fullscreen = document.querySelector('.fullscreen');
-    this.settings = document.querySelector('#settings');
-    this.playback = document.querySelectorAll('.playback li');
-    this.displayPlayer();
+  ngOnInit(): void {    
+    this.displayPlayer();    
   }
 
   updateUrl() {
@@ -124,7 +109,7 @@ export class PlayerComponent implements OnDestroy, OnInit {
     if (this.currentTime === 0 && this.isReachEnd) {
       this.isReachEnd = false;
       this.playVideo();
-    }
+    }    
   }
 
 
@@ -155,11 +140,10 @@ export class PlayerComponent implements OnDestroy, OnInit {
         console.log(value);
       }
     }
-
   }
 
   // Pause video function
-   pauseVideo() {
+  pauseVideo() {
     this.play_pause.innerHTML = "play_arrow";
    this.videoplayer.nativeElement.classList.remove('paused')
    this.videoplayer.nativeElement.pause();
@@ -378,9 +362,9 @@ export class PlayerComponent implements OnDestroy, OnInit {
   }
   
     showView(){
-      if (this.id) {
+      if (this.popupParam.id) {
         // let url = this.appUrls.videoInfo(this.id, this.offset);
-         let videoRecUrl = 'api/videos/'+this.id+'/recording';
+         let videoRecUrl = `api/videos/${this.popupParam.id}/recording`;
    
          this.recordingService.getRecordings(videoRecUrl).subscribe(result => {
            console.log(result);
@@ -392,18 +376,15 @@ export class PlayerComponent implements OnDestroy, OnInit {
       return '' + Math.floor(Math.random() * 100000000 );
     }
   
-    displayPlayer(){
-    this.subscription = this.playerService.data$.subscribe(res =>{
-      this.videoModel.push(res);
-    });
-       this.fetchMediaPreparations();
-       this.playVideo();
+    displayPlayer() { 
+      this.fetchMediaPreparations();
+      this.playVideo();
     }
   
    fetchMediaPreparations() {
       this.mediaVtt =[];
       let preparationConfig = {url:''};
-      preparationConfig.url = this.apiUrls.videoPreparations(Number(this.id));
+      preparationConfig.url = this.apiUrls.videoPreparations(Number(this.popupParam.id));
       this.http.get(preparationConfig.url).subscribe((res: any) =>{
         console.log(res);
         if (res !== undefined && res !== null && res.length > 0) {
@@ -413,14 +394,15 @@ export class PlayerComponent implements OnDestroy, OnInit {
     }
   
     playVideo(){
-      let playUrl = 'api/videos/'+this.id+'/original/play';
+      let playUrl = `api/videos/${this.popupParam.id}/original/play`;
       let data = { mgroupid : this.createGroupId() };
       this.playerService.getPlayableDetails(playUrl,data).subscribe((res) =>{
         console.log(res);
-        this.videoPlayModel = res;
-        this.loadedDataTotalDuration(this.videoPlayModel.duration)
-       // this.playingVideo = true;
-        this.videoSource = this.videoPlayModel.mediaUri+'/fmp4?msessid='+this.createGroupId()+'&quality=1&start='+(this.currentTime ? this.currentTime : 0)+'&duration=full&requestId='+this.updateRequestId()+'&suspend=true&maxDimension=621'       
+        this.videoPlayModel = res;        
+        this.videoSource = this.videoPlayModel.mediaUri+'/fmp4?msessid='+this.createGroupId()+'&quality=1&start='+(this.currentTime ? this.currentTime : 0)+'&duration=full&requestId='+this.updateRequestId()+'&suspend=true&maxDimension=621';        
+        this.changeDetectorRef.detectChanges();
+        this.getControls();
+        this.loadedDataTotalDuration(this.videoPlayModel.duration)                  
      });
     }
 
@@ -432,9 +414,9 @@ export class PlayerComponent implements OnDestroy, OnInit {
     }
     
     downloadFile() {
-      this.url = 'api/videos/' + this.id + '/file'
+      this.url = `api/videos/${this.popupParam.id}/file`;
   
-      this.playerService.downloadVideo('api/videos/' + this.id + '/file').subscribe((res) => {
+      this.playerService.downloadVideo(`api/videos/${this.popupParam.id}/file`).subscribe((res) => {
         var vidFile = new Blob([res], { type: 'application/octet-stream;' });
         var vidURL = window.URL.createObjectURL(vidFile);
         console.log(vidURL)
@@ -445,13 +427,31 @@ export class PlayerComponent implements OnDestroy, OnInit {
         this.showProgress = false;
         URL.revokeObjectURL(vidURL);
       })
-  
-  
+    }  
+
+    getControls(): void {
+      this.play_pause = document.querySelector('.play_pause');
+      this.progressAreaTime = document.querySelector('.progressAreaTime');
+      this.controls = document.querySelector('.controls');
+      this.progressArea = document.querySelector('.progress-area');
+      this.progress_Bar = document.querySelector('.progress-bar');
+      this.fast_rewind = document.querySelector('.fast-rewind');
+      this.fast_forward = document.querySelector('.fast-forward');
+      this.volume = document.querySelector('.volume');
+      this.volume_range = document.querySelector('.volume_range');
+      this.current = document.querySelector('.current');
+      this.totalDuration = document.querySelector('.duration');
+      this.auto_play = document.querySelector('.auto-play');
+      this.settingsBtn = document.querySelector('.settingsBtn');
+      this.picture_in_picutre = document.querySelector('.picture_in_picutre');
+      this.fullscreen = document.querySelector('.fullscreen');
+      this.settings = document.querySelector('#settings');
+      this.playback = document.querySelectorAll('.playback li');
     }
+    
     ngOnDestroy() {
       if (this.subscription) {
         this.subscription.unsubscribe();
-      }
     }
+  } 
 }
-
