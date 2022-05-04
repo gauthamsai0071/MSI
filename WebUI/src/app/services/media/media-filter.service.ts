@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import _ from 'lodash';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 import { VideoFilesSubscriptionAdto } from '../../interfaces/adto';
 import { Feedsubscription } from '../../models/feed/feed-subscription';
@@ -24,6 +24,7 @@ public mediaSubscriptions : Feedsubscription;
   private radius : number;
   private location : { lat : number, lng: number};
   advancedFilter : string = '';
+  mediaResutsSubscription: Subscription = null;
   
   constructor(private http: HttpClient,
     private groupManager: MediaGroupManagerService,
@@ -119,9 +120,9 @@ public mediaSubscriptions : Feedsubscription;
     this.mediaSubscriptions = new Feedsubscription(videoSubscribeUrl, this.groupManager,
       (this.apiUrls.videoListSubscribe,() => queryParams),this.http, this.authService);
       
-    this.mediaSubscriptions.dataReceived.subscribe(message => {
-      this.filteredRespone.next(message?.data[2].videoFiles);
-    })
+    this.mediaResutsSubscription = this.mediaSubscriptions.dataReceived.subscribe(message => {
+                                      this.filteredRespone.next(message?.data[2].videoFiles);
+                                    });
   }
 
   fetchMoreMedia(){
@@ -130,5 +131,13 @@ public mediaSubscriptions : Feedsubscription;
 
   private createGroupId() : string {
     return '' + Math.floor(Math.random() * 100000000 );
-  }  
+  }
+  
+  closeSubscription(): void {
+    this.filteredRespone.complete();
+
+    if (this.mediaResutsSubscription !== null) {
+      this.mediaResutsSubscription.unsubscribe();
+    }
+  }
 }

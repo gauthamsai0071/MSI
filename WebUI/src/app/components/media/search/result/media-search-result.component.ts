@@ -168,7 +168,8 @@ export class MediaSearchResultComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.subscription !=null) {
-      this.subscription.cancel();
+      this.mediaFilterService.closeSubscription();
+      this.subscription.cancel();      
       this.filteredMedia.unsubscribe();
     }
   }

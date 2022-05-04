@@ -133,8 +133,6 @@ export class FeedManager {
     }
 
     public cancelSubscription(subscriptionId: number) {
-        this.feedSocket.shutdown();
-
         if (this.dataSubscription != null) {
             this.dataSubscription.unsubscribe();
         }
@@ -143,6 +141,7 @@ export class FeedManager {
             this.errorSubscription.unsubscribe();
         }
 
+        this.feedSocket.shutdown();
         this.dataReceived.complete();
     }
 
@@ -164,6 +163,7 @@ export class FeedManager {
             this.errorSubscription.unsubscribe();
         }
 
+        this.feedSocket.shutdown();
         this.dataReceived.complete();
     }
 
