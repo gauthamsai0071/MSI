@@ -45,8 +45,10 @@ export class Feedsubscription {
         if (this.cancelled) {
             throw "Cancelled subscription cannot be amended";
         }
-
         this.amendments.push({ url: url, data: data });
+        if(this.newId){
+            this.idChanged();
+        }
         this.initiateNextAmendment();
     }
 
@@ -92,7 +94,10 @@ export class Feedsubscription {
         this.feed.startedSending();
         this.authService.getSubscribeId(this.url, data).subscribe((res) => {
             console.log(res);
-            this.feed.finishedSending()
+            if ( feedId === this.feed.feedId && res ){
+                this.gotSubscriptionId(res.subscriptionId);
+            }
+            this.feed.finishedSending();
         });
     }
 
@@ -191,14 +196,14 @@ export class Feedsubscription {
                     if (this.feed.feedId === feedId && res)
                         this.gotSubscriptionId(res.subscriptionId)
                     console.log(res);
-                    this.feed.finishedSending()
                 },
                 // Errors will call this callback instead:
                 err => {
                     console.log('Something went wrong!');
                 }
 
-            );          
+            );
+            this.feed.finishedSending();          
         }
     }
 }

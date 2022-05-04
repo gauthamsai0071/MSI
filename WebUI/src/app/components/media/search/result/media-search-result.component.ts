@@ -26,6 +26,7 @@ export class MediaSearchResultComponent implements OnInit, OnDestroy {
     searchFields: CustomField[],
   }) {
     if (inputValue) {
+      this.rows = [];
       this.mediaFilterService.buildSearchParams(inputValue.filterCriteria, inputValue.calendarFields, inputValue.checkBoxFields, inputValue.searchFields);
     }
   }
@@ -112,7 +113,7 @@ export class MediaSearchResultComponent implements OnInit, OnDestroy {
           field = mediaFile.customFields.find(item => toLower(item.name) == toLower("talkgroupName"));
           mediaFile.talkgroupName = field !== undefined ? field.value?.text : '';
         })
-        this.rows = result;
+        this.rows = this.rows.concat(result);
       }
     });
   }
@@ -166,8 +167,10 @@ export class MediaSearchResultComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
-  onScrolledToBottom(event: any) {
-    console.log('scrolled to bottom row:', event);
+  onScrolledToBottom() {
+     if(this.rows.length > 0){
+      this.mediaFilterService.fetchMoreMedia();
+     }
   }
 
   ngOnDestroy(): void {

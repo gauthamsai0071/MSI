@@ -17,7 +17,7 @@
         </div>
     </div>
     <table class="msiDatatable" msi-data-table #table [rows]="rows" style="width: 100%;" [condensed]="false"
-        [sticky]="true" [pinning]="false" [selection]="true" [horizontalScrollbar]="true"     (scrolledToBottom)="onScrolledToBottom($event)" [virtualScroll]="true">
+        [sticky]="true" [pinning]="false" [selection]="true" [horizontalScrollbar]="true"     (scrolledToBottom)="onScrolledToBottom()" [virtualScroll]="true">
         <ng-container class="search-results">
             <ng-container msiColDef colType="action" colLock="left" [width]="50" [fixedWidth]="true"
                 *ngIf="table.selection">

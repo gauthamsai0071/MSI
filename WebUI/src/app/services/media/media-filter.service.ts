@@ -13,7 +13,7 @@ import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class MediaFilterService {
-public mediaSubscriptions : Feedsubscription;
+  public mediaSubscriptions : Feedsubscription;
   private filteredRespone = new Subject<any>();
   filteredRespone$ = this.filteredRespone.asObservable().pipe(
     shareReplay(1)
@@ -25,6 +25,7 @@ public mediaSubscriptions : Feedsubscription;
   private location : { lat : number, lng: number};
   advancedFilter : string = '';
   mediaResutsSubscription: Subscription = null;
+  private isMoreMediaAvailable : boolean = false;
   
   constructor(private http: HttpClient,
     private groupManager: MediaGroupManagerService,
@@ -121,12 +122,19 @@ public mediaSubscriptions : Feedsubscription;
       (this.apiUrls.videoListSubscribe,() => queryParams),this.http, this.authService);
       
     this.mediaResutsSubscription = this.mediaSubscriptions.dataReceived.subscribe(message => {
-                                      this.filteredRespone.next(message?.data[2].videoFiles);
+                                      if(message.data[message.id]?.moreVideoFilesAvailable == true){
+                                        this.isMoreMediaAvailable = true;
+                                      }else{
+                                        this.isMoreMediaAvailable = false;
+                                      }
+                                      this.filteredRespone.next(message?.data[message.id]?.videoFiles);
                                     });
   }
 
   fetchMoreMedia(){
-    this.mediaSubscriptions.amend(this.apiUrls.videoListFetchMore, { limit: 15 });
+    if(this.isMoreMediaAvailable){
+      this.mediaSubscriptions.amend(this.apiUrls.videoListFetchMore, { limit: 50 });
+    }
   }
 
   private createGroupId() : string {
