@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { DateTimeRange } from "@msi/cobalt";
+import { DateTimeRange, ToastService } from "@msi/cobalt";
 import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
 import { IDropdownSettings } from "ng-multiselect-dropdown";
+import { MediaFile } from "../../../models/media/mediaFile";
 import { CustomField } from "../../../models/common/custom-field";
 import { Incident } from "../../../models/incident/incident";
 import { CommonService } from "../../../services/common/common.service";
@@ -26,6 +27,8 @@ export class ManageIncidentComponent implements OnInit {
     submitted = false;
     formResetting: boolean = true;
     customFields: CustomField[] = [];
+    clips: Incident["clips"] = [];
+    recordings: Incident["recordings"] = [];
     calendarDateTimeDefaultValue: DateTimeRange;
     calendarDateTimeFields = new Map();
     multiSelectFields = new Map();
@@ -34,18 +37,33 @@ export class ManageIncidentComponent implements OnInit {
     view: boolean = false;
     version: number;
     signature: string;
+    nClips : number;
     selectedItems = [];
     selectedCheckboxItems = [];
 
     constructor(
         private incidentService: IncidentService,
+        private toastService: ToastService,
         private commonService: CommonService) {
     }
 
     ngOnInit(): void {
+        let videoIds = '';
+        if (this.popupParam.rows.length > 0) {
+            videoIds += '&';
+            _.each(this.popupParam.rows, (media : MediaFile) => {
+                videoIds += 'videoId=' + media.id + '&';
+            })
+            videoIds += 'wholeRecording=false&sameOperatorFootage=false';
+        }
+
         let mGroupId = this.commonService.createGroupId();
-        this.incidentService.getTemplate(mGroupId, '').subscribe((incident: Incident) => {
+        this.incidentService.getTemplate(mGroupId, videoIds).subscribe((incident: Incident) => {
             this.customFields = incident.customFields;
+            this.clips = incident.clips;
+            this.recordings = incident.recordings;
+            this.nClips = incident.nClips;
+
             this.buildIncidentForm();
 
             if (this.popupParam.id > 0) {
@@ -66,6 +84,9 @@ export class ManageIncidentComponent implements OnInit {
         this.incidentService.getIncident(this.popupParam.id).subscribe((incident: Incident) => {
             this.version = incident.version;
             this.signature = incident.signature;
+            this.clips = incident.clips;
+            this.recordings = incident.recordings;
+            this.nClips = incident.nClips;
 
             _.each(incident.customFields, field => {
                 if (field.isTimestamp) {
@@ -204,11 +225,18 @@ export class ManageIncidentComponent implements OnInit {
 
         let incident = new Incident();
         incident.allCustomFields = this.customFields;
+        incident.allClips = this.clips;
+        incident.allRecordings = this.recordings;
+        incident.nClips = this.nClips;
+
         let mGroupId = this.commonService.createGroupId();
 
         if (this.popupParam.id === 0) {
             this.incidentService.createIncident(mGroupId, incident).subscribe((incident: Incident) => {
                 this.incidentService.deleteMediaGroup(mGroupId).subscribe();
+                if (this.popupParam.rows.length > 0) {
+                    this.toastService.success(this.popupParam.rows.length + " media(s)  added to new incident successfully.", undefined, { autoDismiss: 5000, closeButton: true });
+                }
                 this.close();
             });
         }

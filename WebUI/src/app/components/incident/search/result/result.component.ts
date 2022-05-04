@@ -4,7 +4,6 @@ import moment from 'moment';
 import { Incident } from '../../../../models/incident/incident';
 import { DialogService } from '../../../../services/common/dialog.service';
 import { IncidentSearchService } from '../../../../services/incident/search.service';
-import { IncidentService } from '../../../../services/incident/incident.service';
 import { ExportIncidentComponent } from '../../export/export-incident.component';
 import { ManageIncidentComponent } from '../../manage/manage-incident.component';
 
@@ -16,7 +15,7 @@ import { ManageIncidentComponent } from '../../manage/manage-incident.component'
 export class IncidentSearchResultComponent {
 
   @Input()
-  popupParam: { mode: string, id: number };
+  popupParam: { mode: string, id: number, rows: [] };
 
   @Output()
   popupResult: EventEmitter<any>;
@@ -54,14 +53,13 @@ export class IncidentSearchResultComponent {
   results: Incident[] = [];
 
   constructor(private incidentSearchService: IncidentSearchService,
-    private incidentService: IncidentService,
     private dialogService: DialogService) {
   }
 
   manageIncident(mode: string, id?: number): void {
     const componentName = (mode === 'export') ? ExportIncidentComponent : (mode === 'delete') ? IncidentSearchResultComponent : ManageIncidentComponent;
     const title = mode.charAt(0).toUpperCase() + mode.slice(1);
-    this.dialogService.showDialog(title + ' Incident', componentName, id, { mode: mode, id: id })
+    this.dialogService.showDialog(title + ' Incident', componentName, id, { mode: mode, id: id, rows: [] })
       .subscribe(result => {
         this.filterCriteria = {
           owner: this._filterCriteria.owner,
@@ -78,7 +76,9 @@ export class IncidentSearchResultComponent {
 
   close(): void {
     if (!this.popupResult.isStopped && this.popupResult.observers !== null) {
-      this.popupResult.emit();
+      this.popupResult.emit({
+        filterCriteria: this._filterCriteria
+      });
     }
   }
 

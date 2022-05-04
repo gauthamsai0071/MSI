@@ -1,4 +1,4 @@
-<div class="incident-search-result-wrapper" *ngIf="popupParam === undefined else deleteBlock">
+<div class="incident-search-result-wrapper" *ngIf="popupParam === undefined else elseBlock">
     <div>
         <div class="list-view-label-wrapper">
             <msi-icon name="ic_data_table" class="ic-data-table"></msi-icon>
@@ -50,9 +50,9 @@
         </ng-container>
         <ng-container msiColDef="text" [width]="47" [fixedWidth]="true" [sortable]="false">
             <ng-container *msiCellDef="let row">
-                <msi-icon (click)="manageIncident('view',row.id)" name="ic_visibility_on"
-                class="ic_visibility_on" title="View Incident">
-            </msi-icon>
+                <msi-icon (click)="manageIncident('view',row.id)" name="ic_visibility_on" class="ic_visibility_on"
+                    title="View Incident">
+                </msi-icon>
             </ng-container>
         </ng-container>
         <ng-container msiColDef="text" [width]="45" [fixedWidth]="true" [sortable]="false">
@@ -71,6 +71,11 @@
         </ng-container>
     </table>
 </div>
+<ng-template #elseBlock>
+    <div class="incident-search-result-wrapper" *ngIf="popupParam.mode === 'existing' else deleteBlock">here</div>
+</ng-template>
+
 <ng-template #deleteBlock>
-    <app-confirmation-dialog [type]="'incident'" [message]="'Are you sure that you want to delete this incident?'" [id]="popupParam.id"></app-confirmation-dialog>
+    <app-confirmation-dialog [type]="'incident'" [message]="'Are you sure that you want to delete this incident?'"
+        [id]="popupParam.id"></app-confirmation-dialog>
 </ng-template>

@@ -2,12 +2,14 @@
     <div class="list-view-label-wrapper">
         <msi-icon name="ic_data_table" class="ic-data-table"></msi-icon>
         <p class="list-view-label">List View</p>
-        <div class="list-top-actions">
+        <div class="list-top-actions" *ngIf="table.selectedRows.length > 0">
             <img src="../../../../../assets/applications/ic_incident_add.svg" height="22px" width="22px"
-                [msiDropdownTriggerFor]="basicDropdown" />
+                [msiDropdownTriggerFor]="basicDropdown" [attr.openOnHover]="true" />
             <msi-dropdown #basicDropdown>
-                <msi-dropdown-item>Add to new Incident</msi-dropdown-item>
-                <msi-dropdown-item>Add to existing incident</msi-dropdown-item>
+                <msi-dropdown-item (click)="addMediaToIncident('create',table.selectedRows)">Add to new Incident
+                </msi-dropdown-item>
+                <msi-dropdown-item>Add to existing incident
+                </msi-dropdown-item>
             </msi-dropdown>
             <msi-icon name="ic_share_manager" class="ic-data-table" title="Share"></msi-icon>
             <msi-icon name="ic_download" class="ic-data-table" title="Download"></msi-icon>
