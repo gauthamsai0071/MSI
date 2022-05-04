@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import _ from 'lodash';
+import _, { toLower } from 'lodash';
 import { Subject, Subscription } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 import { VideoFilesSubscriptionAdto } from '../../interfaces/adto';
@@ -88,8 +88,17 @@ export class MediaFilterService {
               this.queryParams.push({id : cf.id,value :  value})
             }
           }
+        }else if(toLower(cf.name) == 'mimetype' && (!value)){
+            if(advanceQuery.length > 1){
+              advanceQuery = advanceQuery + " AND ";
+            }
+            advanceQuery = advanceQuery + cf.name + " != '" + "Non-Call Event'";
+            this.advancedFilter = advanceQuery;
         }
     })
+    if(filterCriteria == null){
+      this.advancedFilter = "mimeType != 'Non-Call Event'";
+    }
     this.getLocationData(filterCriteria);
     this.viewSubscription();
   }
