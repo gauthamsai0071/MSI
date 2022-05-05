@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input} from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { IncidentService } from '../../../../../services/incident/incident.service';
 import { SavedFilter, IncidentFilter, SaveNewFilter } from '../../../../../../app/models/incident/savedFilter';
 
@@ -10,19 +10,17 @@ import { SavedFilter, IncidentFilter, SaveNewFilter } from '../../../../../../ap
 })
 export class IncidentSavedFiltersComponent implements OnInit {
   @Input()
-  set newFilter(value ){
-    if(value){
-      console.log(value);
-      this.incidentService.saveIncident(value).subscribe( result =>{
-        console.log(result);
+  set newFilter(value) {
+    if (value) {
+      this.incidentService.saveIncident(value).subscribe(result => {
       });
     }
   }
   @Output()
   clickedSavedFilter: EventEmitter<IncidentFilter>;
-  savedIncidentFilters : SavedFilter[] = [];
-  saveNewfilter : SaveNewFilter;
-  constructor(private incidentService : IncidentService) {
+  savedIncidentFilters: SavedFilter[] = [];
+  saveNewfilter: SaveNewFilter;
+  constructor(private incidentService: IncidentService) {
     this.clickedSavedFilter = new EventEmitter();
     this.saveNewfilter = new SaveNewFilter();
   }
@@ -30,14 +28,14 @@ export class IncidentSavedFiltersComponent implements OnInit {
   ngOnInit(): void {
     this.getSavedIncidentFilters();
   }
-  onSavedSearchClick(filter){
+  onSavedSearchClick(filter) {
     this.clickedSavedFilter.emit(filter.filter);
   }
-  onDeleteButtonClick(name){
-  
+  onDeleteButtonClick(name) {
+
   }
-  getSavedIncidentFilters(){
-    this.incidentService.getSavedIncidents().subscribe((result : SavedFilter[])  => {
+  getSavedIncidentFilters() {
+    this.incidentService.getSavedIncidents().subscribe((result: SavedFilter[]) => {
       this.savedIncidentFilters = result;
     })
   }

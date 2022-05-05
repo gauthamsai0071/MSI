@@ -6,6 +6,7 @@ import { CommonService } from "../../../../services/common/common.service";
 import { ExportIncidentComponent } from "../export-incident.component";
 
 @Component({
+    selector: 'app-incident-export-result',
     templateUrl: './export-list.component.html',
     styleUrls: ['./export-list.component.scss']
 })

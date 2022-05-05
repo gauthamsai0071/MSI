@@ -84,6 +84,7 @@ export class ExportIncidentComponent implements OnInit {
 
         this.incidentService.createExport(this.popupParam.id, form.value).subscribe((response: ExportProfile) => {
             this.incidentService.deleteMediaGroup(this.mGroupId).subscribe();
+            this.toastService.success("Incident exported successfully.", undefined, { autoDismiss: 5000, closeButton: true });
             this.close();
         }, (error) => {
             if (error.status === 400 && error.error.errorKey === 'errorExportingIncidentNoClipsFound') {

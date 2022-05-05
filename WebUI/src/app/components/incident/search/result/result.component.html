@@ -25,19 +25,19 @@
         </ng-container>
         <ng-container msiColDef="text" [width]="200" [fixedWidth]="true">
             <ng-container *msiHeaderCellDef>
-                <div msiTooltip="Left" position="left">Reference Code</div>
+                <div position="left">Reference Code</div>
             </ng-container>
             <ng-container *msiCellDef="let row">{{row.referenceCode}}</ng-container>
         </ng-container>
         <ng-container msiColDef="text" [width]="300" [fixedWidth]="true">
             <ng-container *msiHeaderCellDef>
-                <div msiTooltip="Left" position="left">Title</div>
+                <div position="left">Title</div>
             </ng-container>
             <ng-container *msiCellDef="let row">{{row.title}}</ng-container>
         </ng-container>
         <ng-container msiColDef="text" [width]="210" [fixedWidth]="true">
             <ng-container *msiHeaderCellDef>
-                <div msiTooltip="Left" position="left">Incident Time</div>
+                <div position="left">Incident Time</div>
             </ng-container>
             <ng-container *msiCellDef="let row"> {{row.incidentTime | date:'dd/MM/YYYY HH:mm'}} </ng-container>
         </ng-container>
@@ -74,7 +74,6 @@
 <ng-template #elseBlock>
     <div class="incident-search-result-wrapper" *ngIf="popupParam.mode === 'existing' else deleteBlock">here</div>
 </ng-template>
-
 <ng-template #deleteBlock>
     <app-confirmation-dialog [type]="'incident'" [message]="'Are you sure that you want to delete this incident?'"
         [id]="popupParam.id"></app-confirmation-dialog>

@@ -37,7 +37,7 @@ export class ManageIncidentComponent implements OnInit {
     view: boolean = false;
     version: number;
     signature: string;
-    nClips : number;
+    nClips: number;
     selectedItems = [];
     selectedCheckboxItems = [];
 
@@ -51,7 +51,7 @@ export class ManageIncidentComponent implements OnInit {
         let videoIds = '';
         if (this.popupParam.rows.length > 0) {
             videoIds += '&';
-            _.each(this.popupParam.rows, (media : MediaFile) => {
+            _.each(this.popupParam.rows, (media: MediaFile) => {
                 videoIds += 'videoId=' + media.id + '&';
             })
             videoIds += 'wholeRecording=false&sameOperatorFootage=false';
@@ -237,6 +237,9 @@ export class ManageIncidentComponent implements OnInit {
                 if (this.popupParam.rows.length > 0) {
                     this.toastService.success(this.popupParam.rows.length + " media(s)  added to new incident successfully.", undefined, { autoDismiss: 5000, closeButton: true });
                 }
+                else {
+                    this.toastService.success("Incident created successfully.", undefined, { autoDismiss: 5000, closeButton: true });
+                }
                 this.close();
             });
         }
@@ -246,6 +249,7 @@ export class ManageIncidentComponent implements OnInit {
             incident.version = this.version;
 
             this.incidentService.updateIncident(this.popupParam.id, mGroupId, incident).subscribe((incident: Incident) => {
+                this.toastService.success("Incident updated successfully.", undefined, { autoDismiss: 5000, closeButton: true });
                 this.close()
             });
         }
@@ -263,5 +267,22 @@ export class ManageIncidentComponent implements OnInit {
 
     manageIncident(mode: string, id?: number): void {
         this.popupParam.mode = 'edit';
+    }
+
+    formatDuration(sec) {
+        let duration = '';
+        let hours = Math.floor(sec / 3600); // get hours
+        let minutes = Math.floor((sec - (hours * 3600)) / 60); // get minutes
+        let seconds = Math.floor(sec - (hours * 3600) - (minutes * 60)); //  get seconds
+        if (hours > 0) {
+            duration += hours + 'h ';
+        }
+        if (minutes > 0) {
+            duration += minutes + 'm ';
+        }
+        if (seconds > 0) {
+            duration += seconds + 's';
+        }
+        return duration;
     }
 }

@@ -131,8 +131,47 @@
             <button type="submit" class="msi-btn form-button" title="Submit">Submit</button>
         </div>
         <div *ngIf="popupParam.mode === 'view'" class="actions">
-            <button type="button" (click)="manageIncident('edit',popupParam.id)"
-                class="msi-btn form-button" title="Edit">Edit</button>
+            <button type="button" (click)="manageIncident('edit',popupParam.id)" class="msi-btn form-button"
+                title="Edit">Edit</button>
         </div>
     </form>
+</div>
+<br />
+<div *ngIf="clips.length > 0">
+    <h6>Incident clips</h6>
+    <table class="msiDatatable" msi-data-table #table [rows]="clips"
+        style="width: 100%; min-width: 365px; flex: 1 1; display: block; min-height:200px;" [condensed]="false"
+        [pinning]="false" [selection]="true" [virtualScroll]="true">
+        <ng-container msiColDef="text" [width]="80" [fixedWidth]="true" [sortable]="false">
+            <ng-container *msiHeaderCellDef>
+                <div position="left">Image</div>
+            </ng-container>
+            <ng-container *msiCellDef="let row"><img src="{{row.thumbnail.uri}}" width="50" height="50" />
+            </ng-container>
+        </ng-container>
+        <ng-container msiColDef="text" [width]="150" [fixedWidth]="true">
+            <ng-container *msiHeaderCellDef>
+                <div position="left">Date</div>
+            </ng-container>
+            <ng-container *msiCellDef="let row">{{row.startTime | date:'dd/MM/YYYY HH:mm' }}</ng-container>
+        </ng-container>
+        <ng-container msiColDef="text" [width]="100" [fixedWidth]="true">
+            <ng-container *msiHeaderCellDef>
+                <div position="left">Operator</div>
+            </ng-container>
+            <ng-container *msiCellDef="let row">{{row.operator.name}}</ng-container>
+        </ng-container>
+        <ng-container msiColDef="text" [width]="100" [fixedWidth]="true">
+            <ng-container *msiHeaderCellDef>
+                <div position="left">Source</div>
+            </ng-container>
+            <ng-container *msiCellDef="let row">{{row.deviceName}}</ng-container>
+        </ng-container>
+        <ng-container msiColDef="text" [width]="100" [fixedWidth]="true">
+            <ng-container *msiHeaderCellDef>
+                <div position="left">Duration</div>
+            </ng-container>
+            <ng-container *msiCellDef="let row">{{ formatDuration(row.visibleDurationSeconds) }}</ng-container>
+        </ng-container>
+    </table>
 </div>

@@ -54,12 +54,17 @@
 .list-top-actions {
     text-align: right;
     left      : 800px;
-    position: relative;
+    position  : relative;
+    cursor    : pointer;
+}
+
+.msi-icon,
+img {
     cursor: pointer;
 }
 
-.msi-icon, img {
-    cursor: pointer;
+.ic_remove {
+    color: red;
 }
 
 .deleteConfirmation {

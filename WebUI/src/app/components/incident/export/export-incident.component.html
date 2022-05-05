@@ -1,4 +1,4 @@
-<div class="form-wrapper exportIncident"   *ngIf="popupParam.mode !== 'view' else exportView">
+<div class="exportIncident"   *ngIf="popupParam.mode !== 'view' else exportView">
     <form [formGroup]="exportForm" (ngSubmit)="onSubmit()">
         <div class="form-group">
             <label class="msi-label" for="description">

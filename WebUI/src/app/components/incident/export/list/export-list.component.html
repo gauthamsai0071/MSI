@@ -6,50 +6,50 @@
             [condensed]="false" [pinning]="false" [selection]="true" [virtualScroll]="true">
             <ng-container msiColDef="text" [width]="100" [fixedWidth]="true">
                 <ng-container *msiHeaderCellDef>
-                    <div msiTooltip="Left" position="left">Status</div>
+                    <div position="left">Status</div>
                 </ng-container>
                 <ng-container *msiCellDef="let row">Ready</ng-container>
             </ng-container>
             <ng-container msiColDef="text" [width]="100" [fixedWidth]="true">
                 <ng-container *msiHeaderCellDef>
-                    <div msiTooltip="Left" position="left">Job</div>
+                    <div position="left">Job</div>
                 </ng-container>
                 <ng-container *msiCellDef="let row">{{ row.signature }}</ng-container>
             </ng-container>
             <ng-container msiColDef="text" [width]="150" [fixedWidth]="true">
                 <ng-container *msiHeaderCellDef>
-                    <div msiTooltip="Left" position="left">Created</div>
+                    <div position="left">Created</div>
                 </ng-container>
                 <ng-container *msiCellDef="let row">{{ row.creationTime | date:'dd/MM/YYYY HH:mm' }}</ng-container>
             </ng-container>
             <ng-container msiColDef="text" [width]="150" [fixedWidth]="true">
                 <ng-container *msiHeaderCellDef>
-                    <div msiTooltip="Left" position="left">Profile name</div>
+                    <div position="left">Profile name</div>
                 </ng-container>
                 <ng-container *msiCellDef="let row">{{ row.exportProfile.name}}</ng-container>
             </ng-container>
             <ng-container msiColDef="text" [width]="200" [fixedWidth]="true">
                 <ng-container *msiHeaderCellDef>
-                    <div msiTooltip="Left" position="left">Description</div>
+                    <div position="left">Description</div>
                 </ng-container>
                 <ng-container *msiCellDef="let row">{{ row.description }}</ng-container>
             </ng-container>
-            <ng-container msiColDef="text" [width]="50" [fixedWidth]="true">
+            <ng-container msiColDef="text" [width]="50" [fixedWidth]="true" [sortable]="false">
                 <ng-container *msiCellDef="let row">
                     <msi-icon (click)="manageExport('download',row)" name="ic_download" class="ic_download"
                         title="Download Export"></msi-icon>
                 </ng-container>
             </ng-container>
-            <ng-container msiColDef="text" [width]="50" [fixedWidth]="true">
+            <ng-container msiColDef="text" [width]="50" [fixedWidth]="true" [sortable]="false">
                 <ng-container *msiCellDef="let row">
                     <msi-icon (click)="manageExport('delete',row)" name="ic_remove" class="ic_remove"
                         title="Delete Export">
                     </msi-icon>
                 </ng-container>
             </ng-container>
-            <ng-container msiColDef="text" [width]="50" [fixedWidth]="true">
+            <ng-container msiColDef="text" [width]="50" [fixedWidth]="true" [sortable]="false">
                 <ng-container *msiCellDef="let row">
-                    <msi-icon (click)="manageExport('view', row)" name="ic_arrow_right" class="ic_remove"
+                    <msi-icon (click)="manageExport('view', row)" name="ic_visibility_on" class="ic_visibility_on"
                         title="View Export"></msi-icon>
                 </ng-container>
             </ng-container>
