@@ -81,18 +81,17 @@
                 <div class="label-wrap">
                     <span class="filter-label-first">Owner</span>
                 </div>
-                <span class="owner-wrapper">
+                    <msi-input-group class="owner-input-wrapper">
                     <input 
                         type = "text" 
                         formControlName="owner"
                         [msiAutocomplete]="ownerAutoComplete" 
                         [activateNumber]="1"
-                        class="form-input msi-input"
+                        class="owner-input form-input msi-input"
+                        msiInput
                     >
-                    <button type="button" (click)="setCurrentOwner()">
-                        <msi-icon name="ic_contacts_people"></msi-icon>
-                    </button>
-                </span>
+                    <msi-icon msiInputSuffix class="ic_contacts_people" (click)="setCurrentOwner()" name="ic_contacts_people"></msi-icon>
+                </msi-input-group>
                 <msi-autocomplete #ownerAutoComplete>
                     <msi-autocomplete-option
                       *ngFor="let option of filteredOwners | async"

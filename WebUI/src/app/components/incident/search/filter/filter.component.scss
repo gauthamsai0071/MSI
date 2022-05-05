@@ -31,9 +31,15 @@
 .checkbox-position{
     position: relative;
 }
-.owner-wrapper{
-    display: flex;
-    align-items: center;
+::ng-deep .owner-input-wrapper > .msi-input-group{
+    width: -webkit-fill-available;
+}
+.owner-input{
+    width: inherit !important;
+}
+.ic_contacts_people{
+    width: 22px !important;
+    height: 21px !important;
 }
 .btn-inner-section{
     display: flex;
