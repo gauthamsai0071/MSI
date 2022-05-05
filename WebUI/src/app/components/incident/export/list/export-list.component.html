@@ -1,7 +1,12 @@
 <div *ngIf="popupParam === undefined else deleteBlock">
-    <app-header></app-header>
     <div class="incident-search-result-wrapper">
-        <table class="msiDatatable" msi-data-table [rows]="results"
+        <div>
+            <div class="list-view-label-wrapper">
+                <msi-icon name="ic_data_table" class="ic-data-table"></msi-icon>
+                <p class="list-view-label">List View</p>
+            </div>
+        </div>
+        <table *ngIf="results.length > 0" class="msiDatatable" msi-data-table #table [rows]="results"
             style="width: 100%; min-width: 365px; flex: 1 1; display: block;height:calc(100vh - 180px);"
             [condensed]="false" [pinning]="false" [selection]="true" [virtualScroll]="true">
             <ng-container msiColDef="text" [width]="100" [fixedWidth]="true">
@@ -57,5 +62,6 @@
     </div>
 </div>
 <ng-template #deleteBlock>
-    <app-confirmation-dialog [type]="'export'" [message]="'Are you sure that you want to delete this export?'" [id]="popupParam.id"></app-confirmation-dialog>
+    <app-confirmation-dialog [type]="'export'" [message]="'Are you sure that you want to delete this export?'"
+        [id]="popupParam.id"></app-confirmation-dialog>
 </ng-template>

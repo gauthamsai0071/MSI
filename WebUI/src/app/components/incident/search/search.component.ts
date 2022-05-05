@@ -7,12 +7,15 @@ import { IncidentFilter, SaveNewFilter } from '../../../models/incident/savedFil
   styleUrls: ['./search.component.scss']
 })
 export class IncidentSearchComponent {
-  filterCriteria: { owner: string, text: string, showCurrent: boolean, showDeleted: boolean,
-                    showShared: boolean, showExternal: boolean, showActiveExternal: boolean,
-                    searchFilters: {[key: string]: string} } = null;
+  filterCriteria: {
+    owner: string, text: string, showCurrent: boolean, showDeleted: boolean,
+    showShared: boolean, showExternal: boolean, showActiveExternal: boolean,
+    searchFilters: { [key: string]: string }
+  } = null;
 
-  clickedSavedFilterCriteria : IncidentFilter = null;
-  newFilter : SaveNewFilter = null;
+  clickedSavedFilterCriteria: IncidentFilter = null;
+  newFilter: SaveNewFilter = null;
+  myExports: boolean = false;
   constructor(private router: Router) { }
 
   navigateTab(url: string): void {
@@ -23,17 +26,28 @@ export class IncidentSearchComponent {
     const x = event;
   }
 
-  searchIncidents(criteria: { owner: string, text: string, showCurrent: boolean, showDeleted: boolean,
+  searchIncidents(criteria: {
+    owner: string, text: string, showCurrent: boolean, showDeleted: boolean,
     showShared: boolean, showExternal: boolean, showActiveExternal: boolean,
-    searchFilters: {[key: string]: string}}) {
+    searchFilters: { [key: string]: string }
+  }) {
     this.filterCriteria = criteria;
   }
 
-  clickedSavedFilter(filter : IncidentFilter){
+  clickedSavedFilter(filter: IncidentFilter) {
     this.clickedSavedFilterCriteria = filter;
   }
 
-  saveNewFilter(filter :SaveNewFilter ){
+  saveNewFilter(filter: SaveNewFilter) {
     this.newFilter = filter;
+  }
+
+  exportResults($event) {
+    if ($event.target.className.includes("msi-tab-label-2 active")) {
+      this.myExports = true;
+    }
+    else {
+      this.myExports = false;
+    }
   }
 }

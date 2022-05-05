@@ -7,7 +7,7 @@
                 name="ic_add" class="ic_add list-top-actions" title="Create Incident" />
         </div>
     </div>
-    <table class="msiDatatable" msi-data-table #table [rows]="results"
+    <table *ngIf="results.length > 0" class="msiDatatable" msi-data-table #table [rows]="results"
         style="width: 100%; min-width: 365px; flex: 1 1; display: block;height:calc(100vh - 180px);" [condensed]="false"
         [pinning]="false" [selection]="true" [virtualScroll]="true">
         <ng-container msiColDef colType="action" colLock="left" [width]="50" [fixedWidth]="true"
