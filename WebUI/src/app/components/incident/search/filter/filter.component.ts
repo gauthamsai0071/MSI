@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { DateTimeRange, ModalService, MsiModalRef } from '@msi/cobalt';
+import { DateTimeRange } from '@msi/cobalt';
 import { IncidentSearchService } from '../../../../services/incident/search.service';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { CustomField } from '../../../../models/common/custom-field';
@@ -9,17 +9,18 @@ import { AuthService } from '../../../../services/auth/auth.service';
 import { User } from '../../../../models/common/user';
 import _ from 'lodash';
 import { Incident } from '../../../../models/incident/incident';
-import { IncidentFilter, SaveNewFilter } from '../../../../models/incident/savedFilter';
+import { IncidentFilter, SavedFilter } from '../../../../models/incident/savedFilter';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { startWith,map } from 'rxjs/operators';
+import { DialogService } from '../../../../services/common/dialog.service';
+import { SaveFilterComponent } from './save-filter/save-filter.component';
 
 @Component({
   selector: 'app-incident-filter',
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss']
 })
-export class IncidentFilterComponent implements OnInit {
-    @ViewChild('confirmationModalTemplate', {static: true}) confirmationModalTemplate:TemplateRef<any>;  
+export class IncidentFilterComponent implements OnInit { 
     @Input()
     set clickedSavedFilterCriteria(value : IncidentFilter){
         if(value){
@@ -50,14 +51,13 @@ export class IncidentFilterComponent implements OnInit {
             this.filterCriteria.controls['showExternal'].setValue(value.onlyExternalLinks);
             this.filterCriteria.controls['showActiveExternal'].setValue(value.onlyActiveExternalLinks);
         }
-      
     }
     @Output()
     searchIncidents: EventEmitter<{owner: string, text: string, showCurrent: boolean, showDeleted: boolean,
                             showShared: boolean, showExternal: boolean, showActiveExternal: boolean,
                             searchFilters: {[key: string]: string}}>;
     @Output()
-    saveFilter : EventEmitter<SaveNewFilter>;
+    saveFilter : EventEmitter<SavedFilter>;
 
     filterCriteria : FormGroup = null;
     searchFields: CustomField[] = [];
@@ -69,17 +69,13 @@ export class IncidentFilterComponent implements OnInit {
     incidents: Incident[] = [];
     calendarFields = new Map();
     checkBoxFields = new Map();
-    saveNewFilter : SaveNewFilter;
-    saveSearchName : string = '';
-    saveSearchCategory : string = '';
-    private confirmationModal: MsiModalRef;
+
     constructor(private formBuilder: FormBuilder,
                 private authService: AuthService,
                 private incidentSearchService: IncidentSearchService,
-                private modalService: ModalService,) {
+                private dialogService: DialogService) {
         this.searchIncidents = new EventEmitter();
         this.saveFilter = new EventEmitter();
-        this.saveNewFilter = new SaveNewFilter();
     }
 
     ngOnInit(): void {
@@ -111,7 +107,7 @@ export class IncidentFilterComponent implements OnInit {
         return this.owners.filter((opt) =>
           opt.name.toLowerCase().includes(filterValue.toLowerCase()),
         );
-      }
+    }
 
     search(): void {
         const searchFilters: {[key: number]: string} = {};
@@ -155,14 +151,17 @@ export class IncidentFilterComponent implements OnInit {
             this.filterCriteria.addControl(field.name, new FormControl());
         });  
     }
+
     updateSelectedDate(dateTimeRange: DateTimeRange,  calendarFieldId){
         let value = dateTimeRange.startMoment().format("X")+"000" + "-" + dateTimeRange.endMoment().format("X")+"000"; 
         this.calendarFields.set(calendarFieldId, value);
     }
+
     clearfilters(){
        // this.filterCriteria.get('showCurrent').setValue(true);
     }
-    onCheckboxClick(event:any, value, name,  id){
+
+    onCheckboxClick(event, value, name,  id){
         if(event){
             if(!this.checkBoxFields.has(name)){
                 let valueArr = new Array();
@@ -175,35 +174,21 @@ export class IncidentFilterComponent implements OnInit {
             this.checkBoxFields?.get(name)?.splice(index, 1);
         }
     } 
+
     openSaveSearchPopUp() {
-        this.confirmationModal = this.modalService.open(this.confirmationModalTemplate, {
-          disableClose: true,
-          hasBackdrop: true,
-        });
-    }
-    confirmOnSaveFilter(){
-        let searchFilters: {[key: number]: string} = {};
+        const searchFilters: {[key: number]: string} = {};
         this.getFormValue(searchFilters);
-        this.saveNewFilter.name = this.saveSearchName;
-        this.saveNewFilter.category = this.saveSearchCategory;
-         //TODO
-        // this.saveNewFilter.filter.supervised =  
-        // this.saveNewFilter.filter.recentlyEdited = 
-        // this.saveNewFilter.filter.onlySharedIncidents = 
-        this.saveNewFilter.filter.shared = this.filterCriteria.get('showShared').value;
-        this.saveNewFilter.filter.includeLive = this.filterCriteria.get('showCurrent').value;
-        this.saveNewFilter.filter.includeDeleted = this.filterCriteria.get('showDeleted').value;
-        this.saveNewFilter.filter.onlyExternalLinks = this.filterCriteria.get('showExternal').value;
-        this.saveNewFilter.filter.onlyActiveExternalLinks = this.filterCriteria.get('showActiveExternal').value
-        this.saveNewFilter.filter.text = this.filterCriteria.get('text').value;
-        for (const key in searchFilters){
-            this.saveNewFilter.filter.customValues.push({id : Number(key), value : searchFilters[key]})
-        }
-        this.saveNewFilter.permissionGroup = {id: 0, name : 'Public'};
-        this.saveFilter.emit(this.saveNewFilter);
-    }
-    cancelOnSaveFilter() {
-        this.confirmationModal.close();
+        this.dialogService.showDialog('Save Incident Search',SaveFilterComponent, 0,
+            { owner : this.filterCriteria.get('owner').value, 
+            text: this.filterCriteria.get('text').value, 
+            showCurrent: this.filterCriteria.get('showCurrent').value,
+            showDeleted: this.filterCriteria.get('showDeleted').value, 
+            showShared: this.filterCriteria.get('showShared').value,
+            showExternal: this.filterCriteria.get('showExternal').value, 
+            showActiveExternal: this.filterCriteria.get('showActiveExternal').value,
+            searchFilters: searchFilters }).subscribe(result => {
+                this.saveFilter.emit(result);
+            });
     }
 
     setCurrentOwner(){

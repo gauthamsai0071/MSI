@@ -45,8 +45,14 @@
                 <ng-container *msiHeaderCellDef>Name</ng-container>
                 <ng-container *msiCellDef="let row">
                     <a class="anchor-fileName" href="javascript:void (0)">
-                        <div msiTooltip="{{row.name}}">
-                            {{row.name}}
+                        <div class="file-name-wrapper" *ngIf="row.category == 'AUDIO'" msiTooltip="{{row.name}}">
+                            <msi-icon class="ic_tones" name="ic_tones"></msi-icon> <span> {{row.name}}</span>
+                        </div>
+                        <div class="file-name-wrapper" *ngIf="row.category == 'VIDEO'" msiTooltip="{{row.name}}">
+                            <msi-icon class="ic_video" name="ic_video"></msi-icon><span> {{row.name}}</span>
+                        </div>
+                        <div class="file-name-wrapper" *ngIf="row.category == 'OTHER'" msiTooltip="{{row.name}}">
+                            <msi-icon class="ic_file" name="ic_file"></msi-icon> <span>{{row.name}}</span>
                         </div>
                     </a>
                 </ng-container>

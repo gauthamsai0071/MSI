@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { IncidentFilter, SaveNewFilter } from '../../../models/incident/savedFilter';
+import { IncidentFilter, SavedFilter } from '../../../models/incident/savedFilter';
 
 @Component({
   templateUrl: './search.component.html',
@@ -14,7 +14,7 @@ export class IncidentSearchComponent {
   } = null;
 
   clickedSavedFilterCriteria: IncidentFilter = null;
-  newFilter: SaveNewFilter = null;
+  newFilterSaved : SavedFilter = null;;
   myExports: boolean = false;
   constructor(private router: Router) { }
 
@@ -38,8 +38,8 @@ export class IncidentSearchComponent {
     this.clickedSavedFilterCriteria = filter;
   }
 
-  saveNewFilter(filter: SaveNewFilter) {
-    this.newFilter = filter;
+  saveNewFilter(savedFilter :SavedFilter ){
+    this.newFilterSaved = savedFilter;
   }
 
   exportResults($event) {

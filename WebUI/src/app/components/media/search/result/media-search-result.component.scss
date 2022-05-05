@@ -74,3 +74,19 @@
     position  : relative;
     cursor    : pointer;
 }
+.file-name-wrapper{
+    align-items: center;
+
+    .ic_tones {
+        width : 20px;
+        height : 20px;
+    }
+    .ic_video {
+        width : 20px;
+        height : 20px;
+    }
+   .ic_file{
+        width : 20px;
+        height : 20px;
+    }
+}
