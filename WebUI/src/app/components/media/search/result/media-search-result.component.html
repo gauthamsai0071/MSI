@@ -45,13 +45,13 @@
                 <ng-container *msiHeaderCellDef>Name</ng-container>
                 <ng-container *msiCellDef="let row">
                     <a class="anchor-fileName" href="javascript:void (0)">
-                        <div class="file-name-wrapper" *ngIf="row.category == 'AUDIO'" msiTooltip="{{row.name}}">
+                        <div class="file-name-wrapper" *ngIf="row.category == 'AUDIO'" msiTooltip="{{row.name}}" [showDelay]="500">
                             <msi-icon class="ic_tones" name="ic_tones"></msi-icon> &nbsp; <p> {{row.name}}</p>
                         </div>
-                        <div class="file-name-wrapper" *ngIf="row.category == 'VIDEO'" msiTooltip="{{row.name}}">
+                        <div class="file-name-wrapper" *ngIf="row.category == 'VIDEO'" msiTooltip="{{row.name}}" [showDelay]="500">
                             <msi-icon class="ic_video" name="ic_video"></msi-icon>&nbsp; <p> {{row.name}}</p>
                         </div>
-                        <div class="file-name-wrapper" *ngIf="row.category == 'OTHER'" msiTooltip="{{row.name}}">
+                        <div class="file-name-wrapper" *ngIf="row.category == 'OTHER'" msiTooltip="{{row.name}}" [showDelay]="500">
                             <msi-icon class="ic_file" name="ic_file"></msi-icon>&nbsp; <p>{{row.name}}</p>
                         </div>
                     </a>
@@ -61,14 +61,14 @@
                 [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Capture Date</ng-container>
                 <ng-container *msiCellDef="let row">
-                    {{row.timestamp | date:'MM/dd/YYYY HH:mm'}}
+                    {{row.timestamp ? (row.timestamp | date:'MM/dd/YYYY HH:mm') : '-'}}
                 </ng-container>
             </ng-container>
             <ng-container [width]="120" [fixedWidth]="true" *ngIf="showhidecolumns['mimeType']" msiColDef="Retention"
                 [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Media Type</ng-container>
                 <ng-container *msiCellDef="let row">
-                    <div msiTooltip="{{row.mimeType}}">
+                    <div msiTooltip="{{row.mimeType}}" [showDelay]="500">
                         {{row.mimeType}}
                     </div>
                 </ng-container>
@@ -77,8 +77,8 @@
                 msiColDef="Retention" [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Duration</ng-container>
                 <ng-container *msiCellDef="let row">
-                    <div msiTooltip="{{row.media_duration}}">
-                        {{row.media_duration}}
+                    <div msiTooltip="{{row.media_duration ? row.media_duration : '-' }}" [showDelay]="500">
+                        {{row.media_duration ? row.media_duration : '-' }}
                     </div>
                 </ng-container>
             </ng-container>
@@ -86,7 +86,7 @@
                 msiColDef="Retention" [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Talkgroup ID</ng-container>
                 <ng-container *msiCellDef="let row">
-                    <div msiTooltip="{{row.talkgroupId}}" position = 'left'>
+                    <div msiTooltip="{{row.talkgroupId}}" position = 'left' [showDelay]="500">
                         {{row.talkgroupId}}
                     </div>
                 </ng-container>
@@ -95,7 +95,7 @@
                 [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Agency</ng-container>
                 <ng-container *msiCellDef="let row">
-                    <div msiTooltip="{{row.agencyName}}">
+                    <div msiTooltip="{{row.agencyName}}" [showDelay]="500" >
                         {{row.agencyName}}
                     </div>
                 </ng-container>
@@ -104,7 +104,7 @@
                 [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Unit ID</ng-container>
                 <ng-container *msiCellDef="let row">
-                    <div msiTooltip="{{row.unitId}}">
+                    <div msiTooltip="{{row.unitId}}" [showDelay]="500">
                         {{row.unitId}}
                     </div>
                 </ng-container>
@@ -113,7 +113,7 @@
                 [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Channel</ng-container>
                 <ng-container *msiCellDef="let row">
-                    <div msiTooltip="{{row.channel}}">
+                    <div msiTooltip="{{row.channel}}" [showDelay]="500">
                         {{row.channel}}
                     </div>
                 </ng-container>
@@ -122,7 +122,7 @@
                 [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Site ID</ng-container>
                 <ng-container *msiCellDef="let row">
-                    <div msiTooltip="{{row.siteId}}">
+                    <div msiTooltip="{{row.siteId}}" [showDelay]="500">
                         {{row.siteId}}
                     </div>
                 </ng-container>
@@ -131,7 +131,7 @@
                 [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Zone ID</ng-container>
                 <ng-container *msiCellDef="let row">
-                    <div msiTooltip="{{row.zoneId}}">
+                    <div msiTooltip="{{row.zoneId}}" [showDelay]="500">
                         {{row.zoneId}}
                     </div>
                 </ng-container>
@@ -140,7 +140,7 @@
                 [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Resource Alias</ng-container>
                 <ng-container *msiCellDef="let row">
-                    <div msiTooltip="{{row.rscAlias}}">
+                    <div msiTooltip="{{row.rscAlias}}" [showDelay]="500">
                         {{row.rscAlias}}
                     </div>
                 </ng-container>
@@ -149,7 +149,7 @@
                 msiColDef="Retention" [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Individual Alias</ng-container>
                 <ng-container *msiCellDef="let row">
-                    <div msiTooltip="{{row.individualAlias}}">
+                    <div msiTooltip="{{row.individualAlias}}" [showDelay]="500">
                         {{row.individualAlias}}
                     </div>
                 </ng-container>
@@ -158,7 +158,7 @@
                 [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>System</ng-container>
                 <ng-container *msiCellDef="let row">
-                    <div msiTooltip="{{row.system}}">
+                    <div msiTooltip="{{row.system}}" [showDelay]="500">
                         {{row.system}}
                     </div>
                 </ng-container>
@@ -167,7 +167,7 @@
                 msiColDef="Retention" [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Originating MDN</ng-container>
                 <ng-container *msiCellDef="let row">
-                    <div msiTooltip="{{row.originatingMDN}}">
+                    <div msiTooltip="{{row.originatingMDN}}" [showDelay]="500">
                         {{row.originatingMDN}}
                     </div>
                 </ng-container>
@@ -176,7 +176,7 @@
                 msiColDef="Retention" [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Terminating MDN</ng-container>
                 <ng-container *msiCellDef="let row">
-                    <div msiTooltip="{{row.terminatingMDN}}">
+                    <div msiTooltip="{{row.terminatingMDN}}" [showDelay]="500">
                         {{row.terminatingMDN}}
                     </div>
                 </ng-container>
@@ -185,7 +185,7 @@
                 msiColDef="Retention" [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Participating MDN</ng-container>
                 <ng-container *msiCellDef="let row">
-                    <div msiTooltip="{{row.participatingMDN}}">
+                    <div msiTooltip="{{row.participatingMDN}}" [showDelay]="500">
                         {{row.participatingMDN}}
                     </div>
                 </ng-container>
@@ -194,7 +194,7 @@
                 msiColDef="Retention" [sortable]="false" [filterable]="false" [draggable]="true" [resizable]="true">
                 <ng-container *msiHeaderCellDef>Talkgroup Name</ng-container>
                 <ng-container *msiCellDef="let row">
-                    <div msiTooltip="{{row.talkgroupName}}">
+                    <div msiTooltip="{{row.talkgroupName}}" [showDelay]="500">
                         {{row.talkgroupName}}
                     </div>
                 </ng-container>

@@ -69,49 +69,49 @@ export class MediaSearchResultComponent implements OnInit, OnDestroy {
         this.isLoading = false;
         _.each(result, mediaFile => {
           let field = mediaFile.customFields.find(item => toLower(item.name) == toLower("timestamp"));
-          mediaFile.timestamp = field !== undefined ? moment(field.value?.timestamp).toDate() : null;
+          mediaFile.timestamp = (field && field.value) ? moment(field.value.timestamp).toDate() : null;
 
           field = mediaFile.customFields.find(item => toLower(item.name) == toLower("mimeType"));
-          mediaFile.mimeType = field !== undefined ? field.value?.text : '';
+          mediaFile.mimeType = (field && field.value) ? field.value?.text : '-';
 
           field = mediaFile.customFields.find(item => toLower(item.name) == toLower("talkgroupId"));
-          mediaFile.talkgroupId = field !== undefined ? field.value?.text : '';
+          mediaFile.talkgroupId = (field && field.value) ? field.value?.text : '-';
 
           field = mediaFile.customFields.find(item => toLower(item.name) == toLower("agencyName"));
-          mediaFile.agencyName = field !== undefined ? field.value?.text : '';
+          mediaFile.agencyName = (field && field.value) ? field.value?.text : '-';
 
           field = mediaFile.customFields.find(item => toLower(item.name) == toLower("unitId"));
-          mediaFile.unitId = field !== undefined ? field.value?.text : '';
+          mediaFile.unitId = (field && field.value) ? field.value?.text : '-';
 
           field = mediaFile.customFields.find(item => toLower(item.name) == toLower("channel"));
-          mediaFile.channel = field !== undefined ? field.value?.text : '';
+          mediaFile.channel = (field && field.value) ? field.value?.text : '-';
 
           field = mediaFile.customFields.find(item => toLower(item.name) == toLower("siteId"));
-          mediaFile.siteId = field !== undefined ? field.value?.text : '';
+          mediaFile.siteId = (field && field.value) ? field.value?.text : '-';
 
           field = mediaFile.customFields.find(item => toLower(item.name) == toLower("zoneId"));
-          mediaFile.zoneId = field !== undefined ? field.value?.text : '';
+          mediaFile.zoneId = (field && field.value) ? field.value?.text : '-';
 
           field = mediaFile.customFields.find(item => toLower(item.name) == toLower("rscAlias"));
-          mediaFile.rscAlias = field !== undefined ? field.value?.text : '';
+          mediaFile.rscAlias = (field && field.value) ? field.value?.text : '-';
 
           field = mediaFile.customFields.find(item => toLower(item.name) == toLower("individualAlias"));
-          mediaFile.individualAlias = field !== undefined ? field.value?.text : '';
+          mediaFile.individualAlias = (field && field.value) ? field.value?.text : '-';
 
           field = mediaFile.customFields.find(item => toLower(item.name) == toLower("system"));
-          this.onDisplayColumnChange(field !== undefined ? field.value?.text : '');
+          this.onDisplayColumnChange((field && field.value) ? field.value?.text : '-');
 
           field = mediaFile.customFields.find(item => toLower(item.name) == toLower("originatingMDN"));
-          mediaFile.originatingMDN = field !== undefined ? field.value?.text : '';
+          mediaFile.originatingMDN = (field && field.value) ? field.value?.text : '-';
 
           field = mediaFile.customFields.find(item => toLower(item.name) == toLower("terminatingMDN"));
-          mediaFile.terminatingMDN = field !== undefined ? field.value?.text : '';
+          mediaFile.terminatingMDN = (field && field.value) ? field.value?.text : '-';
 
           field = mediaFile.customFields.find(item => toLower(item.name) == toLower("participatingMDN"));
-          mediaFile.participatingMDN = field !== undefined ? field.value?.text : '';
+          mediaFile.participatingMDN = (field && field.value) ? field.value?.text : '-';
 
           field = mediaFile.customFields.find(item => toLower(item.name) == toLower("talkgroupName"));
-          mediaFile.talkgroupName = field !== undefined ? field.value?.text : '';
+          mediaFile.talkgroupName = (field && field.value) ? field.value?.text : '-';
         })
         this.rows = this.rows.concat(result);
       }
