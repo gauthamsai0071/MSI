@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import _, { toLower } from 'lodash';
+import _, { result, toLower } from 'lodash';
 import moment from 'moment';
 import { Subscription } from 'rxjs';
 import { DialogService } from '../../../../services/common/dialog.service';
@@ -34,6 +34,7 @@ export class MediaSearchResultComponent implements OnInit, OnDestroy {
   private filteredMedia: Subscription;
   isLoading: boolean;
   subscription: Feedsubscription;
+  customFields : CustomField[];
 
   showhidecolumns: { [key: string]: boolean };
 
@@ -62,7 +63,12 @@ export class MediaSearchResultComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.mediaFilterService.buildSearchParams(null, null, null, null);
+    this.mediaFilterService.getCustomFields().subscribe( (result: CustomField[] )=>{
+      if(result){
+        this.customFields = result;
+        this.mediaFilterService.buildSearchParams(null, null, null, this.customFields);
+      }
+    })
     this.isLoading = true;
     this.filteredMedia = this.mediaFilterService.filteredRespone$.subscribe(result => {
       if (result) {

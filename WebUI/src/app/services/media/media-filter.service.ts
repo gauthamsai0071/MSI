@@ -47,18 +47,18 @@ export class MediaFilterService {
       this.advancedFilter = '';
       let advanceQuery = '';
       _.each(searchFields, cf =>{
-        let value = filterCriteria.get(cf.name)?.value;
+        let value = filterCriteria?.get(cf.name)?.value;
         if(cf.isTimestamp){
-          if(calendarFields.get(cf.id)){
+          if(calendarFields?.get(cf.id)){
             this.queryParams.push({id: cf.id, value: calendarFields.get(cf.id)});
           }
         }
-        if(filterCriteria.get(cf.name)?.value){
+        if(filterCriteria?.get(cf.name)?.value){
           if(cf.isText){
-            value = filterCriteria.get(cf.name)?.value;
+            value = filterCriteria?.get(cf.name)?.value;
             this.queryParams.push({id : cf.id,value :  value})
           }else if(cf.isEnumeration){
-            value = filterCriteria.get(cf.name)?.value;
+            value = filterCriteria?.get(cf.name)?.value;
             if(Array.isArray(value) && value.length > 0){
               if(advanceQuery.length > 1){
                 advanceQuery = advanceQuery + " AND ";
@@ -76,7 +76,7 @@ export class MediaFilterService {
               if(advanceQuery.length > 1){
                 advanceQuery = advanceQuery + " AND ";
               }
-              _.each(checkBoxFields.get(cf.name), val => {
+              _.each(checkBoxFields?.get(cf.name), val => {
                 if(val != checkBoxFields.get(cf.name)[checkBoxFields.get(cf.name).length-1]){
                   advanceQuery = advanceQuery + cf.name + " = '" + val + "' OR ";
                 }else{
@@ -97,7 +97,10 @@ export class MediaFilterService {
         }
     })
     if(filterCriteria == null){
-      this.advancedFilter = "mimeType != 'Non-Call Event'";
+      let field = searchFields.find(item => toLower(item.name) == toLower("mimeType"));
+      if(field){
+        this.advancedFilter = "mimeType != 'Non-Call Event'";
+      }
     }
     this.getLocationData(filterCriteria);
     this.viewSubscription();
