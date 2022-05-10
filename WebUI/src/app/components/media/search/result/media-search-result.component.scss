@@ -74,3 +74,30 @@
     position  : relative;
     cursor    : pointer;
 }
+.file-name-wrapper{
+    display: inline-flex;
+    .ic_tones {
+        width : 20px;
+        height : 20px;
+    }
+    .ic_video {
+        width : 20px;
+        height : 20px;
+    }
+   .ic_file{
+        width : 20px;
+        height : 20px;
+    }
+}
+::ng-deep .msi-table-header{
+    min-width: 40px !important;
+}
+.checkbox-group{
+    position: relative;
+}
+.btn-sort-custom{
+    padding: inherit;
+}
+.ic-sort-custom{
+    padding-left: 0px;
+}

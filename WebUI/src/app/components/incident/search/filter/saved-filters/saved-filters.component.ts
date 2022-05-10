@@ -10,10 +10,9 @@ import { SavedFilter, IncidentFilter, SaveNewFilter } from '../../../../../../ap
 })
 export class IncidentSavedFiltersComponent implements OnInit {
   @Input()
-  set newFilter(value) {
+  set newFilter(value : SavedFilter) {
     if (value) {
-      this.incidentService.saveIncident(value).subscribe(result => {
-      });
+      this.getSavedIncidentFilters();
     }
   }
   @Output()
@@ -39,5 +38,4 @@ export class IncidentSavedFiltersComponent implements OnInit {
       this.savedIncidentFilters = result;
     })
   }
-
 }

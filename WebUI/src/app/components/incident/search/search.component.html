@@ -5,25 +5,26 @@
             <msi-icon class="search-icon" name="ic_search"></msi-icon>
             <span class="search-label">Search</span>
         </div>
-        <msi-tab-group class="incident-tab-group">
+        <msi-tab-group class="incident-tab-group" (click)="exportResults($event)">
             <msi-tab label="Filters">
                 <div class="filters-wrapper">
-                    <app-incident-filter 
-                        (searchIncidents)="searchIncidents($event)"
-                        (saveFilter)="saveNewFilter($event)"
-                        [clickedSavedFilterCriteria]="clickedSavedFilterCriteria"></app-incident-filter>
+                    <app-incident-filter (searchIncidents)="searchIncidents($event)"
+                        (saveFilter)="saveNewFilter($event)" [clickedSavedFilterCriteria]="clickedSavedFilterCriteria">
+                    </app-incident-filter>
                 </div>
             </msi-tab>
             <msi-tab label="Saved Searches">
                 <div class="incident-savedFilters-wrapper">
-                    <app-incident-saved-filters 
-                        (clickedSavedFilter)="clickedSavedFilter($event)"
-                        [newFilter]="newFilter"></app-incident-saved-filters>
+                    <app-incident-saved-filters (clickedSavedFilter)="clickedSavedFilter($event)"
+                    [newFilter]="newFilterSaved"></app-incident-saved-filters>
                 </div>
             </msi-tab>
+            <msi-tab label="My Exports"></msi-tab>
         </msi-tab-group>
-    </div>    
+    </div>
     <div class="results-panel">
-        <app-incident-search-result *ngIf="filterCriteria !== null" [filterCriteria]="filterCriteria"></app-incident-search-result>
-    </div>    
+        <app-incident-search-result *ngIf="filterCriteria !== null && !myExports" [filterCriteria]="filterCriteria">
+        </app-incident-search-result>
+        <app-incident-export-result *ngIf="myExports"></app-incident-export-result>
+    </div>
 </div>

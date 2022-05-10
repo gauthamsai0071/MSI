@@ -1,0 +1,56 @@
+<div class="save-filter-wrapper">
+    <form [formGroup]="saveFilterForm" (ngSubmit)="onSubmit()">
+        <div class="field-wrapper">
+            <div class="label-wrap">
+                <span class="filter-label-first">Search Name</span>
+            </div>
+            <app-input-control [controlName]="'searchName'" [formResetting]="formResetting"
+                [LabelText]="'Search Name'" class="search-name-app-input">
+                <input class="msi-input form-input" type="text" autocomplete="searchName" formControlName="searchName"
+                    [class.error]="!formResetting && formControls.searchName.invalid">
+            </app-input-control>
+        </div>
+        <div class="field-wrapper">
+            <div class="label-wrap">
+                <span class="filter-label-first">Category</span>
+            </div>
+            <input 
+                type = "text"
+                formControlName="category"
+                class="form-input msi-input"
+            >
+        </div>
+        <!-- <div class="field-wrapper">
+            <div class="label-wrap">
+                <span class="filter-label-first">Permission Group</span>
+            </div>
+            <msi-select formControlName="permissionGroup">
+                <msi-select-option [value]="0">Public</msi-select-option>
+                <msi-select-option [value]="1">Access Group One</msi-select-option>
+                <msi-select-option [value]="2">Access Group Two</msi-select-option>
+                <msi-select-option [value]="3">Access Group Three</msi-select-option>
+                <msi-select-option [value]="4">Access Group Four</msi-select-option>
+                <msi-select-option [value]="5">Access Group Five</msi-select-option>
+                <msi-select-option [value]="6">Access Group Six</msi-select-option>
+                <msi-select-option [value]="7">Access Group Seven</msi-select-option>
+                <msi-select-option [value]="8">Access Group Eight</msi-select-option>
+                <msi-select-option [value]="9">Access Group Nine</msi-select-option>
+                <msi-select-option [value]="10">Access Group Ten</msi-select-option>
+                <msi-select-option [value]="11">Access Group Eleven</msi-select-option>
+                <msi-select-option [value]="12">Access Group Twelve</msi-select-option>
+                <msi-select-option [value]="13">Access Group Thirteen</msi-select-option>
+                <msi-select-option [value]="14">Access Group Fourteen</msi-select-option>
+                <msi-select-option [value]="15">Access Group Fifteen</msi-select-option>
+                <msi-select-option [value]="16">Access Group Sixteen</msi-select-option>
+                <msi-select-option [value]="17">Access Group Seventeen</msi-select-option>
+                <msi-select-option [value]="18">Access Group Eighteen</msi-select-option>
+                <msi-select-option [value]="19">Access Group Nineteen</msi-select-option>
+                <msi-select-option [value]="20">Access Group Twenty</msi-select-option>   
+            </msi-select>
+        </div> -->
+        <div class="saveFilter-btn-wrapper">
+            <button class="msi-btn msi-btn-action" (click)="onCancel()">Cancel</button>
+            <button class="msi-btn" type="submit">Confirm</button>
+        </div>
+    </form>
+</div>

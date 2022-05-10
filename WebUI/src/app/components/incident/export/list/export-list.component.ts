@@ -4,6 +4,7 @@ import { Export } from "../../../../models/incident/export/export";
 import { IncidentService } from "../../../../services/incident/incident.service";
 import { CommonService } from "../../../../services/common/common.service";
 import { ExportIncidentComponent } from "../export-incident.component";
+import _ from "lodash";
 
 @Component({
     selector: 'app-incident-export-result',
@@ -40,6 +41,9 @@ export class ExportListComponent implements OnInit {
             const componentName = (mode === 'delete') ? ExportListComponent : ExportIncidentComponent;
             this.dialogService.showDialog(title + ' Export', componentName, exports.id, { mode: mode, id: exports.id })
                 .subscribe(result => {
+                    this.results = _.filter(this.results, function (res) {
+                        return res.id !== exports.id;
+                    });
                 });
         }
     }

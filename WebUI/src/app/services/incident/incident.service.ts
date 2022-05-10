@@ -7,6 +7,8 @@ import { ExportShare } from '../../models/incident/export/share';
 import { CommonService } from '../common/common.service';
 import { SavedFilter } from '../../models/incident/savedFilter';
 import { ExportProfile } from '../../models/incident/export/exportProfile';
+import { PermissionGroup } from 'src/app/models/incident/permissionGroup';
+import { shareReplay } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -111,4 +113,8 @@ export class IncidentService {
     return this.http.get<SavedFilter[]>(url);
   }
 
+  public getAllPermissionGroups(): Observable<PermissionGroup[]>{
+    let url = 'api/incidents/savedSearch/permissionGroups';
+    return this.http.get<PermissionGroup[]>(url).pipe(shareReplay(1));
+  }
 }
