@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import _, { result, toLower } from 'lodash';
+import _, { toLower } from 'lodash';
 import moment from 'moment';
 import { Subscription } from 'rxjs';
 import { DialogService } from '../../../../services/common/dialog.service';
@@ -42,23 +42,23 @@ export class MediaSearchResultComponent implements OnInit, OnDestroy {
     private mediaFilterService: MediaFilterService,
     private dialogService: DialogService) {
     this.showhidecolumns = {
-      'media_name': true,
-      'timestamp': true,
-      'mimeType': true,
-      'media_duration': true,
-      'talkgroupId': true,
-      'agencyName': true,
-      'unitId': false,
-      'channel': false,
-      'siteId': false,
-      'zoneId': false,
-      'rscAlias': false,
-      'individualAlias': false,
+      'Name': true,
+      'Capture Date': true,
+      'Media Type': true,
+      'Duration': true,
+      'Talkgroup ID': true,
+      'Agency': true,
+      'Unit ID': false,
+      'Channel': false,
+      'Site ID': false,
+      'Zone ID': false,
+      'Resource Alias': false,
+      'Individual Alias': false,
       'System': true,
-      'originatingMDN': false,
-      'terminatingMDN': false,
-      'participatingMDN': false,
-      'talkgroupName': false
+      'Originating MDN': false,
+      'Terminating MDN': false,
+      'Participating MDN': false,
+      'Talkgroup Name': false
     };
   }
 
@@ -130,38 +130,38 @@ export class MediaSearchResultComponent implements OnInit, OnDestroy {
 
   onDisplayColumnChange(value: string) {
     if (value == 'astro') {
-      this.showhidecolumns['unitId'] = true;
-      this.showhidecolumns['channel'] = true;
-      this.showhidecolumns['siteId'] = true;
-      this.showhidecolumns['zoneId'] = true;
-      this.showhidecolumns['rscAlias'] = true;
-      this.showhidecolumns['individualAlias'] = true;
-      this.showhidecolumns['originatingMDN'] = false;
-      this.showhidecolumns['terminatingMDN'] = false;
-      this.showhidecolumns['participatingMDN'] = false;
-      this.showhidecolumns['talkgroupName'] = false;
+      this.showhidecolumns['Unit ID'] = true;
+      this.showhidecolumns['Channel'] = true;
+      this.showhidecolumns['Site ID'] = true;
+      this.showhidecolumns['Zone ID'] = true;
+      this.showhidecolumns['Resource Alias'] = true;
+      this.showhidecolumns['Individual Alias'] = true;
+      this.showhidecolumns['Originating MDN'] = false;
+      this.showhidecolumns['Terminating MDN'] = false;
+      this.showhidecolumns['Participating MDN'] = false;
+      this.showhidecolumns['Talkgroup Name'] = false;
     } else if (value == 'broadband') {
-      this.showhidecolumns['unitId'] = false;
-      this.showhidecolumns['channel'] = false;
-      this.showhidecolumns['siteId'] = false;
-      this.showhidecolumns['zoneId'] = false;
-      this.showhidecolumns['rscAlias'] = false;
-      this.showhidecolumns['individualAlias'] = false;
-      this.showhidecolumns['originatingMDN'] = true;
-      this.showhidecolumns['terminatingMDN'] = true;
-      this.showhidecolumns['participatingMDN'] = true;
-      this.showhidecolumns['talkgroupName'] = true;
+      this.showhidecolumns['Unit ID'] = false;
+      this.showhidecolumns['Channel'] = false;
+      this.showhidecolumns['Site ID'] = false;
+      this.showhidecolumns['Zone ID'] = false;
+      this.showhidecolumns['Resource Alias'] = false;
+      this.showhidecolumns['Individual Alias'] = false;
+      this.showhidecolumns['Originating MDN'] = true;
+      this.showhidecolumns['Terminating MDN'] = true;
+      this.showhidecolumns['Participating MDN'] = true;
+      this.showhidecolumns['Talkgroup Name'] = true;
     } else {
-      this.showhidecolumns['unitId'] = false;
-      this.showhidecolumns['channel'] = false;
-      this.showhidecolumns['siteId'] = false;
-      this.showhidecolumns['zoneId'] = false;
-      this.showhidecolumns['rscAlias'] = false;
-      this.showhidecolumns['individualAlias'] = false;
-      this.showhidecolumns['originatingMDN'] = false;
-      this.showhidecolumns['terminatingMDN'] = false;
-      this.showhidecolumns['participatingMDN'] = false;
-      this.showhidecolumns['talkgroupName'] = false;
+      this.showhidecolumns['Unit ID'] = false;
+      this.showhidecolumns['Channel'] = false;
+      this.showhidecolumns['Site ID'] = false;
+      this.showhidecolumns['Zone ID'] = false;
+      this.showhidecolumns['Resource Alias'] = false;
+      this.showhidecolumns['Individual Alias'] = false;
+      this.showhidecolumns['Originating MDN'] = false;
+      this.showhidecolumns['Terminating MDN'] = false;
+      this.showhidecolumns['Participating MDN'] = false;
+      this.showhidecolumns['Talkgroup Name'] = false;
     }
   }
 
@@ -186,6 +186,62 @@ export class MediaSearchResultComponent implements OnInit, OnDestroy {
       this.filteredMedia.unsubscribe();
     }
   }
-
-
+  onColumnViewChange(value){
+    switch(value){
+      case 'Name' : 
+        this.showhidecolumns['Name'] = !this.showhidecolumns['Name'];
+        break;
+      case 'Capture Date' : 
+        this.showhidecolumns['Capture Date'] = !this.showhidecolumns['Capture Date'];
+        break;
+      case 'Media Type' : 
+        this.showhidecolumns['Media Type'] = !this.showhidecolumns['Media Type'];
+        break;
+      case 'Duration' : 
+        this.showhidecolumns['Duration'] = !this.showhidecolumns['Duration'];
+        break;
+      case 'Talkgroup ID' : 
+        this.showhidecolumns['Talkgroup ID'] = !this.showhidecolumns['Talkgroup ID'];
+        break;
+      case 'Agency' : 
+        this.showhidecolumns['Agency'] = !this.showhidecolumns['Agency'];
+        break;
+      case 'Unit ID' : 
+        this.showhidecolumns['Unit ID'] = !this.showhidecolumns['Unit ID'];
+        break;
+      case 'Channel' : 
+        this.showhidecolumns['Channel'] = !this.showhidecolumns['Channel'];
+        break;
+      case 'Site ID' : 
+        this.showhidecolumns['Site ID'] = !this.showhidecolumns['Site ID'];
+        break;
+      case 'Zone ID' : 
+        this.showhidecolumns['Zone ID'] = !this.showhidecolumns['Zone ID'];
+        break;
+      case 'Resource Alias' : 
+        this.showhidecolumns['Resource Alias'] = !this.showhidecolumns['Resource Alias'];
+        break;
+      case 'Individual Alias' : 
+        this.showhidecolumns['Individual Alias'] = !this.showhidecolumns['Individual Alias'];
+        break;
+      case 'System' : 
+        this.showhidecolumns['System'] = !this.showhidecolumns['System'];
+        break;
+      case 'Originating MDN' : 
+        this.showhidecolumns['Originating MDN'] = !this.showhidecolumns['Originating MDN'];
+        break;
+      case 'Terminating MDN' : 
+        this.showhidecolumns['Terminating MDN'] = !this.showhidecolumns['Terminating MDN'];
+        break;
+      case 'Participating MDN' : 
+        this.showhidecolumns['Participating MDN'] = !this.showhidecolumns['Participating MDN'];
+        break;
+      case 'Talkgroup Name' : 
+        this.showhidecolumns['Talkgroup Name'] = !this.showhidecolumns['Talkgroup Name'];
+        break;
+    }
+  }
+  returnZero() {
+    return 0
+  }
 }

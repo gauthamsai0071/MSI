@@ -31,6 +31,9 @@ export class SaveFilterComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.incidentService.getAllPermissionGroups().subscribe( result => {
+      console.log(result);
+    })
     this.buildSaveFilterForm();
     this.saveFilterForm.get('permissionGroup').setValue(0);
   }
@@ -43,10 +46,6 @@ export class SaveFilterComponent implements OnInit {
     this.saveNewFilter.name = this.saveFilterForm.get('searchName').value;
     this.saveNewFilter.category = this.saveFilterForm.get('category').value;
     this.saveNewFilter.permissionGroup = this.getPermissionGroupDetails(this.saveFilterForm.get('permissionGroup').value);
-    //TODO
-    // this.saveNewFilter.filter.supervised =  
-    // this.saveNewFilter.filter.recentlyEdited = 
-    // this.saveNewFilter.filter.onlySharedIncidents = 
     this.saveNewFilter.filter.shared = this.popupParam.showShared;
     this.saveNewFilter.filter.includeLive = this.popupParam.showCurrent;
     this.saveNewFilter.filter.includeDeleted = this.popupParam.showDeleted;

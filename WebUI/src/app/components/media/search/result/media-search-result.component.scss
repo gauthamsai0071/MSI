@@ -89,3 +89,15 @@
         height : 20px;
     }
 }
+::ng-deep .msi-table-header{
+    min-width: 40px !important;
+}
+.checkbox-group{
+    position: relative;
+}
+.btn-sort-custom{
+    padding: inherit;
+}
+.ic-sort-custom{
+    padding-left: 0px;
+}
