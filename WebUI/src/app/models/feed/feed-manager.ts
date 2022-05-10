@@ -14,7 +14,7 @@ export class FeedManager {
     private restartBackoffMs = 2000;
     private maxRestartTimeMs = 30000;
     private transientErrorRetryTimeMs = 10000;
-    private keepRunning = true;
+    public keepRunning = true;
 
     feedId: string;
     private serverStateSubscriptionId?: number;
@@ -27,7 +27,6 @@ export class FeedManager {
     private useWebSocketFeeds: boolean;
     private feedSocket: Feedwebsocket;
 
-    private fastReconnect: boolean;
     public usingVmProxy: boolean;
 
     public dataReceived: EventEmitter<any>;
@@ -81,7 +80,7 @@ export class FeedManager {
         if (this.useWebSocketFeeds) {
             this.feedSocket = new Feedwebsocket(this.urls, this.groupManagerService);
 
-            this.dataSubscription = this.feedSocket.dataReceived.subscribe(message => {
+            this.dataSubscription = this.feedSocket.dataReceived.subscribe(message => {                
                 if (message.type == "CREATE_RESPONSE") {
                     this.initFeed(message.response);
                 } else if (message.type == "EVENT_DATA") {
@@ -90,9 +89,12 @@ export class FeedManager {
                     if (message.eventData && message.eventData.id && message.eventData.data[message.eventData.id].videoFiles ||
                         (message.eventData.data[message.eventData.id] &&
                             message.eventData.data[message.eventData.id].moreVideoFilesAvailable == false)) {
-                        this.dataReceived.emit(message.eventData);
+                        this.dataReceived.emit(message.eventData);                        
                     }
+                    this.keepRunning = false;                    
                 }
+
+                this.groupManagerService.lastMessageTime = Date.now();
             });
 
             this.errorSubscription = this.feedSocket.socketError.subscribe((error) => {
@@ -132,7 +134,7 @@ export class FeedManager {
             this.handleFeedEvent();
     }
 
-    public cancelSubscription(subscriptionId: number) {
+    public cancelSubscription() {
         if (this.dataSubscription != null) {
             this.dataSubscription.unsubscribe();
         }
@@ -195,7 +197,12 @@ export class FeedManager {
 
         subscriptions.forEach((subscription: Feedsubscription) => {
             subscription.handleFeedError(unauthorised);
-        });       
+        }); 
+        
+        // this.restartTimerId = window.setTimeout(() => {
+        //     this.restartTimerId = null;
+        //     this.createFeed();
+        // }, this.fastReconnect ? 0 : this.restartTimeoutMs);
     }
 
     private handleTransientPollError(eventId: number) {

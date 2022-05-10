@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { User } from '../../models/common/user';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Router } from '@angular/router';
+import { MediaFilterService } from '../media/media-filter.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient) { }
 
   public getInitPublicSession():Observable<any>{
     return this.http.get('api/account/init-public-session');
@@ -43,5 +43,6 @@ export class AuthService {
   public logout() {
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('username');
+    MediaFilterService.clearCache();
   }
 }

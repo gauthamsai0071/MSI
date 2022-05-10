@@ -24,12 +24,16 @@ export class Feedsubscription {
     refCount: number = 0;
 
     public dataReceived: EventEmitter<any>;
+    nextAmendmentError: EventEmitter<any>;
+
+    public nextPage
     private feedManagerSubscription: Subscription = null;
 
     constructor(public url: any,
         private mgroup: MediaGroupManagerService, private getData?: () => CreateSubscriptionAdto,
         public _http?: HttpClient, private authService?: AuthService) {
         this.dataReceived = new EventEmitter<any>();
+        this.nextAmendmentError = new EventEmitter<any>();
 
         this.feed = new FeedManager(this.urls, this.mgroup, this.state, this._http)
         this.feed.addSubscription(this);
@@ -57,7 +61,7 @@ export class Feedsubscription {
         if (!this.cancelled) {
             this.cancelled = true;
             if (this.id) {
-                this.feed.cancelSubscription(this.id);
+                this.feed.cancelSubscription();
                 this.id = null;
             }
             this.feed.removeSubscription(this);
@@ -67,6 +71,7 @@ export class Feedsubscription {
             }
 
             this.dataReceived.complete();
+            this.nextAmendmentError.complete();
         }
     }
 
@@ -92,8 +97,7 @@ export class Feedsubscription {
         let feedId = this.feed.feedId;
         data.feedId = feedId;
         this.feed.startedSending();
-        this.authService.getSubscribeId(this.url, data).subscribe((res) => {
-            console.log(res);
+        this.authService.getSubscribeId(this.url, data).subscribe((res) => {           
             if ( feedId === this.feed.feedId && res ){
                 this.gotSubscriptionId(res.subscriptionId);
             }
@@ -170,7 +174,7 @@ export class Feedsubscription {
 
     private gotSubscriptionId(subscriptionId: number) {
         if (this.cancelled) {
-            this.feed.cancelSubscription(subscriptionId);
+            this.feed.cancelSubscription();
         } else {
             this.amending = false;
             if (this.id && this.id !== subscriptionId)
@@ -182,7 +186,8 @@ export class Feedsubscription {
     }
 
     private initiateNextAmendment() {
-        if (this.id && !this.newId && !this.amending && this.amendments.length > 0) {
+        //if (this.id && !this.newId && !this.amending && this.amendments.length > 0) {
+        if (!this.feed.keepRunning && this.amendments.length > 0) {
             let amendment = this.amendments.shift();
 
             let data = amendment.data;
@@ -194,12 +199,14 @@ export class Feedsubscription {
             this._http.post(amendment.url, data).subscribe(
                 (res: CreateSubscriptionResponseAdto) => {
                     if (this.feed.feedId === feedId && res)
-                        this.gotSubscriptionId(res.subscriptionId)
-                    console.log(res);
+                        this.gotSubscriptionId(res.subscriptionId)   
+                    else {
+                        this.nextAmendmentError.emit();
+                    }                 
                 },
                 // Errors will call this callback instead:
                 err => {
-                    console.log('Something went wrong!');
+                    this.nextAmendmentError.emit();
                 }
 
             );

@@ -10,6 +10,7 @@ import { MediaGroupManagerService } from '../../models/feed/media-group-manager'
 import { ApiUrls } from '../../util/api-urls';
 import { CustomField } from '../../models/common/custom-field';
 import { AuthService } from '../auth/auth.service';
+import { MediaFile } from '../../models/media/mediaFile';
 
 @Injectable()
 export class MediaFilterService {
@@ -25,8 +26,14 @@ export class MediaFilterService {
   private location : { lat : number, lng: number};
   advancedFilter : string = '';
   mediaResutsSubscription: Subscription = null;
+  mediaAmendmentErrorSubsription: Subscription = null;
+
   private isMoreMediaAvailable : boolean = false;
-  
+
+  private static cachedMedia: MediaFile[] = [];
+  nextPageMedia: MediaFile[] = [];
+  private pageNo: number;
+
   constructor(private http: HttpClient,
     private groupManager: MediaGroupManagerService,
     private authService: AuthService) { }
@@ -43,6 +50,12 @@ export class MediaFilterService {
     checkBoxFields : Map<string, Array<string>>,
     searchFields : CustomField[]
     ) {
+      
+      if (filterCriteria === null && calendarFields === null && checkBoxFields === null && searchFields === null 
+            && MediaFilterService.cachedMedia !== null && MediaFilterService.cachedMedia.length > 0) {
+        this.filteredRespone.next(MediaFilterService.cachedMedia);
+      }
+
       this.queryParams = [];
       this.advancedFilter = '';
       let advanceQuery = '';
@@ -99,6 +112,7 @@ export class MediaFilterService {
     if(filterCriteria == null){
       this.advancedFilter = "mimeType != 'Non-Call Event'";
     }
+
     this.getLocationData(filterCriteria);
     this.viewSubscription();
   }
@@ -115,7 +129,7 @@ export class MediaFilterService {
     }
   }
 
-  viewSubscription(){
+  viewSubscription() {
     let queryParams : VideoFilesSubscriptionAdto = {
       thumbnail: 'SINGLE',
       includeDeleted : true,
@@ -124,24 +138,36 @@ export class MediaFilterService {
       radius : this.radius,
       location : this.location,
       advancedFilter : this.advancedFilter,
-      limit : 50,
+      limit: 50,
     };
+
     let videoSubscribeUrl = this.apiUrls.videoListSubscribe;
-    this.mediaSubscriptions = new Feedsubscription(videoSubscribeUrl, this.groupManager,
-      (this.apiUrls.videoListSubscribe,() => queryParams),this.http, this.authService);
-      
-    this.mediaResutsSubscription = this.mediaSubscriptions.dataReceived.subscribe(message => {
-                                      if(message.data[message.id]?.moreVideoFilesAvailable == true){
-                                        this.isMoreMediaAvailable = true;
-                                      }else{
-                                        this.isMoreMediaAvailable = false;
-                                      }
-                                      this.filteredRespone.next(message?.data[message.id]?.videoFiles);
-                                    });
+    this.pageNo = 1;
+    MediaFilterService.cachedMedia = [];
+    this.nextPageMedia = [];
+
+    this.startSubscription(videoSubscribeUrl, queryParams);
+
+    this.mediaAmendmentErrorSubsription = this.mediaSubscriptions.nextAmendmentError.subscribe(() => {
+                                              this.pageNo = 1;
+                                              MediaFilterService.cachedMedia = [];
+                                              this.nextPageMedia = [];
+                                              this.startSubscription(videoSubscribeUrl, queryParams);
+                                          });                                 
   }
 
-  fetchMoreMedia(){
-    if(this.isMoreMediaAvailable){
+  fetchMoreMedia() {
+    if(this.isMoreMediaAvailable) {
+      this.pageNo++;
+
+      if (this.nextPageMedia.length > 0) {
+        if (this.pageNo === 3) {
+          MediaFilterService.cachedMedia = MediaFilterService.cachedMedia.concat(this.nextPageMedia);
+        }
+
+        this.filteredRespone.next(this.nextPageMedia);
+      }
+
       this.mediaSubscriptions.amend(this.apiUrls.videoListFetchMore, { limit: 50 });
     }
   }
@@ -149,12 +175,50 @@ export class MediaFilterService {
   private createGroupId() : string {
     return '' + Math.floor(Math.random() * 100000000 );
   }
-  
+
+  private startSubscription(videoSubscribeUrl, queryParams): void {
+    if (this.mediaResutsSubscription !== null) {
+      this.mediaResutsSubscription.unsubscribe();
+    }    
+
+    if (this.mediaAmendmentErrorSubsription !== null) {
+      this.mediaAmendmentErrorSubsription.unsubscribe();
+    }
+    
+    this.mediaSubscriptions = new Feedsubscription(videoSubscribeUrl, this.groupManager,
+      (this.apiUrls.videoListSubscribe,() => queryParams),this.http, this.authService);   
+
+    this.mediaResutsSubscription = this.mediaSubscriptions.dataReceived.subscribe(message => {
+        if(message.data[message.id]?.moreVideoFilesAvailable == true){
+          this.isMoreMediaAvailable = true;
+        }else{
+          this.isMoreMediaAvailable = false;
+        }
+                
+        if (this.pageNo == 1) {
+          this.filteredRespone.next(null);
+          this.filteredRespone.next(message?.data[message.id]?.videoFiles);
+          MediaFilterService.cachedMedia = MediaFilterService.cachedMedia.concat(message?.data[message.id]?.videoFiles);
+          this.fetchMoreMedia();
+        } else {
+          this.nextPageMedia = message?.data[message.id]?.videoFiles;
+        }
+      });
+  }
+
   closeSubscription(): void {
     this.filteredRespone.complete();
 
     if (this.mediaResutsSubscription !== null) {
       this.mediaResutsSubscription.unsubscribe();
     }
+
+    if (this.mediaAmendmentErrorSubsription !== null) {
+      this.mediaAmendmentErrorSubsription.unsubscribe();
+    }
+  }
+
+  static clearCache(): void {
+    MediaFilterService.cachedMedia = [];
   }
 }

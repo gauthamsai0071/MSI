@@ -6,11 +6,11 @@ export class Feedwebsocket {
     private ready = false;
     private closed = false;
     private ws: WebSocket;
-    private keepAliveResponseTimeout: any;
     public messageResponse : any;   
-
+    
     public dataReceived: EventEmitter<any>;
     public socketError: EventEmitter<any>;
+    private keepAliveTimer: any;
 
     constructor(private urls : ApiUrls, private groupManger: MediaGroupManagerService) {
         this.dataReceived = new EventEmitter<any>();
@@ -21,16 +21,16 @@ export class Feedwebsocket {
         const url = this.urls.wsFeedWithActiveTime(this.getAndResetActiveState())   
         this.ws = new WebSocket(url);        
         
-        this.ws.onopen = () => {
+        this.ws.onopen = () => {            
             if (this.ws) {
                 this.ready = true;
+                this.keepAliveTimer = null;
                 this.sendKeepAlive();
             }
         };
 
         this.ws.onclose = ( closeEvent ) => {
-            if (this.ws) {
-                console.log(("FeedManager websocket closed with status " + closeEvent.code) + (closeEvent.reason ? ": " + closeEvent.reason : ""));              
+            if (this.ws) {                
                 this.cleanupFeed(false);
             }
         };
@@ -46,7 +46,6 @@ export class Feedwebsocket {
             if (this.ws) {
                 if (this.ready) {
                     let message = JSON.parse(event.data);
-                    clearTimeout(this.keepAliveResponseTimeout);
                     switch (message.type) {
                         case "CREATE_RESPONSE":
                             this.dataReceived.emit(message);
@@ -58,7 +57,6 @@ export class Feedwebsocket {
                             this.cleanupFeed(true);
                             break;
                         case "KEEP_ALIVE":
-                            // Only sent to clear the alive timer
                             break;
                         default:
                             console.log("FeedSocket received a message without a valid type.");
@@ -70,15 +68,27 @@ export class Feedwebsocket {
     }
 
     sendKeepAlive() {
+        if ((Date.now() - this.groupManger.lastMessageTime) <= 30000)
+        {
+            this.keepAliveTimer = setTimeout(() => { 
+                this.groupManger.activityTime = Date.now();
+                this.sendKeepAlive();
+            }, (35000 - (Date.now() - this.groupManger.lastMessageTime)));
+
+            return;
+        }
+
         if (this.ready && this.ws) {
             let data: any = {keepAlive: true};
             data.activeTime = this.getAndResetActiveState();
             if (this.groupManger.haveLiveGroups())
                 data.mgroup = this.groupManger.getLiveGroupIds();
             this.ws.send(JSON.stringify( data ) );
-            // this.keepAliveResponseTimeout = setTimeout( () => {
-            //     this.cleanupFeed( false );
-            // }, 15000 );
+
+            this.keepAliveTimer = setTimeout(() => { 
+                                        this.groupManger.activityTime = Date.now();
+                                        this.sendKeepAlive();
+                                    }, 35000);
         }
     }
 
@@ -123,11 +133,12 @@ export class Feedwebsocket {
     }    
 
     // Return time since last activity
-    getAndResetActiveState() {        
+    getAndResetActiveState() {
         return Math.max(0, Date.now() - this.groupManger.activityTime);
     }
 
     closeSubscriptions(): void {
+        clearTimeout(this.keepAliveTimer);
         this.dataReceived.complete();
         this.socketError.complete();
     }

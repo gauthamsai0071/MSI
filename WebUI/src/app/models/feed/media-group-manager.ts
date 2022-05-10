@@ -11,6 +11,7 @@ export class MediaGroupManagerService {
     private playerId : string;
 
     public activityTime : number;
+    public lastMessageTime: number = 0;
 
     constructor(private http: HttpClient) {
     }

@@ -11,7 +11,7 @@ const path = require('path');
 
 const ui_path  = path.join(path.resolve(__dirname, '..'), 'UI//');
 
-var serverConfig = JSON.parse(fileSystem.readFileSync('config.json', 'utf8'));
+var serverConfig = require('./config.json');
 
 const app = new koa();
 const port = serverConfig.port;
@@ -83,13 +83,16 @@ app.use(async (ctx, next) => {
 	if (ctx.request.url === '/health')
 	{
 		ctx.status = 200;
+	} else if (if (ctx.request.url === '/assetManagerUrl')
+	{
+		ctx.body = serverConfig.assetManagerUrl;
 	} else if (ctx.request.url === '/' || ctx.request.url === '/login' || ctx.request.url === '/home' || 
 		(ctx.request.url.indexOf('/api') === -1 && ctx.request.url.indexOf('/incidents') !== -1)) {
 		setResponseHeaders(ctx.response, 'text/html');
 		ctx.body = fileSystem.createReadStream(ui_path + 'index.html');
 	} else {
 		await next();
-	}		
+	}
 });
 	
 app.use(
@@ -108,8 +111,8 @@ app.use(enforceHttps({
 }));
 
 var options = {
-  key: fileSystem.readFileSync(path.resolve('./certs/private.key')),
-  cert: fileSystem.readFileSync(path.resolve('./certs/certificate.crt'))
+  key: fileSystem.readFileSync(__dirname + path.resolve('/certs/private.key')),
+  cert: fileSystem.readFileSync(__dirname + path.resolve('/certs/certificate.crt'))
 }
 
 const server = https.createServer(options, app.callback()).listen(port);

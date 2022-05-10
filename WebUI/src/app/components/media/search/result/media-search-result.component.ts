@@ -26,6 +26,13 @@ export class MediaSearchResultComponent implements OnInit, OnDestroy {
     searchFields: CustomField[],
   }) {
     if (inputValue) {
+      if (this.subscription != null) {
+        this.mediaFilterService.closeSubscription();
+        this.subscription.cancel();
+        this.filteredMedia.unsubscribe();
+      }
+
+      this.isLoading = true;
       this.rows = [];
       this.mediaFilterService.buildSearchParams(inputValue.filterCriteria, inputValue.calendarFields, inputValue.checkBoxFields, inputValue.searchFields);
     }
@@ -61,60 +68,18 @@ export class MediaSearchResultComponent implements OnInit, OnDestroy {
     };
   }
 
-  ngOnInit() {
-    this.mediaFilterService.buildSearchParams(null, null, null, null);
+  ngOnInit() {    
     this.isLoading = true;
+    this.mediaFilterService.buildSearchParams(null, null, null, null);          
+
     this.filteredMedia = this.mediaFilterService.filteredRespone$.subscribe(result => {
-      if (result) {
-        this.isLoading = false;
-        _.each(result, mediaFile => {
-          let field = mediaFile.customFields.find(item => toLower(item.name) == toLower("timestamp"));
-          mediaFile.timestamp = field !== undefined ? moment(field.value?.timestamp).toDate() : null;
-
-          field = mediaFile.customFields.find(item => toLower(item.name) == toLower("mimeType"));
-          mediaFile.mimeType = field !== undefined ? field.value?.text : '';
-
-          field = mediaFile.customFields.find(item => toLower(item.name) == toLower("talkgroupId"));
-          mediaFile.talkgroupId = field !== undefined ? field.value?.text : '';
-
-          field = mediaFile.customFields.find(item => toLower(item.name) == toLower("agencyName"));
-          mediaFile.agencyName = field !== undefined ? field.value?.text : '';
-
-          field = mediaFile.customFields.find(item => toLower(item.name) == toLower("unitId"));
-          mediaFile.unitId = field !== undefined ? field.value?.text : '';
-
-          field = mediaFile.customFields.find(item => toLower(item.name) == toLower("channel"));
-          mediaFile.channel = field !== undefined ? field.value?.text : '';
-
-          field = mediaFile.customFields.find(item => toLower(item.name) == toLower("siteId"));
-          mediaFile.siteId = field !== undefined ? field.value?.text : '';
-
-          field = mediaFile.customFields.find(item => toLower(item.name) == toLower("zoneId"));
-          mediaFile.zoneId = field !== undefined ? field.value?.text : '';
-
-          field = mediaFile.customFields.find(item => toLower(item.name) == toLower("rscAlias"));
-          mediaFile.rscAlias = field !== undefined ? field.value?.text : '';
-
-          field = mediaFile.customFields.find(item => toLower(item.name) == toLower("individualAlias"));
-          mediaFile.individualAlias = field !== undefined ? field.value?.text : '';
-
-          field = mediaFile.customFields.find(item => toLower(item.name) == toLower("system"));
-          this.onDisplayColumnChange(field !== undefined ? field.value?.text : '');
-
-          field = mediaFile.customFields.find(item => toLower(item.name) == toLower("originatingMDN"));
-          mediaFile.originatingMDN = field !== undefined ? field.value?.text : '';
-
-          field = mediaFile.customFields.find(item => toLower(item.name) == toLower("terminatingMDN"));
-          mediaFile.terminatingMDN = field !== undefined ? field.value?.text : '';
-
-          field = mediaFile.customFields.find(item => toLower(item.name) == toLower("participatingMDN"));
-          mediaFile.participatingMDN = field !== undefined ? field.value?.text : '';
-
-          field = mediaFile.customFields.find(item => toLower(item.name) == toLower("talkgroupName"));
-          mediaFile.talkgroupName = field !== undefined ? field.value?.text : '';
-        })
-        this.rows = this.rows.concat(result);
+      if (result === null) {
+        this.rows = [];
+      } else if (result) {    
+        this.rows = this.rows.concat(this.setMediaResults(result));
       }
+
+      this.isLoading = false;
     });
   }
 
@@ -173,6 +138,57 @@ export class MediaSearchResultComponent implements OnInit, OnDestroy {
      }
   }
 
+  private setMediaResults(rows: MediaFile[]): MediaFile[] {
+    _.each(rows, mediaFile => {
+      let field = mediaFile.customFields.find(item => toLower(item.name) == toLower("timestamp"));
+      mediaFile.timestamp = field !== undefined ? moment(field.value?.timestamp).toDate() : null;
+
+      field = mediaFile.customFields.find(item => toLower(item.name) == toLower("mimeType"));
+      mediaFile.mimeType = field !== undefined ? field.value?.text : '';
+
+      field = mediaFile.customFields.find(item => toLower(item.name) == toLower("talkgroupId"));
+      mediaFile.talkgroupId = field !== undefined ? field.value?.text : '';
+
+      field = mediaFile.customFields.find(item => toLower(item.name) == toLower("agencyName"));
+      mediaFile.agencyName = field !== undefined ? field.value?.text : '';
+
+      field = mediaFile.customFields.find(item => toLower(item.name) == toLower("unitId"));
+      mediaFile.unitId = field !== undefined ? field.value?.text : '';
+
+      field = mediaFile.customFields.find(item => toLower(item.name) == toLower("channel"));
+      mediaFile.channel = field !== undefined ? field.value?.text : '';
+
+      field = mediaFile.customFields.find(item => toLower(item.name) == toLower("siteId"));
+      mediaFile.siteId = field !== undefined ? field.value?.text : '';
+
+      field = mediaFile.customFields.find(item => toLower(item.name) == toLower("zoneId"));
+      mediaFile.zoneId = field !== undefined ? field.value?.text : '';
+
+      field = mediaFile.customFields.find(item => toLower(item.name) == toLower("rscAlias"));
+      mediaFile.rscAlias = field !== undefined ? field.value?.text : '';
+
+      field = mediaFile.customFields.find(item => toLower(item.name) == toLower("individualAlias"));
+      mediaFile.individualAlias = field !== undefined ? field.value?.text : '';
+
+      field = mediaFile.customFields.find(item => toLower(item.name) == toLower("system"));
+      this.onDisplayColumnChange(field !== undefined ? field.value?.text : '');
+
+      field = mediaFile.customFields.find(item => toLower(item.name) == toLower("originatingMDN"));
+      mediaFile.originatingMDN = field !== undefined ? field.value?.text : '';
+
+      field = mediaFile.customFields.find(item => toLower(item.name) == toLower("terminatingMDN"));
+      mediaFile.terminatingMDN = field !== undefined ? field.value?.text : '';
+
+      field = mediaFile.customFields.find(item => toLower(item.name) == toLower("participatingMDN"));
+      mediaFile.participatingMDN = field !== undefined ? field.value?.text : '';
+
+      field = mediaFile.customFields.find(item => toLower(item.name) == toLower("talkgroupName"));
+      mediaFile.talkgroupName = field !== undefined ? field.value?.text : '';
+    })
+
+    return rows;
+  }
+
   ngOnDestroy(): void {
     if (this.subscription != null) {
       this.mediaFilterService.closeSubscription();
@@ -180,6 +196,4 @@ export class MediaSearchResultComponent implements OnInit, OnDestroy {
       this.filteredMedia.unsubscribe();
     }
   }
-
-
 }
