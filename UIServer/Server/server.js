@@ -9,7 +9,7 @@ const { default: enforceHttps } = require('koa-sslify');
 const bodyParser = require('koa-bodyparser');
 const path = require('path');
 
-const ui_path  = path.join(path.resolve(__dirname, '..'), 'UI//');
+const ui_path = path.join(path.resolve(__dirname, '..'), 'UI//');
 
 var serverConfig = require('./config.json');
 
@@ -18,9 +18,9 @@ const port = serverConfig.port;
 
 app.use(async (ctx, next) => {
 	if (ctx.request.url.indexOf('.') !== -1) {
-		const extension = ctx.request.url.split('.').pop();			
-		
-		switch(extension) {
+		const extension = ctx.request.url.split('.').pop();
+
+		switch (extension) {
 			case 'css':
 				serve(ctx, 'text/css');
 				break;
@@ -48,7 +48,7 @@ app.use(async (ctx, next) => {
 			case 'tiff':
 				serve(ctx, 'image/tiff');
 				break;
-			case 'ttf':				
+			case 'ttf':
 				serve(ctx, 'font/ttf');
 				break;
 			case 'eot':
@@ -76,17 +76,15 @@ app.use(async (ctx, next) => {
 			case 'map':
 				serve(ctx, 'application/json');
 		}
-		
-		return;	
+
+		return;
 	}
-	
-	if (ctx.request.url === '/health')
-	{
+
+	if (ctx.request.url === '/health') {
 		ctx.status = 200;
-	} else if (if (ctx.request.url === '/assetManagerUrl')
-	{
+	} else if (ctx.request.url === '/assetManagerUrl') {
 		ctx.body = serverConfig.assetManagerUrl;
-	} else if (ctx.request.url === '/' || ctx.request.url === '/login' || ctx.request.url === '/home' || 
+	} else if (ctx.request.url === '/' || ctx.request.url === '/login' || ctx.request.url === '/home' ||
 		(ctx.request.url.indexOf('/api') === -1 && ctx.request.url.indexOf('/incidents') !== -1)) {
 		setResponseHeaders(ctx.response, 'text/html');
 		ctx.body = fileSystem.createReadStream(ui_path + 'index.html');
@@ -94,25 +92,25 @@ app.use(async (ctx, next) => {
 		await next();
 	}
 });
-	
+
 app.use(
-	  proxy("/", {
+	proxy("/", {
 		target: serverConfig.assetManagerUrl,
-		ws: true, 
+		ws: true,
 		changeOrigin: true,
 		logLevel: 'debug'
-	  })
+	})
 );
 
 app.use(bodyParser());
 
 app.use(enforceHttps({
- port: port
+	port: port
 }));
 
 var options = {
-  key: fileSystem.readFileSync(__dirname + path.resolve('/certs/private.key')),
-  cert: fileSystem.readFileSync(__dirname + path.resolve('/certs/certificate.crt'))
+	key: fileSystem.readFileSync(__dirname + path.resolve('/certs/private.key')),
+	cert: fileSystem.readFileSync(__dirname + path.resolve('/certs/certificate.crt'))
 }
 
 const server = https.createServer(options, app.callback()).listen(port);
@@ -122,22 +120,22 @@ const server = https.createServer(options, app.callback()).listen(port);
 console.log(`listening on port ${port}`);
 
 gracefulShutdown(server,
-    {
-        signals: 'SIGINT SIGTERM',
-        timeout: 30000,
-        development: false,
-        onShutdown: raiseAlarm,
-        finally: () => {
-            console.log('Server gracefully shutting down.....')
-        }
-    }
+	{
+		signals: 'SIGINT SIGTERM',
+		timeout: 30000,
+		development: false,
+		onShutdown: raiseAlarm,
+		finally: () => {
+			console.log('Server gracefully shutting down.....')
+		}
+	}
 );
 
 function raiseAlarm() {
-  return new Promise((resolve) => {
-    console.log('Raising Alarm')
-	resolve();    
-  });
+	return new Promise((resolve) => {
+		console.log('Raising Alarm')
+		resolve();
+	});
 }
 
 function serve(ctx, mimeType) {
@@ -147,13 +145,13 @@ function serve(ctx, mimeType) {
 
 function setResponseHeaders(response, mimeType) {
 	response.set({
-        "X-Content-Security-Policy" : "default-src 'self'",
-        "Strict-Transport-Security" : "max-age=31536000; includeSubDomains",
-         "X-Content-Type-Options" : "nosniff",
-         "X-Frame-Options" : "SAMEORIGIN",
-         "X-XSS-Protection" : "1; mode=block",
-         "Referrer-Policy" : "same-origin",
-         "Cache-Control" : "no-store",
-		 "Content-Type": mimeType
-    });
+		"X-Content-Security-Policy": "default-src 'self'",
+		"Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+		"X-Content-Type-Options": "nosniff",
+		"X-Frame-Options": "SAMEORIGIN",
+		"X-XSS-Protection": "1; mode=block",
+		"Referrer-Policy": "same-origin",
+		"Cache-Control": "no-store",
+		"Content-Type": mimeType
+	});
 }
