@@ -70,7 +70,8 @@
 
 .list-top-actions {
     text-align: right;
-    left      : 700px;
+    flex: auto;
+    padding-right:6px;
     position  : relative;
     cursor    : pointer;
 }

@@ -1,0 +1,17 @@
+.sidebar-wrapper{
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 2px 2px 0px 0px;
+    margin-top: 6px;
+    margin-left: 6px;
+    width : 48px; 
+    height: calc( 100vh - 104px);
+}
+.sidebar-wrapper{
+    .msi-sidebar-item{
+        height : 40px;
+        ::ng-deep .msi-icon{
+            width: 22px;
+            height: 22px;
+        }
+    }
+}

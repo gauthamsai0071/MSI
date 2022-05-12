@@ -10,6 +10,7 @@ import { MediaSearchComponent } from './components/media/search/search.component
 import {  MediaFilterComponent } from './components/media/search/filter/filter.component'
 import { MediaFilterService } from './services/media/media-filter.service';
 import { MediaSearchResultComponent } from './components/media/search/result/media-search-result.component';
+import { SidebarComponent } from './components/common/sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,7 @@ import { MediaSearchResultComponent } from './components/media/search/result/med
     HomeComponent,
     MediaSearchComponent,
     MediaFilterComponent,    
-    MediaSearchResultComponent
+    MediaSearchResultComponent, SidebarComponent
   ],
   imports: [
     BrowserModule,

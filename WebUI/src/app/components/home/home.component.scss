@@ -19,5 +19,10 @@ button{
     max-width: 25%;
 }
 .media-result-component{
-    min-width: 75%;
+    flex:2;
+    max-width: 70%;
+}
+.sidebar-wrapper{
+    flex:1;
+    max-width: 5%;
 }
