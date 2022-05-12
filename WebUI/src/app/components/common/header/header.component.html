@@ -1,31 +1,34 @@
-    <msi-common-header
-    [fullWidth]="true"
-    [search]="search_enable"
-    [responsive]="responsive_enable"
-    [overflowNotificationBadge]="badge_enable"
-    [emitValueAfterEachChar]="true"   
-    #header>
-  <msi-header-left-plugin-area
-      class="msi-common-header-left-plugin-area"
-      [applicationName]="header_name"
-      [emsignia]="emsignia_enable"
-      applicationHomeUrl="#"
-    >
+<msi-common-header [fullWidth]="true" [search]="search_enable" [responsive]="responsive_enable"
+  [overflowNotificationBadge]="badge_enable" [emitValueAfterEachChar]="true" #header>
+  <msi-header-left-plugin-area class="msi-common-header-left-plugin-area" [applicationName]="header_name"
+    [emsignia]="emsignia_enable" applicationHomeUrl="#">
   </msi-header-left-plugin-area>
   <msi-header-right-plugin-area class="msi-common-header-right-plugin-area">
-
     <div class="msi-common-header-plugin">
       <msi-application-switcher *ngIf="applications_enable">
-        <msi-application-switcher-row class="switcher-row" *ngFor="let service of mockServices" [serviceDescription]="service" (click)="redirectAdmin()">
-        </msi-application-switcher-row>
+        <div class="msi-application-switcher-row header-row" *ngFor="let service of mockServices">
+          <div *ngIf="service.envKey === 'adminAppUrl' else elseBlock">
+            <a class="service" href="{{ oldAdminUrl }}app/admin" title="{{ service.name}}">
+              <div class="service-icon switcher-icon"><img class="msi-common-icon-invert" src="{{ service.icon}}">
+                <div class="service-title">{{ service.name}}</div>
+              </div>
+            </a>
+          </div>
+          <ng-template #elseBlock>
+            <msi-application-switcher-row class="switcher-row" *ngFor="let service of mockServices"
+              [serviceDescription]="service">
+            </msi-application-switcher-row>
+          </ng-template>
+        </div>
       </msi-application-switcher>
     </div>
-
     <div class="msi-common-header-plugin">
       <msi-support-information *ngIf="support_enable">
         <p style="font-weight: bold">HELP</p>
         <p>For help, please contact Motorola Solutions support.</p>
-        <p><msi-icon class="help-text-call-icon" name="ic_call"></msi-icon> 800-323-9949</p>
+        <p>
+          <msi-icon class="help-text-call-icon" name="ic_call"></msi-icon> 800-323-9949
+        </p>
         <p><span class="sub-label">option 2, option 5, option 1</span></p>
         <p>
           <msi-icon class="help-text-call-icon" name="ic_email"></msi-icon>
@@ -37,14 +40,16 @@
     <div class="msi-common-header-plugin">
       <msi-session-manager userNameSurname="{{ user_name }}" class="msi-session-manager" *ngIf="sessionManager_enable">
         <a class="msi-common-header-dropdown-item sub-link user-action"
-        href="https://www.motorolasolutions.com/en_us/about/terms-use.html" target="_blank">Terms &amp; Conditions</a>
+          href="https://www.motorolasolutions.com/en_us/about/terms-use.html" target="_blank">Terms &amp; Conditions</a>
         <a class="msi-common-header-dropdown-item sub-link user-action"
-        href="https://www.motorolasolutions.com/en_us/about/privacy-policy.html#highlights" target="_blank">Privacy Policy</a>
-        <a class="msi-common-header-dropdown-item sub-link user-action" href="javascript:void(0)" (click)="logout()">Logout</a>
+          href="https://www.motorolasolutions.com/en_us/about/privacy-policy.html#highlights" target="_blank">Privacy
+          Policy</a>
+        <a class="msi-common-header-dropdown-item sub-link user-action" href="javascript:void(0)"
+          (click)="logout()">Logout</a>
       </msi-session-manager>
     </div>
   </msi-header-right-plugin-area>
-</msi-common-header> 
+</msi-common-header>
 <div class="nav-tab-label-wrapper">
   <app-tab-group class="msi-tabs-wrapper" [selectedIndex]="selectedIndex" (selectedIndexChange)="tabChanged($event)">
     <msi-tab>
@@ -53,14 +58,14 @@
           <msi-icon name="ic_media_play" class="media-play-icon"></msi-icon>
           <p class="tab-label">Media</p>
         </span>
-      </ng-template>      
+      </ng-template>
     </msi-tab>
     <msi-tab>
       <ng-template msiTabLabel>
-          <span class="tab-item" (mousedown)="navigateTab(1)">
-            <msi-icon name="ic_incident"  class="incident-icon"></msi-icon>
-            <p class="tab-label">Incident</p>
-          </span>
+        <span class="tab-item" (mousedown)="navigateTab(1)">
+          <msi-icon name="ic_incident" class="incident-icon"></msi-icon>
+          <p class="tab-label">Incident</p>
+        </span>
       </ng-template>
     </msi-tab>
     <msi-tab>

@@ -1,4 +1,4 @@
-import { Component, HostBinding, Input, ViewChild } from '@angular/core';
+import { Component, HostBinding, Input, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../app/services/auth/auth.service';
 import { AppTabGroupComponent } from '../../../shared/tab-group/tab-group.component';
@@ -7,7 +7,7 @@ export const mockServices = [
     systemNames: ['msi_admin', 'admin'],
     name: 'Admin',
     icon: '/assets/applications/ic_cc_launcher_admin.svg',
-    envKey: 'adminAppUrl'
+    envKey: 'adminAppUrl',
   }
 ];
 
@@ -16,16 +16,21 @@ export const mockServices = [
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent { 
+export class HeaderComponent implements OnInit {
   @ViewChild(AppTabGroupComponent) tabGroup: AppTabGroupComponent;
-  
+
   @Input()
   selectedIndex: number;
+  oldAdminUrl: string;
 
   constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
+    this.authService.getAdminUrl().subscribe(response => {
+      this.oldAdminUrl = response;
+    });
   }
+
   public mockServices = mockServices;
 
   @HostBinding('style.width') readonly width: string = '100%';
@@ -49,13 +54,13 @@ export class HeaderComponent {
   checkOverflow(header: { checkOverflow: () => void; }) {
     setTimeout(() => header.checkOverflow(), 0);
   }
-    
+
   navigateTab(index: number): void {
-    this.tabGroup.clickTab(index);  
+    this.tabGroup.clickTab(index);
     this.tabChanged(index);
   }
 
-  tabChanged(index: number) : void {
+  tabChanged(index: number): void {
     if (index === 0)
       this.router.navigateByUrl('/home');
     else if (index === 1) {
@@ -63,12 +68,8 @@ export class HeaderComponent {
     }
   }
 
-  logout(){
+  logout() {
     this.authService.logout();
     this.router.navigateByUrl('/login');
-  }
-  redirectAdmin(){
-    const url = "https://dev.ur-na.videomanager.online/app/admin";
-    window.open(url, '_self');
   }
 }
