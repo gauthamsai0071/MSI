@@ -83,7 +83,7 @@ app.use(async (ctx, next) => {
 	if (ctx.request.url === '/health') {
 		ctx.status = 200;
 	} else if (ctx.request.url === '/assetManagerUrl') {
-		ctx.body = serverConfig.assetManagerUrl;
+		ctx.body = serverConfig.assetManagerUrlPublic;
 	} else if (ctx.request.url === '/' || ctx.request.url === '/login' || ctx.request.url === '/home' ||
 		(ctx.request.url.indexOf('/api') === -1 && ctx.request.url.indexOf('/incidents') !== -1)) {
 		setResponseHeaders(ctx.response, 'text/html');

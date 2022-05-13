@@ -1,4 +1,5 @@
 {
 	"port": 8080,
-	"assetManagerUrl": "https://localhost:9080/"
+	"assetManagerUrl": "http://localhost:9080",
+	"assetManagerUrlPublic": "https://dev_unirec.imw.motorolasolutions.com:9080/"
 }
