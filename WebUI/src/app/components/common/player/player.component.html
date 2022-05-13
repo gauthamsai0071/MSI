@@ -18,17 +18,17 @@
                         <msi-icon (click)="skip(-2)" name="ic_back_10" class="material-icons fast-rewind"></msi-icon>
                     </span>
                     <span class="icon">
-                        <msi-icon (click)="playPause()" name="ic_media_play" class="material-icons play_pause">
+                        <msi-icon (click)="playPause()" name="ic_media_play" class="material-icons play_pause" *ngIf="play_btn">
+                        </msi-icon>
+                        <msi-icon (click)="playPause()" name="ic_media_pause" class="material-icons play_pause" *ngIf="!play_btn">
                         </msi-icon>
                     </span>
                     <span class="icon">
                         <msi-icon (click)="skip(2)" name="ic_forward_10" class="material-icons fast-forward"></msi-icon>
                     </span>
                     <span class="icon">
-                        <i class="material-icons volume" (click)="muteVolume()" (mouseover)="over()"
-                            >volume_up</i>
-                        <input type="range" min="0" max="100" class="volume_range" (change)="changeVolume()"
-                            *ngIf="mouseOver" (mouseout)="out()">
+                        <msi-icon name="{{speakerVal}}" (click)="muteVolume()" class="material-icons volume"></msi-icon>
+                        <input type="range" min="0" max="100" class="volume_range" (change)="changeVolume()" #volBar>
                     </span>
                     <div class="timer">
                         <span class="current">0:00</span> / <span class="duration">0:00</span>
@@ -44,11 +44,15 @@
                             </msi-icon>
                     </span>
                     <span class="icon">
-                        <i class="material-icons picture_in_picutre"
-                            (click)="pictureInPicture()">picture_in_picture_alt</i>
+                        <svg viewBox="0 0 24 24" (click)="pictureInPicture()"
+                            class="material-icons picture_in_picture">
+                            <path fill="currentColor"
+                                d="M19,11H11V17H19V11M23,19V5C23,3.88 22.1,3 21,3H3A2,2 0 0,0 1,5V19A2,2 0 0,0 3,21H21A2,2 0 0,0 23,19M21,19H3V4.97H21V19Z" />
+                        </svg>
                     </span>
                     <span class="icon">
-                        <i class="material-icons fullscreen" (click)="fullScreen()">fullscreen</i>
+                        <img src="../../../../assets/applications/fullscreen-12-xxl.png" (click)="fullScreen()" class="material-icons fullscreen">
+                        <!-- <i class="material-icons fullscreen" (click)="fullScreen()">fullscreen</i> -->
                     </span>
                 </div>
             </div>

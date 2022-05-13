@@ -1,0 +1,57 @@
+.shareIncident {
+    .buttons {
+        align-items: baseline;
+        display: flex;
+        flex-direction:row-reverse ;
+    }
+
+    .msi-input {
+        width: 99.79%;
+    }
+
+    .buttons .msi-btn.form-submit {
+        margin: 2px 0px 3px 0px;
+    }
+
+    ::ng-deep .msi-toggle-label {
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 99.79%;
+        padding: 8px 2px 0px 0px;
+        line-height: 1.5;
+        color: var(--text-primary);
+        cursor: pointer;
+    }
+
+    .shared {
+        .msi-input {
+            width: 94%;
+        }
+
+        ::ng-deep .msi-btn.msi-btn-compact {
+            display: inline-flex;
+            margin: -3px 0px 0px 3px;
+        }
+
+        ::ng-deep .viewShared .msi-btn.msi-btn-compact {
+            display: inline-flex;
+            margin: 2px 2px 2px 0px;
+        }
+
+        #add-button {
+            height: 34px;
+        }
+        .add{
+
+        }
+    }
+
+    ::ng-deep.ic-remove {
+        font-size: 9px;
+    }
+
+    .usersList {
+        display: inline-flex;
+    }
+}

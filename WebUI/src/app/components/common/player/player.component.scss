@@ -198,7 +198,7 @@ section
     transform: rotate(45deg);
 }
 .controls .icon .volume_range
-{
+{   display: none;
     -webkit-appearance: none;
     appearance: none;
     width: 0px;
@@ -210,6 +210,18 @@ section
     border: none;
     transition: 0.4s;
 
+}
+[hidden]{
+    display: none;
+}
+.picture_in_picture{
+    background-color: transparent;
+    width:27px;
+    height:27px
+}
+.fullscreen{
+    height: 0.8em;
+    width: 0.8em;
 }
 .controls .icon .volume_range::-webkit-slider-thumb
 {

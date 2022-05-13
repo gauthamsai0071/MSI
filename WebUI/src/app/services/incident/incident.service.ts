@@ -36,6 +36,15 @@ export class IncidentService {
     let url = 'api/mediaGroups/' + id;
     return this.http.delete(url);
   }
+  public shareIncident(id: number, data: any) {
+    let url = 'api/incidents/' + id + '/security'
+    return this.http.post(url, data)
+  }
+  public getShareIncident(id: number):any {
+    let mGroupId = this.commonSrv.createGroupId();
+    let url = 'api/incidents/' + id + '?mgroupid=' + mGroupId;
+    return this.http.get(url);
+  }
 
   public deleteIncident(id: number) {
     let url = 'api/incidents/' + id + '/delete';

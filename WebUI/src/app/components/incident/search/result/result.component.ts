@@ -6,6 +6,7 @@ import { DialogService } from '../../../../services/common/dialog.service';
 import { IncidentSearchService } from '../../../../services/incident/search.service';
 import { ExportIncidentComponent } from '../../export/export-incident.component';
 import { ManageIncidentComponent } from '../../manage/manage-incident.component';
+import { shareIncidentComponent } from '../../share/share-incident.component';
 
 @Component({
   selector: 'app-incident-search-result',
@@ -56,10 +57,24 @@ export class IncidentSearchResultComponent {
     private dialogService: DialogService) {
   }
 
-  manageIncident(mode: string, id?: number): void {
-    const componentName = (mode === 'export') ? ExportIncidentComponent : (mode === 'delete') ? IncidentSearchResultComponent : ManageIncidentComponent;
+  manageIncident(mode: string, id?: number, switchNumber?: number): void {
+    let componentName;
+    //1===export 2===share 3==delete 0==restAll
+    switch (switchNumber) {
+      case (1):
+        componentName = ExportIncidentComponent
+        break
+      case (2):
+        componentName = shareIncidentComponent
+        break
+      case (3):
+        componentName = IncidentSearchResultComponent
+        break
+      default:
+        componentName = ManageIncidentComponent
+    }
     const title = mode.charAt(0).toUpperCase() + mode.slice(1);
-    this.dialogService.showDialog(title + ' Incident', componentName, id, { mode: mode, id: id, rows: [] })
+    this.dialogService.showDialog(title + ' Incident', componentName, id, { mode: mode, id: id })
       .subscribe(result => {
         this.filterCriteria = {
           owner: this._filterCriteria.owner,

@@ -14,7 +14,7 @@ export class Incident {
     }
     nClips: number;
     allowedActions: string;
-    sharedWith?: [];
+    sharedWith= [];
     isRestricted: boolean;
     controlState: string;
     isEditable: boolean;

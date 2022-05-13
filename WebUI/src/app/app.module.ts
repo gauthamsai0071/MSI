@@ -11,6 +11,8 @@ import {  MediaFilterComponent } from './components/media/search/filter/filter.c
 import { MediaFilterService } from './services/media/media-filter.service';
 import { MediaSearchResultComponent } from './components/media/search/result/media-search-result.component';
 import { SidebarComponent } from './components/common/sidebar/sidebar.component';
+import { shareIncidentComponent } from './components/incident/share/share-incident.component';
+import { Incident } from './models/incident/incident';
 
 @NgModule({
   declarations: [
@@ -19,16 +21,19 @@ import { SidebarComponent } from './components/common/sidebar/sidebar.component'
     HomeComponent,
     MediaSearchComponent,
     MediaFilterComponent,    
-    MediaSearchResultComponent, SidebarComponent
+    MediaSearchResultComponent, SidebarComponent,
+    shareIncidentComponent,
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    SharedModule    
+    SharedModule,
+    
   ],  
   providers: [ 
-    MediaFilterService
+    MediaFilterService,
+    Incident
   ],
   bootstrap: [AppComponent]
 })

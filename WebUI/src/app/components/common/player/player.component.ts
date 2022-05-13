@@ -52,6 +52,7 @@ export class PlayerComponent implements OnInit {
   fullscreen: any;
   settings: any;
   playback: any;
+  play_btn:boolean=true
   isPlaying = true;
   initialViewCheck = false;
   currentPlayback = '1';
@@ -73,6 +74,7 @@ export class PlayerComponent implements OnInit {
   mediaVtt = [];
   displayVTTText:string;
   subscription: Subscription = null;
+  speakerVal:string='ic_audio_speaker'
 
   constructor(private recordingService : RecordingService, private groupManager: MediaGroupManagerService, private http : HttpClient,private authService: AuthService,
               private playerService: PlayerService,private modalComp: ModalDialogComponent,
@@ -105,6 +107,7 @@ export class PlayerComponent implements OnInit {
   playVideoSrc() {
     this.play_pause.innerHTML = "pause";
     this.videoplayer.nativeElement.classList.add('paused')
+    this.play_btn=false
     this.videoplayer.nativeElement.play();
     if (this.currentTime === 0 && this.isReachEnd) {
       this.isReachEnd = false;
@@ -145,6 +148,7 @@ export class PlayerComponent implements OnInit {
   // Pause video function
   pauseVideo() {
     this.play_pause.innerHTML = "play_arrow";
+    this.play_btn=true
    this.videoplayer.nativeElement.classList.remove('paused')
    this.videoplayer.nativeElement.pause();
   }
@@ -292,23 +296,27 @@ export class PlayerComponent implements OnInit {
   changeVolume(){
     this.videoplayer.nativeElement.volume = this.volume_range.value / 100;
     if (this.volume_range.value == 0) {
-      this.volume.innerHTML = "volume_off";
-    } else if (this.volume_range.value < 40) {
-      this.volume.innerHTML = "volume_down";
-    } else {
-      this.volume.innerHTML = "volume_up";
+      this.speakerVal='ic_audio_speaker_mute'
+      }
+    else if(this.volume_range.value <50) {
+      
+      this.speakerVal='ic_audio_speaker_mid'
+    }
+    else{
+      this.speakerVal='ic_audio_speaker'
     }
   }
 
   muteVolume() {
     if (this.volume_range.value == 0) {
+      this.speakerVal='ic_audio_speaker'
       this.volume_range.value = 80;
       this.videoplayer.nativeElement.volume = 0.8;
-      this.volume.innerHTML = "volume_up";
     } else {
+      this.speakerVal='ic_audio_speaker_mute'
       this.volume_range.value = 0;
       this.videoplayer.nativeElement.volume = 0;
-      this.volume.innerHTML = "volume_off";
+
     }
   }
 
