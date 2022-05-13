@@ -1,8 +1,7 @@
 .exportIncident {
 
     input ::ng-deep,
-    .msi-select ::ng-deep,
-    .msi-toggle ::ng-deep {
+    .msi-select ::ng-deep {
         width: 100%;
     }
 
@@ -18,6 +17,7 @@
 
     ::ng-deep .export-toggle label.msi-toggle-label {
         padding: 8px 5px;
+        width: auto;
     }
 
     .form-button {
