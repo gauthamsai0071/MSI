@@ -104,7 +104,7 @@ app.use(
 
 app.use(bodyParser());
 
-app.use(enforceHttps({
+/*app.use(enforceHttps({
 	port: port
 }));
 
@@ -114,8 +114,8 @@ var options = {
 }
 
 const server = https.createServer(options, app.callback()).listen(port);
-
-//const server = app.listen(port);
+*/
+const server = app.listen(port);
 
 console.log(`listening on port ${port}`);
 
