@@ -68,29 +68,29 @@
     </form>
 </div>
 <ng-template #exportView>
-    <table msi-table id="my-table">
+    <table class="export-view" msi-table id="my-table">
         <tr>
-            <td>Signature</td>
+            <td class="label">Signature</td>
             <td>{{ export.signature }}</td>
         </tr>
         <tr>
-            <td>Description</td>
+            <td class="label">Description</td>
             <td>{{ export.description }}</td>
         </tr>
         <tr>
-            <td>Created </td>
+            <td class="label">Created </td>
             <td>{{ export.creationTime | date:'dd/MM/YYYY HH:mm' }}</td>
         </tr>
         <tr>
-            <td>Type</td>
+            <td class="label">Type</td>
             <td>{{ export.exportProfile.name }}</td>
         </tr>
         <tr>
-            <td>Status</td>
+            <td class="label">Status</td>
             <td>{{ (export.ready) ? 'Ready' : ''}}</td>
         </tr>
         <tr>
-            <td>Finished </td>
+            <td class="label">Finished </td>
             <td>{{ export.completionTime | date:'dd/MM/YYYY HH:mm' }}</td>
         </tr>
     </table>

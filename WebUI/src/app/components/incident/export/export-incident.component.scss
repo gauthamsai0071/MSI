@@ -17,7 +17,7 @@
 
     ::ng-deep .export-toggle label.msi-toggle-label {
         padding: 8px 5px;
-        width: auto;
+        width  : auto;
     }
 
     .form-button {
@@ -40,4 +40,16 @@
 
 .msi-icon {
     cursor: pointer;
+}
+
+.export-view td,
+.export-view th,
+.msi-th,
+.msi-td {
+    border: none;
+}
+
+.export-view .label {
+    font-weight: 700;
+    color      : var(--primary-70)
 }
