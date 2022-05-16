@@ -49,7 +49,7 @@ export class ManageIncidentComponent implements OnInit {
 
     ngOnInit(): void {
         let videoIds = '';
-        if (this.popupParam.rows.length > 0) {
+        if (this.popupParam.rows !== undefined && this.popupParam.rows.length > 0) {
             videoIds += '&';
             _.each(this.popupParam.rows, (media: MediaFile) => {
                 videoIds += 'videoId=' + media.id + '&';
@@ -171,7 +171,7 @@ export class ManageIncidentComponent implements OnInit {
                     defaultValue = (this.customFields[i].defaultValue) ? this.customFields[i].defaultValue.text : '';
             }
             else if (this.customFields[i].fieldType === 'CLIP_COUNT') {
-                defaultValue = (this.popupParam.rows) ? this.popupParam.rows.length : 0;
+                defaultValue = (this.popupParam.rows !== undefined) ? this.popupParam.rows.length : 0;
             }
 
             let validators = [];
@@ -234,7 +234,7 @@ export class ManageIncidentComponent implements OnInit {
         if (this.popupParam.id === 0) {
             this.incidentService.createIncident(mGroupId, incident).subscribe((incident: Incident) => {
                 this.incidentService.deleteMediaGroup(mGroupId).subscribe();
-                if (this.popupParam.rows.length > 0) {
+                if (this.popupParam.rows !== undefined && this.popupParam.rows.length > 0) {
                     this.toastService.success(this.popupParam.rows.length + " media(s)  added to new incident successfully.", undefined, { autoDismiss: 5000, closeButton: true });
                 }
                 else {
