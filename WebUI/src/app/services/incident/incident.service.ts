@@ -7,7 +7,7 @@ import { ExportShare } from '../../models/incident/export/share';
 import { CommonService } from '../common/common.service';
 import { SavedFilter } from '../../models/incident/savedFilter';
 import { ExportProfile } from '../../models/incident/export/exportProfile';
-import { PermissionGroup } from 'src/app/models/incident/permissionGroup';
+import { PermissionGroup } from '../../models/incident/permissionGroup';
 import { shareReplay } from 'rxjs/operators';
 
 @Injectable({
@@ -36,9 +36,21 @@ export class IncidentService {
     let url = 'api/mediaGroups/' + id;
     return this.http.delete(url);
   }
-  public shareIncident(id: number, data: any) {
+
+  public shareIncident(id: number, sharedUsers: {name: string}[], removedUsers: {name: string}[]) {
     let url = 'api/incidents/' + id + '/security'
-    return this.http.post(url, data)
+
+    const data: { addSharedWith?: { name: string; }[]; removeSharedWith?: { name: string; }[]; } = {};
+
+    if (sharedUsers.length > 0) {
+      data.addSharedWith = sharedUsers;
+    }
+
+    if (removedUsers.length > 0) {
+      data.removeSharedWith = removedUsers;
+    }
+
+    return this.http.post(url, data);
   }
   public getShareIncident(id: number):any {
     let mGroupId = this.commonSrv.createGroupId();

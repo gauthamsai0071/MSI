@@ -197,12 +197,7 @@ export class FeedManager {
 
         subscriptions.forEach((subscription: Feedsubscription) => {
             subscription.handleFeedError(unauthorised);
-        }); 
-        
-        // this.restartTimerId = window.setTimeout(() => {
-        //     this.restartTimerId = null;
-        //     this.createFeed();
-        // }, this.fastReconnect ? 0 : this.restartTimeoutMs);
+        });      
     }
 
     private handleTransientPollError(eventId: number) {

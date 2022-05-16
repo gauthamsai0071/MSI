@@ -1,16 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-</head>
-
-
-<div class="form-wrapper shareIncident" *ngIf="popupParam.mode==='share'">
+<div class="form-wrapper shareIncident">
     <div class="shareIncident">
         <form [formGroup]="shareIncidentForm">
             <div class="fields">
@@ -32,14 +20,12 @@
                         Shared
                     </label>
                     <div class="sharedUsers">
-                        <ng-container *ngFor="let share of sharedUsers">
-                            <button class="msi-btn msi-btn-compact">
-                                <msi-icon name="ic_contacts_people"></msi-icon>{{share.name}}
-                                &nbsp;<msi-icon name="ic_remove" class="ic-remove"
-                                    (click)="deleteSharedUser(share.name)">
-                                </msi-icon>
-                            </button>
-                        </ng-container>
+                        <button class="msi-btn msi-btn-compact" *ngFor="let user of sharedUsers"
+                            (click)="deleteSharedUser(user)">
+                            <msi-icon name="ic_contacts_people"></msi-icon>{{user}}
+                            &nbsp;<msi-icon name="ic_remove" class="ic-remove">
+                            </msi-icon>
+                        </button>
                     </div>
                     <div class="add">
                         <app-input-control [controlName]="'shared'" [formResetting]="formResetting">
@@ -51,7 +37,7 @@
                                 <msi-icon name="ic_add"></msi-icon>
                             </button>
                             <msi-autocomplete #ownerAutoComplete>
-                                <msi-autocomplete-option *ngFor="let option of filteredOwners | async"
+                                <msi-autocomplete-option *ngFor="let option of owners"
                                     [value]="option.name">
                                     <span
                                         [innerHTML]="option.name | highlightSearchTerm: this.shareIncidentForm.controls['shared'].value"></span>
@@ -70,5 +56,3 @@
         </form>
     </div>
 </div>
-
-</html>

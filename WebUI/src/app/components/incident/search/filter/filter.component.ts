@@ -14,6 +14,7 @@ import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { startWith,map } from 'rxjs/operators';
 import { DialogService } from '../../../../services/common/dialog.service';
 import { SaveFilterComponent } from './save-filter/save-filter.component';
+import { IncidentService } from '../../../../services/incident/incident.service';
 
 @Component({
   selector: 'app-incident-filter',
@@ -73,6 +74,7 @@ export class IncidentFilterComponent implements OnInit {
     constructor(private formBuilder: FormBuilder,
                 private authService: AuthService,
                 private incidentSearchService: IncidentSearchService,
+                private incidentService: IncidentService,
                 private dialogService: DialogService) {
         this.searchIncidents = new EventEmitter();
         this.saveFilter = new EventEmitter();
@@ -101,6 +103,10 @@ export class IncidentFilterComponent implements OnInit {
                   return  value ? this._filterOwnerOptions(value) : this.owners.slice();
                 })
             )
+
+            // this.incidentService.shareIncident(17523, {"addSharedWith":[{"name":"admin"}]} ).subscribe(response => {
+            //     console.log(response);
+            // })
         });          
     }
     private _filterOwnerOptions(filterValue: string): User[] {
