@@ -1,5 +1,5 @@
 <div class="exportIncident"   *ngIf="popupParam.mode !== 'view' else exportView">
-    <form [formGroup]="exportForm" (ngSubmit)="onSubmit()">
+    <form [formGroup]="exportForm" (ngSubmit)="onSubmit()" *ngIf="exportForm !== null">
         <div class="form-group">
             <label class="msi-label" for="description">
                 Title
